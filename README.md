@@ -19,6 +19,23 @@ WAD2 Team 5B project **_Pantry_** repo.
 
 Git commit messages for this repo must follow the conventions outlined [here](https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716)
 
+### Branching
+
+Please create your own branch when working on a feature then submit a pull request.
+
+#### Commands/Usage
+
+- git branch 'BRANCH NAME' (creates branch)
+- git checkout 'BRANCH NAME' (moves to the branch)
+
+_Now you can commit and push to this new branch and it won't affect the main production branch_
+
+_When you have finished your feature you can merge your branch with the main production branch_
+
+- git checkout main (switch back to production branch)
+- git merge 'BRANCH NAME'
+- git branch -d 'BRANCH NAME' (delete the branch once merged)
+
 ## Config
 
 - _created 'Pantry' workspace dir_
