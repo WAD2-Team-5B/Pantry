@@ -1,0 +1,16 @@
+:root {
+    --color-1: #616161;
+    --color-2: #24496e;
+    --color-3: #f5f5f5;
+
+    --header-logo-height: 1.5rem;
+
+    --font: Arial;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    font-family: var(--font);
+}

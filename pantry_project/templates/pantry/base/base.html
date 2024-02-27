@@ -18,6 +18,8 @@
     <title>Pantry - {% block title_block %}{% endblock %}</title>
 
     <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/base/root.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base/header.css' %}" />
     {% block css_block %}{% endblock %}
   </head>
 
@@ -37,7 +39,7 @@
 
     <nav>
     </nav>
-     
+
     {% block main_block %}{% endblock %}
 
     <!-- JS -->
