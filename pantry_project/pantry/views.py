@@ -1,3 +1,7 @@
 from django.shortcuts import render
 
-# Create your views here.
+# TEMPLATE VIEWS
+
+
+def index(request):
+    return render(request, "pantry/index.html")

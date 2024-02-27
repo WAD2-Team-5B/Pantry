@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Provides a platform for sharing recipes."
+    />
+    <meta
+      name="author"
+      content="Andrew Holligan, Nicole Sung, Jeval Halton, Andrew McGill, Andrew Shaw, Layla Clark"
+    />
+
+    <title>Pantry - {% block title_block %}{% endblock %}</title>
+
+    <!-- CSS -->
+    {% block css_block %}{% endblock %}
+  </head>
+
+  <body>
+
+    <header class="header-logo">
+      <div class="logo">
+          <img src="{% static 'images/pantry-logo.png' %}" alt="Pantry Logo">
+          <div class="spacer"></div>
+          <h1>Pantry</h1>
+      </div>
+      <div class="slogan">
+          <em>"designed by food lovers, for food lovers"</em>
+      </div>
+      <div class="buffer"></div>
+    </header>
+
+    <nav>
+    </nav>
+     
+    {% block main_block %}{% endblock %}
+
+    <!-- JS -->
+    {% block js_block %}{% endblock %}
+  </body>
+</html>
