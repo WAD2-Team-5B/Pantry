@@ -20,6 +20,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/base/root.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base/header.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base/nav.css' %}" />
     {% block css_block %}{% endblock %}
   </head>
 
@@ -37,7 +38,15 @@
       <div class="buffer"></div>
     </header>
 
-    <nav>
+    <nav class="navbar">
+      <ul class="general">
+        <li><a href="">Home</a></li>
+        <li><a href="">About</a></li>
+        <li><a href="">Recipes</a></li>
+      </ul>
+      <ul class="user">
+        <li><a href="">Sign Up</a></li>
+      </ul>
     </nav>
 
     {% block main_block %}{% endblock %}
