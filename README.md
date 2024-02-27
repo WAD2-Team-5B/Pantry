@@ -2,9 +2,9 @@
 
 ## Description
 
-WAD2 Team 5B project ***Pantry*** repo.
+WAD2 Team 5B project **_Pantry_** repo.
 
-***Pantry*** is a social media site based around food recipes to allow users to share their food ideas and explore others.
+**_Pantry_** is a social media site based around food recipes to allow users to share their food ideas and explore others.
 
 ## Team
 
@@ -21,23 +21,14 @@ Git commit messages for this repo must follow the conventions outlined [here](ht
 
 ## Config
 
-- *created 'Pantry' workspace dir*
+- _created 'Pantry' workspace dir_
 - cd Pantry
 - conda create -n pantry python=3.9
 - conda activate pantry
 - pip install django==2.2.28
 - pip install pillow
-- *created 'Pantry' repo on Git*
-- echo "# Pantry" >> README.md
-- git init
-- git add *
-- git commit -m "first commit"
-- git branch -M main
-- git remote add origin https://github.com/WAD2-Team-5B/Pantry.git
-- git push -u origin main
 - mkdir pantry_project
 - cd pantry_project
 - django-admin startproject pantry_project .
-- git add *
-- git commit -m "init django"
-- git push
+- python manage.py startapp pantry
+- _added 'pantry' to settings.py 'INSTALLED_APPS'_
