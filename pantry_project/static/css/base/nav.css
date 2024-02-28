@@ -3,14 +3,14 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-  
+
     width: 75%;
     height: var(--header-nav-height);
-  
+
     padding-top: 1rem;
     padding-bottom: 1rem;
     padding-inline: 12.5%;
-  
+
     background: var(--color-2);
 }
 
@@ -19,9 +19,9 @@
 .navbar ul {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
-  
+
     height: 100%;
 
     margin: 0;
@@ -30,6 +30,13 @@
 
 .navbar li {
     list-style-type: none;
+
+    display: flex;
+    align-items: center;
+}
+
+.navbar li a {
+    margin-left: 0.5rem;
 }
 
 .navbar a {
@@ -44,14 +51,49 @@
     text-decoration: dotted underline;
 }
 
+.navbar img {
+    height: 1.5rem;
+}
+
 /* GENERAL LINKS */
 
-.navbar .general li {
-    margin-right: 2rem;
+.navbar .general {
+    width: 20rem;
 }
 
 /* USER LINKS */
 
-.navbar .user li {
-    margin-left: 2rem;
+.navbar .user {
+    width: 16rem;
+}
+
+.navbar .user .spacer {
+    width: 0.2rem;
+    height: 100%;
+
+    border-radius: 25%;
+
+    background: var(--color-3);
+}
+
+/* WINDOW WIDTH CHANGE */
+
+@media (max-width: 52rem) {
+    .navbar {
+        flex-direction: column;
+        justify-content: center;
+        align-items: space-between;
+
+        height: auto;
+    }
+
+    .navbar .user {
+        width: 20rem;
+
+        margin-top: 1rem;
+    }
+
+    .navbar .user .spacer {
+        display: none;
+    }
 }

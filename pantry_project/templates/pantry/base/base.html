@@ -40,12 +40,39 @@
 
     <nav class="navbar">
       <ul class="general">
-        <li><a href="">Home</a></li>
-        <li><a href="">About</a></li>
-        <li><a href="">Recipes</a></li>
+        <li>
+          <img src="{% static 'images/navbar-home.svg' %}" />
+          <a href="">Home</a>
+        </li>
+        <li>
+          <img src="{% static 'images/navbar-about.svg' %}" />
+          <a href="">About</a>
+        </li>
+        <li>
+          <img src="{% static 'images/navbar-recipes.svg' %}" />
+          <a href="">Recipes</a>
+        </li>
       </ul>
       <ul class="user">
-        <li><a href="">Sign Up</a></li>
+        <li>
+          <img src="{% static 'images/navbar-signup.svg' %}" />
+          <a href="">Sign Up</a>
+        </li>
+        <div class="spacer"></div>
+        <li>
+          <img src="{% static 'images/navbar-login.svg' %}" />
+          <a href="">Login</a>
+        </li>
+
+        <!-- <li>
+          <img src="{% static 'images/navbar-profile.svg' %}" />
+          <a href="">Profile</a>
+        </li>
+        <div class="spacer"></div>
+        <li>
+          <img src="{% static 'images/navbar-logout.svg' %}" />
+          <a href="">Logout</a>
+        </li> -->
       </ul>
     </nav>
 
