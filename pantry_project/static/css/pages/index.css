@@ -1,13 +1,10 @@
 h3 {
   padding: 0;
   margin: 0;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 
   color: var(--color-1);
-}
-
-h3:first-of-type {
-  margin-top: 2rem;
 }
 
 /* SEARCH BAR */
@@ -81,7 +78,10 @@ h3:first-of-type {
 
   padding: 0.5rem;
 
-  overflow-x: auto;
+  border: 0.2rem solid var(--color-1);
+  border-radius: 1rem;
+
+  overflow: auto;
 }
 
 .recipe-card {
@@ -89,6 +89,8 @@ h3:first-of-type {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  text-decoration: none;
 
   /* wierd fix but works */
   min-width: 10rem;
@@ -99,9 +101,21 @@ h3:first-of-type {
   padding: 0.5rem;
 
   border-radius: 1rem;
+  border: 0.1rem solid white;
   box-shadow: 0 0 0.5rem grey;
 
   color: var(--color-1);
+}
+
+.recipe-card:last-child {
+  margin-right: 0;
+}
+
+.recipe-card:hover {
+  border: 0.1rem solid var(--color-1);
+  box-shadow: 0 0 0.5rem var(--color-2);
+
+  background: var(--color-2);
 }
 
 .recipe-card h4 {
@@ -121,5 +135,37 @@ h3:first-of-type {
 @media (max-width: 50rem) {
   #search-form {
     width: 20rem;
+  }
+
+  #highest-rated-recipes,
+  #newest-recipes {
+    flex-direction: column;
+
+    padding: 0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    width: 21.6rem;
+    height: 25rem;
+  }
+
+  .recipe-card {
+    width: 18rem;
+
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .recipe-card:last-child {
+    margin-bottom: 0;
+  }
+
+  .recipe-card img {
+    height: 9rem;
+  }
+
+  /* remove if footer */
+  #newest-recipes {
+    margin-bottom: 2rem;
   }
 }
