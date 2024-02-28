@@ -5,16 +5,29 @@
 <link rel="stylesheet" href="{% static 'css/pages/index.css' %}" />
 {% endblock %}
 
+<!-- JS -->
+{% block js_block %}
+<link rel="stylesheet" href="{% static 'js/pages/index.js' %}" />
+{% endblock %}
+
 <!-- TITLE -->
 {% block title_block %} Home {% endblock %}
 
 <!-- CONTENT -->
 {% block main_block %}
-<!-- search bar -->
+<!-- SEARCH BAR -->
 <form id="search-form" method="" action=".">
   <div class="search-bar">
     <input type="text" id="search" placeholder="recipe" />
     <input type="submit" id="submit" />
   </div>
 </form>
+
+<!-- HIGHEST RATED RECIPES -->
+<h2>Highest Rated Recipes</h2>
+<div class="highest-rated-recipes"></div>
+
+<!-- NEWEST RECIPES -->
+<h2>Newest Recipes</h2>
+<div class="newest-recipes"></div>
 {% endblock %}
