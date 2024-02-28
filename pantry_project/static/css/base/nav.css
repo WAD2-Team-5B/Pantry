@@ -14,6 +14,12 @@
     background: var(--color-2);
 }
 
+/* VERTICAL SPACER */
+
+.navbar .vertical-spacer {
+    display: none;
+}
+
 /* LINKS */
 
 .navbar ul {
@@ -78,7 +84,7 @@
 
 /* WINDOW WIDTH CHANGE */
 
-@media (max-width: 52rem) {
+@media (max-width: 50rem) {
     .navbar {
         flex-direction: column;
         justify-content: center;
@@ -96,4 +102,17 @@
     .navbar .user .spacer {
         display: none;
     }
+
+    .navbar .vertical-spacer {
+        display: block;
+    
+        width: 20rem;
+        height: 0.2rem;
+    
+        margin-top: 1rem;
+    
+        border-radius: 25%;
+    
+        background: var(--color-3);
+      }
 }
