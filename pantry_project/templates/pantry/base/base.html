@@ -18,64 +18,69 @@
     <title>Pantry - {% block title_block %}{% endblock %}</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/base/root.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base/base.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base/header.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base/nav.css' %}" />
     {% block css_block %}{% endblock %}
   </head>
 
   <body>
-
     <header class="header-logo">
       <div class="logo">
-          <img src="{% static 'images/pantry-logo.png' %}" alt="Pantry Logo">
-          <div class="spacer"></div>
-          <h1>Pantry</h1>
+        <img src="{% static 'images/pantry-logo.png' %}" alt="Pantry Logo" />
+        <div class="spacer"></div>
+        <h1>Pantry</h1>
       </div>
       <div class="slogan">
-          <em>"designed by food lovers, for food lovers"</em>
+        <em>"designed by food lovers, for food lovers"</em>
       </div>
     </header>
 
     <nav class="navbar">
-      <ul class="general">
-        <li>
+      <div class="general">
+        <a href="">
           <img src="{% static 'images/navbar-home.svg' %}" />
-          <a href="">Home</a>
-        </li>
-        <li>
+          Home
+        </a>
+
+        <a href="">
           <img src="{% static 'images/navbar-about.svg' %}" />
-          <a href="">About</a>
-        </li>
-        <li>
+          About
+        </a>
+
+        <a href="">
           <img src="{% static 'images/navbar-recipes.svg' %}" />
-          <a href="">Recipes</a>
-        </li>
-      </ul>
+          Recipes
+        </a>
+      </div>
 
       <div class="vertical-spacer"></div>
 
-      <ul class="user">
-        <li>
+      <div class="user">
+        <a href="">
           <img src="{% static 'images/navbar-signup.svg' %}" />
-          <a href="">Sign Up</a>
-        </li>
-        <div class="spacer"></div>
-        <li>
-          <img src="{% static 'images/navbar-login.svg' %}" />
-          <a href="">Login</a>
-        </li>
+          Sign Up
+        </a>
 
-        <!-- <li>
-          <img src="{% static 'images/navbar-profile.svg' %}" />
-          <a href="">Profile</a>
-        </li>
         <div class="spacer"></div>
-        <li>
+
+        <a href="">
+          <img src="{% static 'images/navbar-login.svg' %}" />
+          Login
+        </a>
+
+        <!-- <a href="">
+          <img src="{% static 'images/navbar-profile.svg' %}" />
+          Profile
+        </a>
+
+        <div class="spacer"></div>
+
+        <a href="">
           <img src="{% static 'images/navbar-logout.svg' %}" />
-          <a href="">Logout</a>
-        </li> -->
-      </ul>
+          Logout
+        </a> -->
+      </div>
     </nav>
 
     {% block main_block %}{% endblock %}

@@ -1,84 +1,84 @@
 .header-logo {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 
-    width: 75%;
-    height: var(--header-nav-height);
+  width: 75%;
+  height: 1rem;
 
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    padding-inline: 12.5%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-inline: 12.5%;
 
-    background: var(--color-1);
+  background: var(--color-2);
 }
-  
+
 /* LOGO */
-  
+
 .header-logo .logo {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  
-    width: 12rem;
-    height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  width: 12rem;
+  height: 100%;
 }
-  
+
 .header-logo .logo img {
-    height: 200%;
+  height: 3rem;
 }
-  
+
 .header-logo .logo .spacer {
-    width: 0.2rem;
-    height: 100%;
-  
-    margin-inline: 1rem;
-  
-    border-radius: 25%;
-  
-    background: var(--color-3);
+  width: 0.2rem;
+  height: 1.5rem;
+
+  margin-inline: 1rem;
+
+  border-radius: 25%;
+
+  background: var(--color-1);
 }
-  
+
 .header-logo .logo h1 {
-    height: fit-content;
-  
-    margin: 0;
-    padding: 0;
-  
-    color: var(--color-3);
+  height: fit-content;
+
+  margin: 0;
+  padding: 0;
+
+  color: var(--color-1);
 }
-  
+
 /* SLOGAN */
-  
+
 .header-logo .slogan {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  
-    height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
 }
-  
+
 .header-logo .slogan em {
-    color: var(--color-3);
+  color: var(--color-1);
 }
-  
+
 /* BUFFER */
-  
+
 .header-logo .buffer {
-    width: 12rem;
-    height: 100%;
+  width: 12rem;
+  height: 100%;
 }
-  
+
 /* WINDOW WIDTH CHANGE */
-  
+
 @media (max-width: 50rem) {
-    .header-logo .slogan {
-        display: none;
-    }
-  
-    .header-logo {
-        justify-content: space-evenly;
-    }
+  .header-logo .slogan {
+    display: none;
+  }
+
+  .header-logo {
+    justify-content: space-evenly;
+  }
 }
