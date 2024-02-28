@@ -1,12 +1,20 @@
-{% extends 'pantry/base/base.html' %}
-{% load staticfiles %}
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/index.css' %}" />
+{% endblock %}
 
 <!-- TITLE -->
-{% block title_block %}
-    Home
-{% endblock %}
+{% block title_block %} Home {% endblock %}
 
 <!-- CONTENT -->
 {% block main_block %}
-    <h1>Welcome</h1>
+<!-- search bar -->
+<form id="search-form" method="" action=".">
+  <div class="search-bar">
+    <input type="text" id="search" placeholder="recipe" />
+    <input type="submit" id="submit" />
+  </div>
+</form>
 {% endblock %}
