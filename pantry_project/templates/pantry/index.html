@@ -7,7 +7,7 @@
 
 <!-- JS -->
 {% block js_block %}
-<link rel="stylesheet" href="{% static 'js/pages/index.js' %}" />
+<script src="{% static 'js/pages/index.js' %}"></script>
 {% endblock %}
 
 <!-- TITLE -->
@@ -24,10 +24,10 @@
 </form>
 
 <!-- HIGHEST RATED RECIPES -->
-<h2>Highest Rated Recipes</h2>
-<div class="highest-rated-recipes"></div>
+<h3>Highest Rated Recipes</h3>
+<div id="highest-rated-recipes"></div>
 
 <!-- NEWEST RECIPES -->
-<h2>Newest Recipes</h2>
-<div class="newest-recipes"></div>
+<h3>Newest Recipes</h3>
+<div id="newest-recipes"></div>
 {% endblock %}
