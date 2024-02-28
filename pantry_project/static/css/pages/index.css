@@ -14,7 +14,7 @@ h3 {
 
   margin-top: 2rem;
 
-  padding: 1rem;
+  padding: 0.5rem;
 
   border-radius: 1rem;
   box-shadow: 0 0 0.5rem grey;
@@ -78,8 +78,8 @@ h3 {
 
   padding: 0.5rem;
 
-  border: 0.2rem solid var(--color-1);
   border-radius: 1rem;
+  box-shadow: 0 0 0.5rem grey;
 
   overflow: auto;
 }
@@ -101,8 +101,7 @@ h3 {
   padding: 0.5rem;
 
   border-radius: 1rem;
-  border: 0.1rem solid white;
-  box-shadow: 0 0 0.5rem grey;
+  border: 0.1rem solid var(--color-1);
 
   color: var(--color-1);
 }
@@ -112,9 +111,6 @@ h3 {
 }
 
 .recipe-card:hover {
-  border: 0.1rem solid var(--color-1);
-  box-shadow: 0 0 0.5rem var(--color-2);
-
   background: var(--color-2);
 }
 
@@ -145,12 +141,12 @@ h3 {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
 
-    width: 21.6rem;
+    width: 20.6rem;
     height: 25rem;
   }
 
   .recipe-card {
-    width: 18rem;
+    width: 17rem;
 
     margin-right: 0;
     margin-bottom: 1rem;
@@ -161,7 +157,7 @@ h3 {
   }
 
   .recipe-card img {
-    height: 9rem;
+    height: 8.5rem;
   }
 
   /* remove if footer */
