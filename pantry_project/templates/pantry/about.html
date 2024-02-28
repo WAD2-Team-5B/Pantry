@@ -1,0 +1,43 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/about.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %} {% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} About {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<h3>About Us</h3>
+<div class="container">
+  <img src="{% static 'images/pantry-logo.png' %}" alt="Pantry Logo" />
+  <!-- ACTUAL TEXT -->
+  <div class="text">
+    <em>"designed by food lovers, for food lovers"</em>
+    <h4>Welcome!</h4>
+    <p>
+      We created <span>Pantry</span> with the goal of connecting cooking
+      enthusiasts worldwide.
+    </p>
+    <p>
+      Our platform is designed to help you connect with other food lovers and
+      really share the love of food. We believe food is a true source of
+      <span>happiness</span> and <span>love</span> for others.
+    </p>
+    <p><span>Search for a recipe today!</span></p>
+    <p>
+      <span>Join us today</span> and start sharing your food experiences,
+      connecting with others, and more!
+    </p>
+    <p>
+      This project was made with lots of <span>LOVE</span> from
+      <span>WAD2 Team 5B &lt;3</span>
+    </p>
+  </div>
+</div>
+{% endblock %}

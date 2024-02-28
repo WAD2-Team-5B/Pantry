@@ -40,12 +40,12 @@
     <!-- NAVBAR -->
     <nav class="navbar">
       <div class="general">
-        <a href="">
+        <a href="{% url 'pantry:index' %}">
           <img src="{% static 'images/navbar-home.svg' %}" />
           Home
         </a>
 
-        <a href="">
+        <a href="{% url 'pantry:about' %}">
           <img src="{% static 'images/navbar-about.svg' %}" />
           About
         </a>
