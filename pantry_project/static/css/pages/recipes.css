@@ -74,9 +74,9 @@ h5 {
 
   padding: 0.25rem;
 
-  border: 0.1rem solid black;
-
-  opacity: 0.5;
+  border: 0.1rem solid var(--color-1);
+  color: var(--color-1);
+  background-color: transparent;
 }
 
 .btn-sort-by {
@@ -98,18 +98,16 @@ h5 {
 .btn-difficulty:hover,
 .btn-sort-by:hover {
   cursor: pointer;
+  background-color: var(--color-2);
 }
 
 .btn-difficulty-active,
-.btn-sort-by-active {
-  opacity: 1;
-}
-
-.btn-difficulty:hover,
-.btn-sort-by:hover,
-.btn-difficulty-active,
-.btn-sort-by-active {
+.btn-difficulty-active:hover,
+.btn-sort-by-active,
+.btn-sort-by-active:hover {
   font-weight: bold;
+  color: var(--color-3);
+  background-color: var(--color-1);
 }
 
 /* TODO - add difficulty button colours */
@@ -141,6 +139,8 @@ h5 {
   padding: 0.25rem;
 
   border: none;
+
+  background-color: transparent;
 }
 
 .btn-cuisine:hover,
