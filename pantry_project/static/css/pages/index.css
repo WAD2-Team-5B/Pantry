@@ -29,6 +29,7 @@ h3 {
 
 #search {
   display: flex;
+  /* take up rest of width */
   flex-grow: 1;
 
   padding: 0.5rem;
@@ -79,6 +80,7 @@ h3 {
   border-radius: 1rem;
   box-shadow: 0 0 0.5rem grey;
 
+  /* slider for when too many recipes for container */
   overflow: auto;
 }
 
@@ -95,7 +97,6 @@ h3 {
   height: 100%;
 
   margin-right: 1rem;
-
   padding: 0.5rem;
 
   border-radius: 1rem;

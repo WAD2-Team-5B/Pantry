@@ -44,8 +44,8 @@ h3 {
   align-items: center;
 
   height: 100%;
-  width: 21rem;
-  min-width: 21rem;
+  width: 20rem;
+  min-width: 20rem;
 
   padding: 3rem;
 
@@ -58,21 +58,13 @@ h3 {
 }
 
 .container span {
+  font-weight: bold;
   color: var(--color-1);
 }
 
-.container span {
-  font-weight: bold;
-}
-
-.container .text p,
-.container .team p {
+.container .text p:not(:first-child),
+.container .team p:not(:first-child) {
   margin-top: 1rem;
-}
-
-.container .text p:first-child,
-.container .team p:first-child {
-  margin-top: 0;
 }
 
 /* WINDOW WIDTH CHANGE */
@@ -81,16 +73,11 @@ h3 {
   .container .logo {
     display: none;
   }
+
   .container {
     height: auto;
     flex-direction: column;
     justify-content: center;
-  }
-  .container .text,
-  .container .team {
-    min-width: none;
-    width: 20rem;
-    height: auto;
   }
 
   .container .text,
