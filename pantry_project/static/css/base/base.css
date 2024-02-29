@@ -4,6 +4,8 @@
   --color-3: #f6f6f6;
 
   --font: Arial;
+
+  --animation-time: 0.3s;
 }
 
 body {

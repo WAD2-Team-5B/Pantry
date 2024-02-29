@@ -30,3 +30,9 @@ loadRecipes("highest-rated-recipes");
 
 console.log("loading newest-recipes");
 loadRecipes("newest-recipes");
+
+// headings
+document.getElementById("heading-highest-rated-recipes").innerHTML =
+  NUMBER_OF_RECIPES + " Highest Rated Recipes";
+document.getElementById("heading-newest-recipes").innerHTML =
+  NUMBER_OF_RECIPES + " Newest Recipes";

@@ -48,11 +48,11 @@ h3 {
   margin-left: 1rem;
   padding: 0.5rem;
 
-  border: 0.1rem solid white;
+  border: 0.1rem solid transparent;
   border-radius: 0.5rem;
 
   color: var(--color-3);
-  background: var(--color-1);
+  background-color: var(--color-1);
 }
 
 #submit:hover {
@@ -61,7 +61,7 @@ h3 {
   border: 0.1rem solid var(--color-1);
 
   color: var(--color-1);
-  background: var(--color-2);
+  background-color: var(--color-2);
 }
 
 /* HIGHEST RATED RECIPES */
@@ -104,6 +104,11 @@ h3 {
   border: 0.1rem solid var(--color-1);
 
   color: var(--color-1);
+
+  background-color: transparent;
+
+  /* animation */
+  transition: background-color var(--animation-time) ease-in-out;
 }
 
 .recipe-card:last-child {
@@ -111,7 +116,7 @@ h3 {
 }
 
 .recipe-card:hover {
-  background: var(--color-2);
+  background-color: var(--color-2);
 }
 
 .recipe-card h4 {
