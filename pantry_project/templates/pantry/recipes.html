@@ -1,0 +1,75 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %} {% endblock %}
+
+<!-- JS -->
+{% block js_block %} {% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} Recipes {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<h3>Find Recipes</h3>
+
+<form id="search-form" method="" action=".">
+  <!-- LEFT COLUMN -->
+  <div class="left-container">
+    <!-- CREATE RECIPE LINK -->
+    <a href="">Create A Recipe</a>
+
+    <!-- FILTER DIFFICULTY -->
+    <h4>Filter Difficulty</h4>
+    <div class="container-difficulty">
+      <button id="btn-beginner" class="btn-difficulty" value="beginner">
+        beginner
+      </button>
+      <button id="btn-intermediate" class="btn-difficulty" value="intermediate">
+        intermediate
+      </button>
+      <button id="btn-expert" class="btn-difficulty" value="expert">
+        expert
+      </button>
+      <input type="hidden" id="difficulty" name="difficulty" />
+    </div>
+
+    <!-- FILTER CUISINE -->
+    <h4>Filter Cuisine</h4>
+    <div class="container-cuisine">
+      <div id="cuisine-list"></div>
+      <input type="hidden" id="cuisines" name="cuisines" />
+    </div>
+
+    <!-- FILTER CATEGORY -->
+    <h4>Filter Category</h4>
+    <div class="container-category">
+      <div id="category-list"></div>
+      <input type="hidden" id="categories" name="categories" />
+    </div>
+
+    <!-- SORT BY -->
+    <h4>Sort By</h4>
+    <div class="container-sort-by">
+      <button id="btn-rating" class="btn-sort-by" value="rating">rating</button>
+      <button id="btn-newest" class="btn-sort-by" value="newest">newest</button>
+      <button id="btn-most-saves" class="btn-sort-by" value="most-saves">
+        most saves
+      </button>
+      <button id="btn-most-reviews" class="btn-sort-by" value="most-reviews">
+        most reviews
+      </button>
+      <input type="hidden" id="sort-by" name="sort-by" />
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-container">
+    <!-- SEARCH BAR -->
+    <input type="text" id="search" placeholder="search a recipe" />
+
+    <!-- SEARCH RESULTS -->
+    <div id="search-results"></div>
+  </div>
+</form>
+{% endblock %}

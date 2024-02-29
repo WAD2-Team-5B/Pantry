@@ -9,3 +9,7 @@ def index(request):
 
 def about(request):
     return render(request, "pantry/about.html")
+
+
+def recipes(request):
+    return render(request, "pantry/recipes.html")
