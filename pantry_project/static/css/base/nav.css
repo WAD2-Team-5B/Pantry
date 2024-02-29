@@ -4,10 +4,13 @@
   justify-content: space-between;
   align-items: center;
 
-  width: 75%;
+  width: 100%;
+  height: 3rem;
 
+  /* needed for centering with bottom border */
   padding-top: 0.8rem;
   padding-bottom: 0.6rem;
+
   padding-inline: 12.5%;
 
   background: var(--color-1);
@@ -27,11 +30,6 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-
-  height: 100%;
-
-  margin: 0;
-  padding: 0;
 }
 
 .navbar a {
