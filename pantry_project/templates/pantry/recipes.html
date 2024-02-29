@@ -1,7 +1,9 @@
 {% extends 'pantry/base/base.html' %} {% load staticfiles %}
 
 <!-- CSS -->
-{% block css_block %} {% endblock %}
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/recipes.css' %}" />
+{% endblock %}
 
 <!-- JS -->
 {% block js_block %} {% endblock %}
@@ -20,7 +22,7 @@
     <a href="">Create A Recipe</a>
 
     <!-- FILTER DIFFICULTY -->
-    <h4>Filter Difficulty</h4>
+    <h5>Filter Difficulty</h5>
     <div class="container-difficulty">
       <button id="btn-beginner" class="btn-difficulty" value="beginner">
         beginner
@@ -31,35 +33,25 @@
       <button id="btn-expert" class="btn-difficulty" value="expert">
         expert
       </button>
-      <input type="hidden" id="difficulty" name="difficulty" />
     </div>
 
     <!-- FILTER CUISINE -->
-    <h4>Filter Cuisine</h4>
-    <div class="container-cuisine">
-      <div id="cuisine-list"></div>
-      <input type="hidden" id="cuisines" name="cuisines" />
-    </div>
+    <h5>Filter Cuisine</h5>
+    <div id="cuisine-list"></div>
 
     <!-- FILTER CATEGORY -->
-    <h4>Filter Category</h4>
-    <div class="container-category">
-      <div id="category-list"></div>
-      <input type="hidden" id="categories" name="categories" />
-    </div>
+    <h5>Filter Category</h5>
+    <div id="category-list"></div>
 
     <!-- SORT BY -->
-    <h4>Sort By</h4>
+    <h5>Sort By</h5>
     <div class="container-sort-by">
       <button id="btn-rating" class="btn-sort-by" value="rating">rating</button>
       <button id="btn-newest" class="btn-sort-by" value="newest">newest</button>
-      <button id="btn-most-saves" class="btn-sort-by" value="most-saves">
-        most saves
+      <button id="btn-saves" class="btn-sort-by" value="saves">saves</button>
+      <button id="btn-reviews" class="btn-sort-by" value="reviews">
+        reviews
       </button>
-      <button id="btn-most-reviews" class="btn-sort-by" value="most-reviews">
-        most reviews
-      </button>
-      <input type="hidden" id="sort-by" name="sort-by" />
     </div>
   </div>
 
@@ -71,5 +63,11 @@
     <!-- SEARCH RESULTS -->
     <div id="search-results"></div>
   </div>
+
+  <!-- HIDDEN SUBMISSIONS -->
+  <input type="hidden" id="difficulty" name="difficulty" />
+  <input type="hidden" id="cuisines" name="cuisines" />
+  <input type="hidden" id="categories" name="categories" />
+  <input type="hidden" id="sort-by" name="sort-by" />
 </form>
 {% endblock %}
