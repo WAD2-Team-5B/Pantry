@@ -14,9 +14,20 @@
 <!-- CONTENT -->
 {% block main_block %}
 <!-- SEARCH BAR -->
-<form id="search-form" method="" action=".">
+<form
+  role="form"
+  id="search-form"
+  method="post"
+  action="{% url 'pantry:index' %}"
+>
+  {% csrf_token %}
   <div class="search-bar">
-    <input type="text" id="search" placeholder="search a recipe" />
+    <input
+      type="text"
+      id="search"
+      name="search_query"
+      placeholder="search a recipe"
+    />
     <input type="submit" id="submit" value="Search" />
   </div>
 </form>
