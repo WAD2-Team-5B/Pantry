@@ -48,8 +48,3 @@ Git commit messages for this repo must follow the conventions outlined [here](ht
 - conda activate pantry
 - pip install django==2.2.28
 - pip install pillow
-- mkdir pantry_project
-- cd pantry_project
-- django-admin startproject pantry_project .
-- python manage.py startapp pantry
-- _added 'pantry' to settings.py 'INSTALLED_APPS'_
