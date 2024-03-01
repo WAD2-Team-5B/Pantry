@@ -40,11 +40,21 @@
 
     <!-- FILTER CUISINE -->
     <h5>Filter Cuisine</h5>
-    <div id="cuisine-list"></div>
+    <div id="cuisine-list">
+      {% for cuisine in cuisines %}
+      <button class="btn-cuisine" value="{{ cuisine }}">{{ cuisine }}</button>
+      {% endfor %}
+    </div>
 
     <!-- FILTER CATEGORY -->
     <h5>Filter Category</h5>
-    <div id="category-list"></div>
+    <div id="category-list">
+      {% for category in categories %}
+      <button class="btn-category" value="{{ category }}">
+        {{ category }}
+      </button>
+      {% endfor %}
+    </div>
 
     <!-- SORT BY -->
     <h5>Sort By</h5>

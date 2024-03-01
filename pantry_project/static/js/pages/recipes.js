@@ -1,97 +1,117 @@
-// TESTING
-
-const CUISINE_TYPES = [
-  "American",
-  "Chinese",
-  "French",
-  "Indian",
-  "Italian",
-  "Japanese",
-  "Mediterranean",
-  "Mexican",
-  "Thai",
-  "Vietnamese",
-];
-
-const CATEGORY_TYPES = [
-  "Vegan",
-  "Vegetarian",
-  "Pescatarian",
-  "Gluten-Free",
-  "Dairy-Free",
-  "Nut-Free",
-  "Soy-Free",
-  "Egg-Free",
-];
-
 let selectedCuisines = [];
 let selectedCategories = [];
-// these two arrays will only contain one element
-// but need to be arrays for pass by reference
-let selectedDifficulty = [];
-let selectedSortBy = [];
+let selectedDifficulty = "";
+let selectedSortBy = "";
 
-function generateBtns(typeName, types, selected) {
-  for (let i = 0; i < types.length; i++) {
-    let type = types[i];
+//  INIT CUISINE AND CATEGORY BUTTONS
 
-    let btn = document.createElement("button");
-    btn.innerHTML = type;
-    btn.id = "btn-" + typeName + "-" + type;
-    btn.classList.add("btn-" + typeName);
+function initCuisineBtns() {
+  let btns = Array.from(document.getElementsByClassName("btn-cuisine"));
+  btns.forEach((btn) => {
+    let cuisine = btn.value;
 
     btn.onclick = () => {
-      if (selected.includes(type)) {
-        // user is deselecting
-        btn.classList.remove("btn-" + typeName + "-active");
-        selected.splice(selected.indexOf(type), 1);
+      // user is deselecting
+      if (selectedCuisines.includes(cuisine)) {
+        btn.classList.remove("btn-cuisine-active");
+        selectedCuisines.splice(selectedCuisines.indexOf(cuisine), 1);
+
+        // dont submit form
         return false;
       }
 
-      btn.classList.add("btn-" + typeName + "-active");
-      selected.push(type);
+      // user is selecting
+      btn.classList.add("btn-cuisine-active");
+      selectedCuisines.push(cuisine);
 
+      // dont submit form
       return false;
     };
-
-    document.getElementById(typeName + "-list").appendChild(btn);
-  }
+  });
 }
 
-// maybe not the best function name?
-function initActiveBtns(name, btns, selected) {
-  for (let i = 0; i < btns.length; i++) {
-    let btn = btns[i];
+function initCategoryBtns() {
+  let btns = Array.from(document.getElementsByClassName("btn-category"));
+  btns.forEach((btn) => {
+    let category = btn.value;
+
     btn.onclick = () => {
-      // check if button is already active
-      if (btn.classList.contains("btn-" + name + "-active")) {
-        btn.classList.remove("btn-" + name + "-active");
-        selected.splice(selected.indexOf(btn.value), 1);
+      // user is deselecting
+      if (selectedCategories.includes(category)) {
+        btn.classList.remove("btn-category-active");
+        selectedCategories.splice(selectedCategories.indexOf(category), 1);
+
+        // dont submit form
         return false;
       }
 
-      // remove active class from all other buttons
-      for (let j = 0; j < btns.length; j++) {
-        btns[j].classList.remove("btn-" + name + "-active");
-        selected.splice(selected.indexOf(btn.value), 1);
-      }
+      // user is selecting
+      btn.classList.add("btn-category-active");
+      selectedCategories.push(category);
 
-      btn.classList.add("btn-" + name + "-active");
-      selected.push(btn.value);
+      // dont submit form
       return false;
     };
-  }
+  });
 }
 
-function init() {
-  generateBtns("cuisine", CUISINE_TYPES, selectedCuisines);
-  generateBtns("category", CATEGORY_TYPES, selectedCategories);
+// INIT DIFFICULTY AND SORT BY BUTTONS
 
-  let difficultyBtns = document.getElementsByClassName("btn-difficulty");
-  let sortByBtns = document.getElementsByClassName("btn-sort-by");
+function initDifficultyBtns() {
+  let btns = Array.from(document.getElementsByClassName("btn-difficulty"));
+  btns.forEach((btn) => {
+    btn.onclick = () => {
+      // user is deselecting
+      if (selectedDifficulty === btn.value) {
+        btn.classList.remove("btn-difficulty-active");
+        selectedDifficulty = "";
 
-  initActiveBtns("difficulty", difficultyBtns, selectedDifficulty);
-  initActiveBtns("sort-by", sortByBtns, selectedSortBy);
+        // dont submit form
+        return false;
+      }
+
+      // user is selecting another difficulty
+      btns.forEach((btn) => {
+        btn.classList.remove("btn-difficulty-active");
+      });
+      btn.classList.add("btn-difficulty-active");
+      selectedDifficulty = btn.value;
+
+      // dont submit form
+      return false;
+    };
+  });
 }
 
-init();
+function initSortByBtns() {
+  let btns = Array.from(document.getElementsByClassName("btn-sort-by"));
+  btns.forEach((btn) => {
+    btn.onclick = () => {
+      // user is deselecting
+      if (selectedSortBy === btn.value) {
+        btn.classList.remove("btn-sort-by-active");
+        selectedSortBy = "";
+
+        // dont submit form
+        return false;
+      }
+
+      // user is selecting another sort by
+      btns.forEach((btn) => {
+        btn.classList.remove("btn-sort-by-active");
+      });
+      btn.classList.add("btn-sort-by-active");
+      selectedSortBy = btn.value;
+
+      // dont submit form
+      return false;
+    };
+  });
+}
+
+// STARTUP
+
+initCuisineBtns();
+initCategoryBtns();
+initDifficultyBtns();
+initSortByBtns();

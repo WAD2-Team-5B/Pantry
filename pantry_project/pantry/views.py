@@ -43,5 +43,37 @@ def recipes(request):
         }
     ] * 20
 
-    context_dict = {"recipes": recipes}
+    # TESTING PURPOSES
+    # would use real data from database
+    cuisines = [
+        "Italian",
+        "Mexican",
+        "Indian",
+        "Chinese",
+        "Japanese",
+        "Thai",
+        "French",
+        "Greek",
+        "Spanish",
+        "American",
+    ]
+
+    # TESTING PURPOSES
+    # would use real data from database
+    categories = [
+        "Vegan",
+        "Vegetarian",
+        "Pescatarian",
+        "Gluten-Free",
+        "Dairy-Free",
+        "Nut-Free",
+        "Soy-Free",
+        "Egg-Free",
+    ]
+
+    context_dict = {
+        "recipes": recipes,
+        "cuisines": cuisines,
+        "categories": categories,
+    }
     return render(request, "pantry/recipes.html", context=context_dict)
