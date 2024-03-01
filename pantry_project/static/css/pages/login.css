@@ -69,3 +69,22 @@ input {
 
   text-decoration: none;
 }
+
+/* ERROR MESSAGE */
+
+#error-message {
+  width: 100%;
+
+  margin-top: 1rem;
+
+  border-radius: 0.5rem;
+
+  color: var(--color-3);
+  background-color: red;
+
+  text-align: center;
+}
+
+.error-message-active {
+  padding: 0.5rem;
+}

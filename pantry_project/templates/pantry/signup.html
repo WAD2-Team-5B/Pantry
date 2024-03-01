@@ -6,7 +6,9 @@
 {% endblock %}
 
 <!-- JS -->
-{% block js_block %} {% endblock %}
+{% block js_block %}
+<script src="{% static 'js/pages/signup.js' %}"></script>
+{% endblock %}
 
 <!-- TITLE -->
 {% block title_block %} Sign Up {% endblock %}
@@ -22,11 +24,17 @@
 >
   {% csrf_token %}
   <h4>Username</h4>
-  <input type="text" name="username" value="" />
+  <input type="text" id="username" name="username" value="" />
   <h4>Password</h4>
-  <input type="password" name="password" value="" />
+  <input type="password" id="password" name="password" value="" />
   <h4>Confirm Password</h4>
-  <input type="password" name="confirm_password" value="" />
+  <input
+    type="password"
+    id="confirm-password"
+    name="confirm-password"
+    value=""
+  />
   <input id="submit" type="submit" value="Sign Up" />
+  <h5 id="error-message"></h5>
 </form>
 {% endblock %}
