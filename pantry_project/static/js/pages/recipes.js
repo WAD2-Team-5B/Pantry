@@ -1,3 +1,5 @@
+// GLOBALS
+
 let selectedCuisines = [];
 let selectedCategories = [];
 let selectedDifficulty = "";

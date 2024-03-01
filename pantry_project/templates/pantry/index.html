@@ -27,7 +27,7 @@
   {% for recipe in highest_rated_recipes %}
   <a class="recipe-card" href="{{ recipe.link }}">
     <h6>{{ recipe.name }}</h6>
-    <img src="{{ recipe.link }}" />
+    <img src="{{ recipe.image }}" />
   </a>
   {% endfor %}
 </div>
@@ -38,7 +38,7 @@
   {% for recipe in newest_recipes %}
   <a class="recipe-card" href="{{ recipe.link }}">
     <h6>{{ recipe.name }}</h6>
-    <img src="{{ recipe.link }}" />
+    <img src="{{ recipe.image }}" />
   </a>
   {% endfor %}
 </div>
