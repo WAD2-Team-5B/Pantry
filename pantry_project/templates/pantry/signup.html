@@ -1,0 +1,32 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/signup.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %} {% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} Sign Up {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<h3>Sign Up</h3>
+<form
+  role="form"
+  id="signup-form"
+  method="post"
+  action="{% url 'pantry:signup' %}"
+>
+  {% csrf_token %}
+  <h4>Username</h4>
+  <input type="text" name="username" value="" />
+  <h4>Password</h4>
+  <input type="password" name="password" value="" />
+  <h4>Confirm Password</h4>
+  <input type="password" name="confirm_password" value="" />
+  <input id="submit" type="submit" value="Sign Up" />
+</form>
+{% endblock %}

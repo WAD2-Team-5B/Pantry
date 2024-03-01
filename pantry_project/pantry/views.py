@@ -77,3 +77,11 @@ def recipes(request):
         "categories": categories,
     }
     return render(request, "pantry/recipes.html", context=context_dict)
+
+
+def login(request):
+    return render(request, "pantry/login.html")
+
+
+def signup(request):
+    return render(request, "pantry/signup.html")
