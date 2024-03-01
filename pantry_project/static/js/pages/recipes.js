@@ -10,15 +10,14 @@ let selectedSortBy = "";
 function initCuisineBtns() {
   let btns = Array.from(document.getElementsByClassName("btn-cuisine"));
   btns.forEach((btn) => {
-    let cuisine = btn.value;
-
     btn.onclick = () => {
+      let cuisine = btn.value;
       // user is deselecting
       if (selectedCuisines.includes(cuisine)) {
         btn.classList.remove("btn-cuisine-active");
         selectedCuisines.splice(selectedCuisines.indexOf(cuisine), 1);
 
-        // dont submit form
+        // TESTING - this stops form from submitting
         return false;
       }
 
@@ -26,7 +25,7 @@ function initCuisineBtns() {
       btn.classList.add("btn-cuisine-active");
       selectedCuisines.push(cuisine);
 
-      // dont submit form
+      // TESTING - this stops form from submitting
       return false;
     };
   });
@@ -35,15 +34,14 @@ function initCuisineBtns() {
 function initCategoryBtns() {
   let btns = Array.from(document.getElementsByClassName("btn-category"));
   btns.forEach((btn) => {
-    let category = btn.value;
-
     btn.onclick = () => {
+      let category = btn.value;
       // user is deselecting
       if (selectedCategories.includes(category)) {
         btn.classList.remove("btn-category-active");
         selectedCategories.splice(selectedCategories.indexOf(category), 1);
 
-        // dont submit form
+        // TESTING - this stops form from submitting
         return false;
       }
 
@@ -51,7 +49,7 @@ function initCategoryBtns() {
       btn.classList.add("btn-category-active");
       selectedCategories.push(category);
 
-      // dont submit form
+      // TESTING - this stops form from submitting
       return false;
     };
   });
@@ -63,12 +61,13 @@ function initDifficultyBtns() {
   let btns = Array.from(document.getElementsByClassName("btn-difficulty"));
   btns.forEach((btn) => {
     btn.onclick = () => {
+      let difficulty = btn.value;
       // user is deselecting
-      if (selectedDifficulty === btn.value) {
+      if (selectedDifficulty === difficulty) {
         btn.classList.remove("btn-difficulty-active");
         selectedDifficulty = "";
 
-        // dont submit form
+        // TESTING - this stops form from submitting
         return false;
       }
 
@@ -77,9 +76,9 @@ function initDifficultyBtns() {
         btn.classList.remove("btn-difficulty-active");
       });
       btn.classList.add("btn-difficulty-active");
-      selectedDifficulty = btn.value;
+      selectedDifficulty = difficulty;
 
-      // dont submit form
+      // TESTING - this stops form from submitting
       return false;
     };
   });
@@ -89,12 +88,13 @@ function initSortByBtns() {
   let btns = Array.from(document.getElementsByClassName("btn-sort-by"));
   btns.forEach((btn) => {
     btn.onclick = () => {
+      let sortBy = btn.value;
       // user is deselecting
-      if (selectedSortBy === btn.value) {
+      if (selectedSortBy === sortBy) {
         btn.classList.remove("btn-sort-by-active");
         selectedSortBy = "";
 
-        // dont submit form
+        // TESTING - this stops form from submitting
         return false;
       }
 
@@ -103,9 +103,9 @@ function initSortByBtns() {
         btn.classList.remove("btn-sort-by-active");
       });
       btn.classList.add("btn-sort-by-active");
-      selectedSortBy = btn.value;
+      selectedSortBy = sortBy;
 
-      // dont submit form
+      // TESTING - this stops form from submitting
       return false;
     };
   });
