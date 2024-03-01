@@ -11,11 +11,6 @@ h3 {
   width: 75%;
 
   margin-top: 2rem;
-
-  padding: 0.5rem;
-
-  border-radius: 1rem;
-  box-shadow: 0 0 0.5rem grey;
 }
 
 .search-bar {
@@ -76,7 +71,7 @@ h3 {
   padding: 0.5rem;
 
   border-radius: 1rem;
-  box-shadow: 0 0 0.5rem grey;
+  border: 0.1rem solid var(--color-1);
 
   /* slider for when too many recipes for container */
   overflow: auto;
@@ -98,7 +93,7 @@ h3 {
   padding: 0.5rem;
 
   border-radius: 1rem;
-  border: 0.1rem solid var(--color-1);
+  box-shadow: 0 0 0.5rem grey;
 
   color: var(--color-1);
 

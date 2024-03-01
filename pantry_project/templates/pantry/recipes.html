@@ -24,8 +24,9 @@
     <!-- CREATE RECIPE LINK -->
     <a href="">Create A Recipe</a>
 
+    <h5>Filter</h5>
+
     <!-- FILTER DIFFICULTY -->
-    <h5>Filter Difficulty</h5>
     <div class="container-difficulty">
       <button id="btn-beginner" class="btn-difficulty" value="beginner">
         beginner
@@ -39,7 +40,6 @@
     </div>
 
     <!-- FILTER CUISINE -->
-    <h5>Filter Cuisine</h5>
     <div id="cuisine-list">
       {% for cuisine in cuisines %}
       <button class="btn-cuisine" value="{{ cuisine }}">{{ cuisine }}</button>
@@ -47,7 +47,6 @@
     </div>
 
     <!-- FILTER CATEGORY -->
-    <h5>Filter Category</h5>
     <div id="category-list">
       {% for category in categories %}
       <button class="btn-category" value="{{ category }}">
@@ -56,8 +55,9 @@
       {% endfor %}
     </div>
 
-    <!-- SORT BY -->
     <h5>Sort By</h5>
+
+    <!-- SORT BY -->
     <div class="container-sort-by">
       <button id="btn-rating" class="btn-sort-by" value="rating">rating</button>
       <button id="btn-newest" class="btn-sort-by" value="newest">newest</button>
