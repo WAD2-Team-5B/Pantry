@@ -18,14 +18,21 @@
 {% block main_block %}
 <h3>Find Recipes</h3>
 
-<form id="search-form" method="" action=".">
+<form
+  role="form"
+  id="search-form"
+  method="post"
+  action="{% url 'pantry:recipes' %}"
+>
+  {% csrf_token %}
   <!-- LEFT COLUMN -->
   <div class="left-container">
     <!-- CREATE RECIPE LINK -->
     <a href="">Create A Recipe</a>
 
+    <h5>Filter</h5>
+
     <!-- FILTER DIFFICULTY -->
-    <h5>Filter Difficulty</h5>
     <div class="container-difficulty">
       <button id="btn-beginner" class="btn-difficulty" value="beginner">
         beginner
@@ -39,7 +46,6 @@
     </div>
 
     <!-- FILTER CUISINE -->
-    <h5>Filter Cuisine</h5>
     <div id="cuisine-list">
       {% for cuisine in cuisines %}
       <button class="btn-cuisine" value="{{ cuisine }}">{{ cuisine }}</button>
@@ -47,7 +53,6 @@
     </div>
 
     <!-- FILTER CATEGORY -->
-    <h5>Filter Category</h5>
     <div id="category-list">
       {% for category in categories %}
       <button class="btn-category" value="{{ category }}">
@@ -56,8 +61,9 @@
       {% endfor %}
     </div>
 
-    <!-- SORT BY -->
     <h5>Sort By</h5>
+
+    <!-- SORT BY -->
     <div class="container-sort-by">
       <button id="btn-rating" class="btn-sort-by" value="rating">rating</button>
       <button id="btn-newest" class="btn-sort-by" value="newest">newest</button>
@@ -71,7 +77,12 @@
   <!-- RIGHT COLUMN -->
   <div class="right-container">
     <!-- SEARCH BAR -->
-    <input type="text" id="search" placeholder="search a recipe" />
+    <input
+      type="text"
+      id="search"
+      name="search_query"
+      placeholder="search a recipe"
+    />
 
     <!-- SEARCH RESULTS -->
     <div id="search-results">
@@ -96,9 +107,9 @@
   </div>
 
   <!-- HIDDEN SUBMISSIONS -->
-  <input type="hidden" id="difficulty" name="difficulty" />
-  <input type="hidden" id="cuisines" name="cuisines" />
-  <input type="hidden" id="categories" name="categories" />
-  <input type="hidden" id="sort-by" name="sort-by" />
+  <input type="hidden" id="difficulty" name="selected_difficulty" />
+  <input type="hidden" id="cuisines" name="selected_cuisines" />
+  <input type="hidden" id="categories" name="selected_categories" />
+  <input type="hidden" id="sort" name="selected_sort" />
 </form>
 {% endblock %}
