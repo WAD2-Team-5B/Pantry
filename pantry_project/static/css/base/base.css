@@ -5,6 +5,9 @@
 
   --font: Arial;
 
+  --recipe-image-width: 8.8rem;
+  --recipe-image-height: 5rem;
+
   --animation-time: 0.3s;
 }
 

@@ -7,6 +7,7 @@
 
 <!-- JS -->
 {% block js_block %}
+<!-- pass in star image -->
 <script src="{% static 'js/pages/recipes.js' %}"></script>
 {% endblock %}
 
@@ -63,7 +64,25 @@
     <input type="text" id="search" placeholder="search a recipe" />
 
     <!-- SEARCH RESULTS -->
-    <div id="search-results"></div>
+    <div id="search-results">
+      {% for recipe in recipes %}
+      <a class="recipe" href="{{ recipe.link }}">
+        <img src="{{ recipe.image }}" />
+        <ul>
+          <li>{{ recipe.name }}</li>
+          <li>
+            <img src="{% static 'images/star.svg' %}" />
+            {{ recipe.rating }}
+          </li>
+          <li>{{ recipe.saves }} saves</li>
+          <li>{{ recipe.difficulty }}</li>
+          <li>{{ recipe.cuisine }}</li>
+          <li>Prep - {{ recipe.prep }}h</li>
+          <li>Cook - {{ recipe.cook }}h</li>
+        </ul>
+      </a>
+      {% endfor %}
+    </div>
   </div>
 
   <!-- HIDDEN SUBMISSIONS -->
