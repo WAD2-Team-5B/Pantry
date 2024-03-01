@@ -54,6 +54,7 @@ Git commit messages for this repo must follow the conventions outlined [here](ht
 - git branch NAME (create branch of this name)
 - git checkout NAME (navigate to branch)
 - from branch then intially register it with main through git push -u origin NAMEOFBRANCH
+- when ready to merge - git checkout main and then git merge NAMEOFBRANCHTOMERGE
 - potential for branches within branches - decide within pairs 
 - always pull before pushing
  
