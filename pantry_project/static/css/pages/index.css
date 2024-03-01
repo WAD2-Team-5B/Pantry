@@ -24,6 +24,7 @@ h3 {
 
 #search {
   display: flex;
+
   /* take up rest of width */
   flex-grow: 1;
 
@@ -50,10 +51,10 @@ h3 {
 }
 
 #submit:hover {
-  cursor: pointer;
-
   color: var(--color-1);
   background-color: var(--color-2);
+
+  cursor: pointer;
 }
 
 /* HIGHEST RATED RECIPES */
@@ -83,8 +84,6 @@ h3 {
   justify-content: center;
   align-items: center;
 
-  text-decoration: none;
-
   /* wierd fix but works */
   min-width: 10rem;
   height: 100%;
@@ -96,8 +95,9 @@ h3 {
   box-shadow: 0 0 0.5rem grey;
 
   color: var(--color-1);
-
   background-color: transparent;
+
+  text-decoration: none;
 
   /* animation */
   transition: background-color var(--animation-time) ease-in-out;

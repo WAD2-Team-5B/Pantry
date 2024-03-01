@@ -12,7 +12,6 @@
   /* needed for centering with bottom border */
   padding-top: 0.8rem;
   padding-bottom: 0.6rem;
-
   padding-inline: 12.5%;
 
   background: var(--color-1);
@@ -42,9 +41,10 @@
 
   border-bottom: 0.2rem solid transparent;
 
+  color: var(--color-3);
+
   text-decoration: none;
   font-weight: bold;
-  color: var(--color-3);
 
   /* animation */
   transition: border-bottom var(--animation-time) ease-in-out;
