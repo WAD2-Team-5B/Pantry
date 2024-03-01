@@ -116,7 +116,7 @@ h3 {
   background-color: var(--color-2);
 }
 
-.recipe-card h4 {
+.recipe-card h6 {
   margin: 0;
   margin-bottom: 0.5rem;
 }
@@ -148,8 +148,6 @@ h3 {
   }
 
   .recipe-card {
-    width: 17rem;
-
     margin-right: 0;
     margin-bottom: 1rem;
   }
@@ -159,7 +157,8 @@ h3 {
   }
 
   .recipe-card img {
-    height: 8.5rem;
+    width: calc(var(--recipe-image-width) * 1.5);
+    height: calc(var(--recipe-image-height) * 1.5);
   }
 
   /* remove if footer */

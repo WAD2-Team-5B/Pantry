@@ -4,7 +4,21 @@ from django.shortcuts import render
 
 
 def index(request):
-    return render(request, "pantry/index.html")
+
+    # TESTING PURPOSES
+    # would use real data from database
+    recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
+
+    num_highest_rated = len(recipes)
+    num_newest = len(recipes)
+
+    context_dict = {
+        "highest_rated_recipes": recipes,
+        "newest_recipes": recipes,
+        "num_highest_rated": num_highest_rated,
+        "num_newest": num_newest,
+    }
+    return render(request, "pantry/index.html", context=context_dict)
 
 
 def about(request):
@@ -12,10 +26,12 @@ def about(request):
 
 
 def recipes(request):
-    # TESTING PURPOSE
+
+    # TESTING PURPOSES
+    # would use real data from database
     recipes = [
         {
-            "name": "Spaghetti Bolegnaise",
+            "name": "Spag Bol",
             "link": "",
             "image": "",
             "rating": 4.67,
@@ -26,5 +42,6 @@ def recipes(request):
             "cook": "0:30",
         }
     ] * 20
+
     context_dict = {"recipes": recipes}
     return render(request, "pantry/recipes.html", context=context_dict)
