@@ -51,9 +51,9 @@ Git commit messages for this repo must follow the conventions outlined [here](ht
 
 ## Branch Cmds
 - git branch -a (logs what branches exist)
-- git branch <NAME> (create branch of this name)
-- git checkout <NAME> (navigate to branch)
-- from branch then register it with main through git push -u origin <NAMEOFBRANCH>
+- git branch NAME (create branch of this name)
+- git checkout NAME (navigate to branch)
+- from branch then intially register it with main through git push -u origin NAMEOFBRANCH
 - potential for branches within branches - decide within pairs 
 - always pull before pushing
  
