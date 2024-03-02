@@ -100,7 +100,7 @@ def recipe(request):
         "date_pub": "2021-09-21",
         # description
         "image": "",
-        "description": (("#" * 50) + "\n") * 10,
+        "description": (("#" * 100) + "\n") * 10,
         # sub info
         "rating": 4.67,
         "saves": 34,
@@ -110,7 +110,7 @@ def recipe(request):
         "cook": "0:30",
         # main info
         "steps": [
-            "#" * 20,
+            "#" * 150,
         ]
         * 10,
         "categories": ["Vegan", "Vegetarian", "Pescatarian"],

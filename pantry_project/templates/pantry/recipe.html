@@ -28,7 +28,7 @@
   </div>
 </header>
 
-<!-- RECIPE BODY -->
+<!-- RECIPE INFO -->
 <div class="recipe-info">
   <div class="description">
     <img src="{{ image }}" />
@@ -46,6 +46,36 @@
       <li>{{ cuisine }}</li>
       <li>Prep - {{ prep }}h</li>
       <li>Cook - {{ cook }}h</li>
+    </ul>
+  </div>
+</div>
+
+<!-- RECIPE FACTS -->
+<div class="recipe-facts">
+  <div class="steps">
+    <h5>Steps</h5>
+    <ul>
+      {% for step in steps %}
+      <li>{{ step }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="ingredients">
+    <h5>Ingredients</h5>
+    <ul>
+      {% for ingredient in ingredients %}
+      <li>{{ ingredient }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="categories">
+    <h5>Categories</h5>
+    <ul>
+      {% for category in categories %}
+      <li>{{ category }}</li>
+      {% endfor %}
     </ul>
   </div>
 </div>
