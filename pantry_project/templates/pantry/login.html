@@ -1,0 +1,43 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/login.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %}
+<script src="{% static 'js/pages/login.js' %}"></script>
+{% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} Login {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<h3>Login</h3>
+<form
+  role="form"
+  id="login-form"
+  method="post"
+  action="{% url 'pantry:login' %}"
+>
+  {% csrf_token %}
+  <h4>Username</h4>
+  <input type="text" id="username" name="username" value="" />
+  <h4>Password</h4>
+  <input type="password" id="password" name="password" value="" />
+  <input id="submit" type="submit" value="Login" />
+
+  {% if success %}
+  <h5 id="error-message"></h5>
+  {% else %}
+  <h5 id="error-message" class="error-message-active">
+    Invalid username or password
+  </h5>
+  {% endif %}
+
+  <h4>New to Pantry?</h4>
+  <h4>Sign Up <a href="{% url 'pantry:signup' %}">HERE</a></h4>
+</form>
+{% endblock %}

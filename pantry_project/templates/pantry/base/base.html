@@ -50,7 +50,7 @@
           About
         </a>
 
-        <a href="">
+        <a href="{% url 'pantry:recipes' %}">
           <img src="{% static 'images/navbar-recipes.svg' %}" />
           Recipes
         </a>
@@ -72,14 +72,14 @@
           Logout
         </a>
         {% else %}
-        <a href="">
+        <a href="{% url 'pantry:signup' %}">
           <img src="{% static 'images/navbar-signup.svg' %}" />
           Sign Up
         </a>
 
         <div class="spacer"></div>
 
-        <a href="{% url 'pantry:login' %}">
+        <a href="{% url 'pantry:login' %}{% url 'pantry:login' %}">
           <img src="{% static 'images/navbar-login.svg' %}" />
           Login
         </a>

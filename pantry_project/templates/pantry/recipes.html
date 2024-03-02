@@ -1,0 +1,114 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/recipes.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %}
+<script src="{% static 'js/pages/recipes.js' %}"></script>
+{% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} Recipes {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<h3>Find Recipes</h3>
+
+<form
+  role="form"
+  id="search-form"
+  method="post"
+  action="{% url 'pantry:recipes' %}"
+>
+  {% csrf_token %}
+  <!-- LEFT COLUMN -->
+  <div class="left-container">
+    <!-- CREATE RECIPE LINK -->
+    <a href="">Create A Recipe</a>
+
+    <h5>Filter</h5>
+
+    <!-- FILTER DIFFICULTY -->
+    <div class="container-difficulty">
+      <button id="btn-beginner" class="btn-difficulty" value="beginner">
+        beginner
+      </button>
+      <button id="btn-intermediate" class="btn-difficulty" value="intermediate">
+        intermediate
+      </button>
+      <button id="btn-expert" class="btn-difficulty" value="expert">
+        expert
+      </button>
+    </div>
+
+    <!-- FILTER CUISINE -->
+    <div id="cuisine-list">
+      {% for cuisine in cuisines %}
+      <button class="btn-cuisine" value="{{ cuisine }}">{{ cuisine }}</button>
+      {% endfor %}
+    </div>
+
+    <!-- FILTER CATEGORY -->
+    <div id="category-list">
+      {% for category in categories %}
+      <button class="btn-category" value="{{ category }}">
+        {{ category }}
+      </button>
+      {% endfor %}
+    </div>
+
+    <h5>Sort By</h5>
+
+    <!-- SORT BY -->
+    <div class="container-sort-by">
+      <button id="btn-rating" class="btn-sort-by" value="rating">rating</button>
+      <button id="btn-newest" class="btn-sort-by" value="newest">newest</button>
+      <button id="btn-saves" class="btn-sort-by" value="saves">saves</button>
+      <button id="btn-reviews" class="btn-sort-by" value="reviews">
+        reviews
+      </button>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-container">
+    <!-- SEARCH BAR -->
+    <input
+      type="text"
+      id="search"
+      name="search_query"
+      placeholder="search a recipe"
+    />
+
+    <!-- SEARCH RESULTS -->
+    <div id="search-results">
+      {% for recipe in recipes %}
+      <a class="recipe" href="{{ recipe.link }}">
+        <img src="{{ recipe.image }}" />
+        <ul>
+          <li>{{ recipe.name }}</li>
+          <li>
+            <img src="{% static 'images/star.svg' %}" />
+            {{ recipe.rating }}
+          </li>
+          <li>{{ recipe.saves }} saves</li>
+          <li>{{ recipe.difficulty }}</li>
+          <li>{{ recipe.cuisine }}</li>
+          <li>Prep - {{ recipe.prep }}h</li>
+          <li>Cook - {{ recipe.cook }}h</li>
+        </ul>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- HIDDEN SUBMISSIONS -->
+  <input type="hidden" id="difficulty" name="selected_difficulty" />
+  <input type="hidden" id="cuisines" name="selected_cuisines" />
+  <input type="hidden" id="categories" name="selected_categories" />
+  <input type="hidden" id="sort" name="selected_sort" />
+</form>
+{% endblock %}

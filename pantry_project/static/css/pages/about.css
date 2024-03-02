@@ -1,5 +1,5 @@
 h3 {
-  margin-top: 2rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
 
   color: var(--color-1);
@@ -21,8 +21,8 @@ h3 {
 
 .container .logo {
   display: flex;
-  flex-grow: 1;
 
+  flex-grow: 1;
   height: 100%;
 
   overflow: hidden;
@@ -58,8 +58,9 @@ h3 {
 }
 
 .container span {
-  font-weight: bold;
   color: var(--color-1);
+
+  font-weight: bold;
 }
 
 .container .text p:not(:first-child),
@@ -75,9 +76,10 @@ h3 {
   }
 
   .container {
-    height: auto;
     flex-direction: column;
     justify-content: center;
+
+    height: auto;
   }
 
   .container .text,

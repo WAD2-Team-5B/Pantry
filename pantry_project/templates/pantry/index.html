@@ -6,9 +6,7 @@
 {% endblock %}
 
 <!-- JS -->
-{% block js_block %}
-<script src="{% static 'js/pages/index.js' %}"></script>
-{% endblock %}
+{% block js_block %} {% endblock %}
 
 <!-- TITLE -->
 {% block title_block %} Home {% endblock %}
@@ -16,18 +14,43 @@
 <!-- CONTENT -->
 {% block main_block %}
 <!-- SEARCH BAR -->
-<form id="search-form" method="" action=".">
+<form
+  role="form"
+  id="search-form"
+  method="post"
+  action="{% url 'pantry:index' %}"
+>
+  {% csrf_token %}
   <div class="search-bar">
-    <input type="text" id="search" placeholder="recipe" />
+    <input
+      type="text"
+      id="search"
+      name="search_query"
+      placeholder="search a recipe"
+    />
     <input type="submit" id="submit" value="Search" />
   </div>
 </form>
 
 <!-- HIGHEST RATED RECIPES -->
-<h3 id="heading-highest-rated-recipes"></h3>
-<div id="highest-rated-recipes"></div>
+<h3>{{ num_highest_rated }} Highest Rated Recipes</h3>
+<div id="highest-rated-recipes">
+  {% for recipe in highest_rated_recipes %}
+  <a class="recipe-card" href="{{ recipe.link }}">
+    <h6>{{ recipe.name }}</h6>
+    <img src="{{ recipe.image }}" />
+  </a>
+  {% endfor %}
+</div>
 
 <!-- NEWEST RECIPES -->
-<h3 id="heading-newest-recipes"></h3>
-<div id="newest-recipes"></div>
+<h3>{{ num_newest }} Newest Recipes</h3>
+<div id="newest-recipes">
+  {% for recipe in newest_recipes %}
+  <a class="recipe-card" href="{{ recipe.link }}">
+    <h6>{{ recipe.name }}</h6>
+    <img src="{{ recipe.image }}" />
+  </a>
+  {% endfor %}
+</div>
 {% endblock %}
