@@ -1,0 +1,30 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/recipe.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %}
+<script src="{% static 'js/pages/recipe.js' %}"></script>
+{% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} Recipe {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<!-- RECIPE HEADER -->
+<header class="recipe-header">
+  <div class="left-aside">
+    <a id="user" href="">{{ user }}</a>
+    <p>{{ date_pub }}</p>
+  </div>
+  <h3>{{ name }}</h3>
+  <div class="right-aside">
+    <div id="stars"></div>
+    <button id="bookmark"></button>
+  </div>
+</header>
+{% endblock %}

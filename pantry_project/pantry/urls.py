@@ -10,4 +10,6 @@ urlpatterns = [
     path("recipes/", views.recipes, name="recipes"),
     path("login/", views.login, name="login"),
     path("signup/", views.signup, name="signup"),
+    # TESTING
+    path("recipe/", views.recipe, name="recipe"),
 ]
