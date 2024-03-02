@@ -177,8 +177,7 @@ h5 {
   align-items: center;
 
   height: 100%;
-
-  margin-left: 2rem;
+  width: calc(100% - 21rem);
 }
 
 /* search bar */
@@ -194,10 +193,11 @@ h5 {
 
 #search-results {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-evenly;
   align-items: center;
+  flex-wrap: wrap;
 
-  flex-grow: 1;
   width: 100%;
 
   padding: 0.5rem;
@@ -219,10 +219,11 @@ h5 {
   align-items: center;
 
   /* image scaled up 1.5x and is half the width */
-  width: calc(1.5 * 2 * var(--recipe-image-width));
-  height: calc(1.5 * var(--recipe-image-height));
+  width: calc(var(--recipe-image-width) + 8rem);
+  height: calc(var(--recipe-image-height));
 
-  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 
   border-radius: 1rem;
   box-shadow: 0 0 0.5rem grey;
@@ -236,13 +237,9 @@ h5 {
   transition: background-color var(--animation-time) ease-in-out;
 }
 
-.recipe:last-child {
-  margin-bottom: 0;
-}
-
 .recipe img {
-  width: calc(1.5 * var(--recipe-image-width));
-  height: calc(1.5 * var(--recipe-image-height));
+  width: var(--recipe-image-width);
+  height: var(--recipe-image-height);
 
   margin-right: 1rem;
 
@@ -256,6 +253,7 @@ h5 {
   color: var(--color-1);
 
   list-style-type: none;
+  font-size: 0.5rem;
 }
 
 .recipe ul li img {
@@ -271,27 +269,6 @@ h5 {
 
 /* WINDOW WIDTH CHANGE */
 
-@media (max-width: 70rem) {
-  .right-container {
-    width: 20rem;
-  }
-  .recipe {
-    flex-direction: column;
-
-    height: auto;
-    width: calc(1.5 * var(--recipe-image-width));
-  }
-
-  .recipe img {
-    margin-right: 0;
-  }
-
-  .recipe ul {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-}
-
 @media (max-width: 56rem) {
   #search-form {
     flex-direction: column;
@@ -303,6 +280,7 @@ h5 {
     margin-left: 0;
     margin-top: 1rem;
 
+    width: 20rem;
     height: 30rem;
   }
 }
