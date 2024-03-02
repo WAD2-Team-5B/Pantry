@@ -86,7 +86,19 @@ def recipes(request):
 
 
 def signup(request):
-    return render(request, "pantry/signup.html")
+    registered = False
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = User.objects.create_user(username=username, password=password)
+        if user:
+            auth.login(request, user)
+            return redirect(reverse("pantry:index"))
+        else:
+            return render(request, "pantry/signup.html")
+    else:
+        return render(request, "pantry/signup.html")
 
 
 def login(request):
