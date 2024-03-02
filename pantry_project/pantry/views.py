@@ -1,11 +1,14 @@
 from django.shortcuts import render
 
+# UNCOMMENT ONCE MODEL IS SET UP
 # from .models import Recipe
 
 # TEMPLATE VIEWS
 
 
 def index(request):
+
+    # UNCOMMENT ONCE DATABASE IS SET UP
     # highest_rated_recipes = Recipe.objects.order_by("-rating")[:10].values(
     #     "name", "link", "image"
     # )
@@ -13,11 +16,15 @@ def index(request):
     #     "name", "link", "image"
     # )
 
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
+    highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
+    newest_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
+
     context_dict = {
-        # "highest_rated_recipes": list(highest_rated_recipes),
-        # "newest_recipes": list(newest_recipes),
-        # "num_highest_rated": len(highest_rated_recipes),
-        # "num_newest": len(newest_recipes),
+        "highest_rated_recipes": list(highest_rated_recipes),
+        "newest_recipes": list(newest_recipes),
+        "num_highest_rated": len(highest_rated_recipes),
+        "num_newest": len(newest_recipes),
     }
     return render(request, "pantry/index.html", context=context_dict)
 
@@ -28,8 +35,7 @@ def about(request):
 
 def recipes(request):
 
-    # TESTING PURPOSES
-    # would use real data from database
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
     recipes = [
         {
             "name": "Spag Bol",
@@ -43,9 +49,6 @@ def recipes(request):
             "cook": "0:30",
         }
     ] * 20
-
-    # TESTING PURPOSES
-    # would use real data from database
     cuisines = [
         "Italian",
         "Mexican",
@@ -58,9 +61,6 @@ def recipes(request):
         "Spanish",
         "American",
     ]
-
-    # TESTING PURPOSES
-    # would use real data from database
     categories = [
         "Vegan",
         "Vegetarian",
@@ -91,8 +91,7 @@ def signup(request):
 
 def recipe(request):
 
-    # TESTING PURPOSES
-    # would use real data from database
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
     description = (("#" * 100) + "\n") * 10
     steps = [
         "#" * 150,
@@ -121,8 +120,7 @@ def recipe(request):
         }
     ] * 5
 
-    # TESTING PURPOSES
-    # would use real data from database
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
     context_dict = {
         # header
         "user": "John12345",
