@@ -100,7 +100,7 @@ def recipe(request):
         "date_pub": "2021-09-21",
         # description
         "image": "",
-        "description": "#" * 100,
+        "description": (("#" * 50) + "\n") * 10,
         # sub info
         "rating": 4.67,
         "saves": 34,

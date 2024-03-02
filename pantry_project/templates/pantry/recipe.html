@@ -27,4 +27,28 @@
     <button id="bookmark"></button>
   </div>
 </header>
+
+<!-- RECIPE BODY -->
+<div class="recipe-info">
+  <div class="description">
+    <img src="{{ image }}" />
+    <p>{{ description }}</p>
+  </div>
+
+  <div class="info">
+    <ul>
+      <li>
+        <img src="{% static 'images/star.svg' %}" />
+        {{ rating }}
+      </li>
+      <li>{{ saves }} saves</li>
+      <li>{{ difficulty }}</li>
+      <li>{{ cuisine }}</li>
+      <li>Prep - {{ prep }}h</li>
+      <li>Cook - {{ cook }}h</li>
+    </ul>
+  </div>
+</div>
+
+<!-- REVIEWS -->
 {% endblock %}
