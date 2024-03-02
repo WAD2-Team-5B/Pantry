@@ -80,7 +80,8 @@ def recipes(request):
 
 
 def login(request):
-    return render(request, "pantry/login.html")
+    context_dict = {"success": True}
+    return render(request, "pantry/login.html", context=context_dict)
 
 
 def signup(request):

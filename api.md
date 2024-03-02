@@ -137,3 +137,52 @@
       prep: String,
       cook: String
       }
+
+## 'Login' Page
+
+### Page Load
+
+- No Parameters
+
+- Context_Dict:
+
+  - success : True (has to be True to not display error message on page load!)
+
+### Form Submission
+
+- Description:
+
+  - User has submitted valid form data to log into their account.
+  - If account exists then a redirect should occur along with cookies. (I think we should redirect them to their profile?)
+  - If no account exists then send frontend error response.
+
+- Parameters:
+
+  - username : String
+  - password : String
+
+- Context_Dict:
+
+  - success : Boolean (if success maybe dont even need to send. just deal with the redirect and cookies?)
+
+## 'Sign Up' Page
+
+### Page Load
+
+- No Parameters
+- No Context_Dict
+
+### Form Submission
+
+- Description:
+
+  - User has submitted valid form data to create an account.
+  - No need for a server response since the data is valid.
+  - Just need to create their account and log them in and redirect them to their profile page.
+
+- Parameters:
+
+  - username : String
+  - password : String
+
+- Context_Dict:
