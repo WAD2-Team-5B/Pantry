@@ -1,22 +1,19 @@
 from django.shortcuts import render
-
+from .models import Recipe
 # TEMPLATE VIEWS
 
 
 def index(request):
+    highest_rated_recipes = Recipe.objects.order_by('-rating')[:10].values('name', 'link', 'image')
+    newest_recipes = Recipe.objects.order_by('-created_at')[:10].values('name', 'link', 'image')
 
-    # TESTING PURPOSES
-    # would use real data from database
-    recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
-
-    num_highest_rated = len(recipes)
-    num_newest = len(recipes)
 
     context_dict = {
-        "highest_rated_recipes": recipes,
-        "newest_recipes": recipes,
-        "num_highest_rated": num_highest_rated,
-        "num_newest": num_newest,
+        'highest_rated_recipes': list(highest_rated_recipes),
+        'newest_recipes': list(newest_recipes),
+        'num_highest_rated':len(highest_rated_recipes),
+        'num_newest': len(newest_recipes),
+
     }
     return render(request, "pantry/index.html", context=context_dict)
 
