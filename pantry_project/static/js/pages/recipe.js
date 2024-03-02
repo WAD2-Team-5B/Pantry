@@ -4,6 +4,7 @@ const STARS_AMOUNT = 5;
 
 let rating = 0;
 let bookmarked = false;
+let likedReviews = [];
 
 // STAR RATING
 
@@ -69,5 +70,40 @@ function initBookmark() {
   };
 }
 
+// REVIEW LIKE
+
+function updateReviewLike(likeButtons, index) {
+  let likeTexts = document.getElementsByClassName("review-likes");
+
+  // user deselecting like
+  if (likedReviews.includes(index)) {
+    likeButtons[index].style.backgroundImage =
+      "url(../../static/images/heart-empty.svg)";
+    likeTexts[index].innerText = parseInt(likeTexts[index].innerText) - 1;
+    likedReviews.splice(likedReviews.indexOf(index), 1);
+    return;
+  }
+
+  // user is selecting like
+  likeButtons[index].style.backgroundImage =
+    "url(../../static/images/heart.svg)";
+  likeTexts[index].innerText = parseInt(likeTexts[index].innerText) + 1;
+  likedReviews.push(index);
+}
+
+function initReviewLikes() {
+  let likeButtons = document.getElementsByClassName("review-heart");
+
+  for (let i = 0; i < likeButtons.length; i++) {
+    likeButtons[i].style.backgroundImage =
+      "url(../../static/images/heart-empty.svg)";
+
+    likeButtons[i].onclick = () => {
+      updateReviewLike(likeButtons, i);
+    };
+  }
+}
+
 initStars();
 initBookmark();
+initReviewLikes();

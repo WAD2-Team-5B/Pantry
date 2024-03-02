@@ -21,7 +21,7 @@
   width: 10rem;
 }
 
-.left-aside a {
+.user {
   color: var(--color-1);
 
   text-decoration: none;
@@ -32,8 +32,8 @@
   font-size: 0.75rem;
 }
 
-.recipe-header h3,
-.recipe-facts h5 {
+.recipe-facts h5,
+h3 {
   color: var(--color-1);
 }
 
@@ -57,7 +57,8 @@
 }
 
 .star,
-#bookmark {
+#bookmark,
+.review-heart {
   width: 1.5rem;
   height: 1.5rem;
 
@@ -68,14 +69,16 @@
 }
 
 .star:hover,
-#bookmark:hover {
+#bookmark:hover,
+.review-heart:hover {
   cursor: pointer;
 }
 
 /* RECIPE INFO */
 
 .recipe-info,
-.recipe-facts {
+.recipe-facts,
+.review {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -103,7 +106,7 @@
   width: 14.08rem;
 
   border-radius: 1rem;
-  background-color: grey;
+  background-color: var(--color-1);
 }
 
 .description p {
@@ -205,6 +208,44 @@
   list-style-type: none;
 }
 
+/* REVIEWS */
+
+.review {
+  align-items: flex-start;
+
+  padding: 1rem;
+
+  border-radius: 1rem;
+  box-shadow: 0 0 0.5rem grey;
+
+  font-size: 0.75rem;
+}
+
+#review-header {
+  margin-bottom: 1rem;
+}
+
+.review-aside {
+  display: flex;
+  flex-direction: column;
+  width: 10rem;
+}
+
+.review-text {
+  width: calc(100% - 10rem);
+
+  overflow-wrap: break-word;
+}
+
+.review-rating {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  font-size: 1rem;
+  color: var(--color-1);
+}
+
 /* WINDOW WIDTH CHANGE */
 
 @media (max-width: 50rem) {
@@ -282,5 +323,21 @@
     margin-top: 1rem;
   }
 
-  /* facts */
+  /* reviews */
+  .review {
+    flex-direction: column;
+    width: 20rem;
+  }
+
+  .review-aside {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .review-text {
+    width: 100%;
+
+    margin-top: 0.5rem;
+  }
 }

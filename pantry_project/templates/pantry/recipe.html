@@ -18,7 +18,7 @@
 <!-- RECIPE HEADER -->
 <header class="recipe-header">
   <div class="left-aside">
-    <a id="user" href="">{{ user }}</a>
+    <a class="user" href="">{{ user }}</a>
     <p>{{ date_pub }}</p>
   </div>
   <h3>{{ name }}</h3>
@@ -81,4 +81,20 @@
 </div>
 
 <!-- REVIEWS -->
-{% endblock %}
+<h3 id="review-header">Reviews</h3>
+{% for review in reviews %}
+<div class="review">
+  <div class="review-aside">
+    <div>
+      <a class="user" href="">{{ review.user }}</a>
+      <p>{{ review.date_pub }}</p>
+    </div>
+
+    <div class="review-rating">
+      <button class="review-heart"></button>
+      <p class="review-likes">{{ review.likes }}</p>
+    </div>
+  </div>
+  <p class="review-text">{{ review.review }}</p>
+</div>
+{% endfor %} {% endblock %}

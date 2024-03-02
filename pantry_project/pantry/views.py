@@ -90,6 +90,37 @@ def signup(request):
 
 
 def recipe(request):
+
+    # TESTING PURPOSES
+    # would use real data from database
+    description = (("#" * 100) + "\n") * 10
+    steps = [
+        "#" * 150,
+    ] * 10
+    categories = ["Vegan", "Vegetarian", "Pescatarian"]
+    ingredients = [
+        "Milk",
+        "Eggs",
+        "Flour",
+        "Sugar",
+        "Butter",
+        "Salt",
+        "Pepper",
+        "Tomatoes",
+        "Beef",
+        "Onions",
+        "Garlic",
+        "Pasta",
+    ]
+    reviews = [
+        {
+            "user": "GreatCook123",
+            "likes": 17,
+            "date_pub": "2023-10-21",
+            "review": "#" * 150,
+        }
+    ] * 5
+
     # TESTING PURPOSES
     # would use real data from database
     context_dict = {
@@ -100,7 +131,7 @@ def recipe(request):
         "date_pub": "2021-09-21",
         # description
         "image": "",
-        "description": (("#" * 100) + "\n") * 10,
+        "description": description,
         # sub info
         "rating": 4.67,
         "saves": 34,
@@ -109,26 +140,11 @@ def recipe(request):
         "prep": "1:30",
         "cook": "0:30",
         # main info
-        "steps": [
-            "#" * 150,
-        ]
-        * 10,
-        "categories": ["Vegan", "Vegetarian", "Pescatarian"],
-        "ingredients": [
-            "Milk",
-            "Eggs",
-            "Flour",
-            "Sugar",
-            "Butter",
-            "Salt",
-            "Pepper",
-            "Tomatoes",
-            "Beef",
-            "Onions",
-            "Garlic",
-            "Pasta",
-        ],
+        "steps": steps,
+        "categories": categories,
+        "ingredients": ingredients,
+        # reviews
+        "reviews": reviews,
     }
 
-    # TESTING
     return render(request, "pantry/recipe.html", context=context_dict)
