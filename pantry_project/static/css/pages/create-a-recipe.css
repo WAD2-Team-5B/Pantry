@@ -27,7 +27,8 @@ h5 {
 
 /* LEFT COLUMN */
 
-.left-container {
+.left-container,
+.right-container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -106,7 +107,10 @@ h5 {
   width: 100%;
 }
 
-#ingredient {
+#ingredient,
+#recipe-name,
+#recipe-prep,
+#recipe-cook {
   width: calc(100% - 3.5rem);
 
   padding: 0.25rem;
@@ -248,4 +252,96 @@ h5 {
   background-color: var(--color-1);
 
   font-weight: bold;
+}
+
+/* RIGHT COLUMN */
+
+.right-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: calc(100% - 21rem);
+}
+
+/* info */
+
+.container-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
+#recipe-name {
+  width: calc(100% - 9rem);
+}
+
+#recipe-prep,
+#recipe-cook {
+  width: 4rem;
+}
+
+/* image */
+
+.container-upload-image {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+
+  width: 100%;
+}
+
+#recipe-image::file-selector-button {
+  padding: 0.25rem;
+
+  border-radius: 0.25rem;
+  border: none;
+
+  background-color: var(--color-1);
+  color: var(--color-3);
+}
+
+#recipe-image::file-selector-button:hover {
+  cursor: pointer;
+}
+
+/* description */
+
+.container-description {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  border-radius: 1rem;
+  box-shadow: 0 0 0.5rem grey;
+}
+
+#recipe-image-preview {
+  /* scaled according to 8.8x5 */
+  height: var(--recipe-image-height);
+  width: var(--recipe-image-width);
+
+  border-radius: 1rem;
+  background-color: var(--color-1);
+}
+
+#recipe-description {
+  width: calc(100% - var(--recipe-image-width) - 1rem);
+  height: calc(100% - 1rem);
+
+  margin-right: 0.5rem;
+  padding: 0.25rem;
+
+  border: 0.1rem solid var(--color-1);
+  border-radius: 0.5rem;
+
+  /* users arent allowed to resize */
+  resize: none;
+  overflow-y: auto;
 }

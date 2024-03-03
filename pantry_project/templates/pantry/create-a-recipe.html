@@ -21,6 +21,7 @@
   role="form"
   id="create-a-recipe-form"
   method="post"
+  enctype="multipart/form-data"
   action="{% url 'pantry:create-a-recipe' %}"
 >
   {% csrf_token %}
@@ -63,6 +64,53 @@
         {{ category }}
       </button>
       {% endfor %}
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-container">
+    <!-- INFO -->
+    <div class="container-info">
+      <input
+        type="text"
+        id="recipe-name"
+        name="recipe-name"
+        placeholder="recipe name"
+      />
+      <input
+        type="text"
+        id="recipe-prep"
+        name="recipe-prep"
+        placeholder="prep"
+      />
+      <input
+        type="text"
+        id="recipe-cook"
+        name="recipe-cook"
+        placeholder="cook"
+      />
+    </div>
+
+    <div class="container-upload-image">
+      <input type="file" id="recipe-image" name="recipe-image" />
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="container-description">
+      <img id="recipe-image-preview" src="" />
+      <textarea
+        id="recipe-description"
+        name="recipe-description"
+        placeholder="description"
+      ></textarea>
+    </div>
+
+    <!-- STEPS -->
+    <div class="container-steps"></div>
+
+    <!-- SUBMIT -->
+    <div class="container-submit">
+      <input type="submit" id="submit" value="create" />
     </div>
   </div>
 </form>

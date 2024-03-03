@@ -128,7 +128,26 @@ function initCategoryBtns() {
   });
 }
 
+// HANDLE IMAGE UPLOAD
+
+// TODO
+function validateImage() {}
+
+function initImageUpload() {
+  let fileInput = document.getElementById("recipe-image");
+
+  // user selects file
+  fileInput.onchange = () => {
+    validateImage();
+
+    let image = fileInput.files[0];
+    document.getElementById("recipe-image-preview").src =
+      URL.createObjectURL(image);
+  };
+}
+
 initDifficultyBtns();
 initIngredients();
 initCuisineBtns();
 initCategoryBtns();
+initImageUpload();
