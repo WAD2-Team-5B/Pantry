@@ -4,6 +4,9 @@ let selectedDifficulty = "";
 let selectedIngredients = [];
 let selectedCuisine = "";
 let selectedCategories = [];
+let steps = [];
+
+let numSteps = 0;
 
 // INIT DIFFICULTY
 
@@ -146,8 +149,64 @@ function initImageUpload() {
   };
 }
 
+// HANDLE STEPS
+
+function resetIDs() {
+  let stepList = document.getElementById("container-steps");
+  let steps = stepList.getElementsByTagName("textarea");
+
+  for (let i = 0; i < steps.length; i++) {
+    steps[i].id = "step-" + (i + 1);
+    steps[i].placeholder = "step " + (i + 1);
+  }
+
+  numSteps = steps.length;
+}
+
+function createTextArea() {
+  numSteps++;
+
+  let stepList = document.getElementById("container-steps");
+  let nextItem = document.createElement("li");
+  let nextStep = document.createElement("textarea");
+
+  // unicode arrow symbol
+  nextItem.style.listStyleImage = "&#8614;";
+
+  nextStep.id = "step-" + numSteps;
+  nextStep.className = "step";
+  nextStep.placeholder = "step " + numSteps;
+  nextStep.rows = 1;
+
+  nextItem.appendChild(nextStep);
+  stepList.appendChild(nextItem);
+
+  nextStep.oninput = () => {
+    let step = nextStep.id.split("-")[1];
+
+    // resize textarea
+    nextStep.style.height = "auto";
+    nextStep.style.height = nextStep.scrollHeight + 4 + "px";
+
+    // step was deleted
+    if (nextStep.value === "") {
+      nextItem.remove();
+      resetIDs();
+      return false;
+    }
+
+    // next step already exists
+    if (numSteps > step) {
+      return false;
+    }
+
+    createTextArea();
+  };
+}
+
 initDifficultyBtns();
 initIngredients();
 initCuisineBtns();
 initCategoryBtns();
 initImageUpload();
+createTextArea();
