@@ -146,3 +146,37 @@ def recipe(request):
     }
 
     return render(request, "pantry/recipe.html", context=context_dict)
+
+
+def create_a_recipe(request):
+
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
+    cuisines = [
+        "Italian",
+        "Mexican",
+        "Indian",
+        "Chinese",
+        "Japanese",
+        "Thai",
+        "French",
+        "Greek",
+        "Spanish",
+        "American",
+    ]
+    categories = [
+        "Vegan",
+        "Vegetarian",
+        "Pescatarian",
+        "Gluten-Free",
+        "Dairy-Free",
+        "Nut-Free",
+        "Soy-Free",
+        "Egg-Free",
+    ]
+
+    context_dict = {
+        "cuisines": cuisines,
+        "categories": categories,
+    }
+
+    return render(request, "pantry/create-a-recipe.html", context=context_dict)

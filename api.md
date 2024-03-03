@@ -63,18 +63,6 @@
 
   - cuisines : List of String
   - categories : List of String
-  - recipes : List of Dictionaries
-    - {
-      name: String,
-      link: String?,
-      image: String?,
-      rating: Float,
-      saves: Integer,
-      difficulty: String,
-      cuisine: Italian,
-      prep: String,
-      cook: String
-      }
 
 #### Redirect
 

@@ -1,0 +1,69 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/create-a-recipe.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %}
+<script src="{% static 'js/pages/create-a-recipe.js' %}"></script>
+{% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} Create A Recipe {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<h3>Create A Recipe</h3>
+
+<form
+  role="form"
+  id="create-a-recipe-form"
+  method="post"
+  action="{% url 'pantry:create-a-recipe' %}"
+>
+  {% csrf_token %}
+  <!-- LEFT COLUMN -->
+  <div class="left-container">
+    <!-- DIFFICULTY -->
+    <div class="container-difficulty">
+      <button id="btn-beginner" class="btn-difficulty" value="beginner">
+        beginner
+      </button>
+      <button id="btn-intermediate" class="btn-difficulty" value="intermediate">
+        intermediate
+      </button>
+      <button id="btn-expert" class="btn-difficulty" value="expert">
+        expert
+      </button>
+    </div>
+
+    <!-- INGREDIENTS -->
+    <div class="container-ingredients">
+      <div class="ingredients-input">
+        <input type="text" id="ingredient" placeholder="ingredient" />
+        <button id="btn-add-ingredient">add</button>
+      </div>
+
+      <div id="ingredients-list"></div>
+    </div>
+
+    <!-- CUISINE -->
+    <div id="cuisine-list">
+      {% for cuisine in cuisines %}
+      <button class="btn-cuisine" value="{{ cuisine }}">{{ cuisine }}</button>
+      {% endfor %}
+    </div>
+
+    <!-- CATEGORIES -->
+    <div id="category-list">
+      {% for category in categories %}
+      <button class="btn-category" value="{{ category }}">
+        {{ category }}
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+</form>
+{% endblock %}

@@ -13,4 +13,5 @@ urlpatterns = [
     # TESTING PURPOSES
     # TODO - CHANGE TO INCLUDE USER ID
     path("recipe/", views.recipe, name="recipe"),
+    path("create-a-recipe/", views.create_a_recipe, name="create-a-recipe"),
 ]

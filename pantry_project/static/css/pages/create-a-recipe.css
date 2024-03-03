@@ -1,0 +1,251 @@
+h3 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  color: var(--color-1);
+}
+
+h5 {
+  margin-bottom: 0.5rem;
+
+  color: var(--color-1);
+}
+
+#create-a-recipe-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 75%;
+  height: 28rem;
+
+  margin-bottom: 2rem;
+
+  border: 2px solid black;
+}
+
+/* LEFT COLUMN */
+
+.left-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 20rem;
+  height: 100%;
+
+  border: 2px solid black;
+}
+
+/* difficulty */
+
+.container-difficulty {
+  display: flex;
+  flex-direction: row;
+
+  width: 100%;
+}
+
+.btn-difficulty {
+  width: calc(100% / 3);
+
+  padding: 0.25rem;
+
+  border: 0.1rem solid var(--color-1);
+
+  color: var(--color-1);
+  background-color: transparent;
+}
+
+.btn-difficulty:first-child {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.btn-difficulty:last-child {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.btn-difficulty:hover {
+  background-color: var(--color-2);
+
+  cursor: pointer;
+}
+
+.btn-difficulty-active,
+.btn-difficulty-active:hover {
+  color: var(--color-3);
+  background-color: var(--color-1);
+
+  font-weight: bold;
+}
+
+/* ingredients */
+
+.container-ingredients {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+
+  padding: 0.5rem;
+
+  border-radius: 1rem;
+  box-shadow: 0 0 0.5rem grey;
+}
+
+.ingredients-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
+#ingredient {
+  width: calc(100% - 3.5rem);
+
+  padding: 0.25rem;
+
+  border: 0.1rem solid var(--color-1);
+  border-radius: 0.5rem;
+}
+
+#btn-add-ingredient {
+  width: 3rem;
+
+  padding: 0.25rem;
+
+  border: 0.1rem solid var(--color-1);
+  border-radius: 0.5rem;
+
+  color: var(--color-3);
+  background-color: var(--color-1);
+}
+
+#btn-add-ingredient:hover {
+  color: var(--color-1);
+  background-color: var(--color-2);
+
+  cursor: pointer;
+}
+
+#ingredients-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  height: 6rem;
+
+  margin-top: 0.25rem;
+
+  overflow-y: auto;
+}
+
+.ingredient {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+
+  padding: 0.25rem;
+  margin-top: 0.1rem;
+
+  border-radius: 0.5rem;
+
+  color: var(--color-3);
+  background-color: var(--color-1);
+
+  font-size: 0.75rem;
+
+  animation: fadein 0.5s;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.ingredient:first-child {
+  margin-top: 0;
+}
+
+.ingredient button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-left: 1rem;
+  margin-right: 2rem;
+
+  border: none;
+
+  color: var(--color-3);
+  background: transparent;
+
+  font-weight: bold;
+}
+
+.ingredient button:hover {
+  cursor: pointer;
+}
+
+/* cuisine / category */
+
+#cuisine-list,
+#category-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  height: 7.5rem;
+
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.5rem grey;
+
+  overflow-y: auto;
+}
+
+.btn-cuisine,
+.btn-category {
+  width: 100%;
+
+  padding: 0.25rem;
+
+  border: none;
+
+  background-color: transparent;
+
+  text-decoration: none;
+  text-align: center;
+}
+
+.btn-cuisine:hover,
+.btn-category:hover {
+  color: var(--color-1);
+  background-color: var(--color-2);
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.btn-cuisine-active,
+.btn-cuisine-active:hover,
+.btn-category-active,
+.btn-category-active:hover {
+  color: var(--color-3);
+  background-color: var(--color-1);
+
+  font-weight: bold;
+}
