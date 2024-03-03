@@ -1,40 +1,36 @@
-// simple form validation
-// if passwords dont match then show error message
+import { Form } from "../misc/form.js";
+
+// GLOBALS
+
+const PASSWORD_MIN_LENGTH = 6;
+
 let username = document.getElementById("username");
 let password = document.getElementById("password");
 let confirmPassword = document.getElementById("confirm-password");
 
-const PASSWORD_MIN_LENGTH = 6;
+// EVENT HANDLERS
 
+// 'submit' event listen for the signup form to validate before submission
 document.getElementById("signup-form").addEventListener("submit", (e) => {
-  // empty field
-  if (
+  // conditions:
+  // 1. no field is empty
+  // 2. passwords match
+  // 3. password is at least 'PASSWORD_MIN_LENGTH' characters long
+  let errorConditions = [
     username.value === "" ||
-    password.value === "" ||
-    confirmPassword.value === ""
-  ) {
-    document.getElementById("error-message").innerHTML =
-      "Please fill out all fields!";
-    document.getElementById("error-message").className = "error-message-active";
-    e.preventDefault();
-    return false;
-  }
+      password.value === "" ||
+      confirmPassword.value === "",
+    password.value !== confirmPassword.value,
+    password.value.length < PASSWORD_MIN_LENGTH,
+  ];
 
-  // password dont match
-  if (password.value !== confirmPassword.value) {
-    document.getElementById("error-message").innerHTML =
-      "Please ensure both passwords match!";
-    document.getElementById("error-message").className = "error-message-active";
-    e.preventDefault();
-    return false;
-  }
+  let errorElement = document.getElementById("error-message");
 
-  // password too short
-  if (password.value.length < PASSWORD_MIN_LENGTH) {
-    document.getElementById("error-message").innerHTML =
-      "Password must be at least 6 characters long!";
-    document.getElementById("error-message").className = "error-message-active";
-    e.preventDefault();
-    return false;
-  }
+  let errorMessages = [
+    "Please fill out all fields!",
+    "Please ensure both passwords match!",
+    "Password must be at least " + PASSWORD_MIN_LENGTH + " characters long!",
+  ];
+
+  Form.validate(e, errorConditions, errorElement, errorMessages);
 });

@@ -11,6 +11,10 @@ h5 {
   color: var(--color-1);
 }
 
+textarea {
+  font-family: var(--font-family);
+}
+
 #create-a-recipe-form {
   display: flex;
   flex-direction: row;
@@ -282,6 +286,10 @@ h5 {
 #recipe-prep,
 #recipe-cook {
   width: 4rem;
+
+  background-color: transparent;
+
+  text-align: center;
 }
 
 /* image */
@@ -323,11 +331,11 @@ h5 {
 }
 
 #recipe-image-preview {
-  /* scaled according to 8.8x5 */
   height: var(--recipe-image-height);
   width: var(--recipe-image-width);
 
   border-radius: 1rem;
+
   background-color: var(--color-1);
 }
 

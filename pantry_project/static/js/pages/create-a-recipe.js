@@ -1,157 +1,53 @@
+import { Init } from "../misc/init.js";
+import { Form } from "../misc/form.js";
+
 // GLOBALS
 
-let selectedDifficulty = "";
-let selectedIngredients = [];
-let selectedCuisine = "";
-let selectedCategories = [];
-let steps = [];
+let ingredients = [];
+let categories = [];
+// arrays for passing by reference
+let cuisine = [];
+let difficulty = [];
 
 let numSteps = 0;
 
-// INIT DIFFICULTY
+//  INIT CUISINE / CATEGORY / DIFFICULTY BUTTONS
 
-// TODO - REUSE SAME FUNCTION FROM 'recipes'
-function initDifficultyBtns() {
-  let btns = Array.from(document.getElementsByClassName("btn-difficulty"));
-  btns.forEach((btn) => {
-    btn.onclick = () => {
-      let difficulty = btn.value;
-      // user is deselecting
-      if (selectedDifficulty === difficulty) {
-        btn.classList.remove("btn-difficulty-active");
-        selectedDifficulty = "";
+let difficultyBtns = Array.from(
+  document.getElementsByClassName("btn-difficulty")
+);
+let cuisineBtns = Array.from(document.getElementsByClassName("btn-cuisine"));
+let categoryBtns = Array.from(document.getElementsByClassName("btn-category"));
 
-        // TESTING - this stops form from submitting
-        return false;
-      }
+Init.buttons(difficultyBtns, difficulty, "btn-difficulty-active");
+Init.buttons(cuisineBtns, cuisine, "btn-cuisine-active");
+Init.buttons(categoryBtns, categories, "btn-category-active", true);
 
-      // user is selecting another difficulty
-      btns.forEach((btn) => {
-        btn.classList.remove("btn-difficulty-active");
-      });
-      btn.classList.add("btn-difficulty-active");
-      selectedDifficulty = difficulty;
+// HELPER FUNCTIONS
 
-      // TESTING - this stops form from submitting
-      return false;
-    };
-  });
-}
+function createIngredient(ingredient) {
+  let div = document.createElement("div");
+  div.className = "ingredient";
+  let deleteBtn = document.createElement("button");
+  let text = document.createTextNode(ingredient);
 
-// INIT INGREDIENTS
+  // unicode for 'x' symbol
+  deleteBtn.innerHTML = "&#10006";
 
-function initIngredients() {
-  let addIngredientBtn = document.getElementById("btn-add-ingredient");
-  let ingredientInput = document.getElementById("ingredient");
+  div.appendChild(deleteBtn);
+  div.appendChild(text);
+  document.getElementById("ingredients-list").appendChild(div);
 
-  addIngredientBtn.onclick = () => {
-    let ingredient = ingredientInput.value;
-    ingredientInput.value = "";
-
-    // empty or already exists
-    if (ingredient === "" || selectedIngredients.includes(ingredient)) {
-      return false;
-    }
-
-    selectedIngredients.push(ingredient);
-
-    let div = document.createElement("div");
-    div.className = "ingredient";
-    let deleteBtn = document.createElement("button");
-    let text = document.createTextNode(ingredient);
-
-    //   unicode for 'x' symbol
-    deleteBtn.innerHTML = "&#10006";
-
-    div.appendChild(deleteBtn);
-    div.appendChild(text);
-    document.getElementById("ingredients-list").appendChild(div);
-
-    deleteBtn.onclick = () => {
-      div.remove();
-      selectedIngredients.splice(selectedIngredients.indexOf(ingredient), 1);
-    };
-
-    return false;
+  deleteBtn.onclick = () => {
+    div.remove();
+    selectedIngredients.splice(selectedIngredients.indexOf(ingredient), 1);
   };
 }
 
-// INIT CUISINES / CATEGORIES
-
-// TODO - REUSE SAME FUNCTION FROM 'recipes'
-function initCuisineBtns() {
-  let btns = Array.from(document.getElementsByClassName("btn-cuisine"));
-  btns.forEach((btn) => {
-    btn.onclick = () => {
-      let cuisine = btn.value;
-      // user is deselecting
-      if (selectedCuisine === cuisine) {
-        btn.classList.remove("btn-cuisine-active");
-        selectedCuisine = "";
-
-        // TESTING - this stops form from submitting
-        return false;
-      }
-
-      // user is selecting
-      btns.forEach((btn) => {
-        btn.classList.remove("btn-cuisine-active");
-      });
-      btn.classList.add("btn-cuisine-active");
-      selectedCuisine = cuisine;
-
-      // TESTING - this stops form from submitting
-      return false;
-    };
-  });
-}
-
-// TODO - REUSE SAME FUNCTION FROM 'recipes'
-function initCategoryBtns() {
-  let btns = Array.from(document.getElementsByClassName("btn-category"));
-  btns.forEach((btn) => {
-    btn.onclick = () => {
-      let category = btn.value;
-      // user is deselecting
-      if (selectedCategories.includes(category)) {
-        btn.classList.remove("btn-category-active");
-        selectedCategories.splice(selectedCategories.indexOf(category), 1);
-
-        // TESTING - this stops form from submitting
-        return false;
-      }
-
-      // user is selecting
-      btn.classList.add("btn-category-active");
-      selectedCategories.push(category);
-
-      // TESTING - this stops form from submitting
-      return false;
-    };
-  });
-}
-
-// HANDLE IMAGE UPLOAD
-
-// TODO
+// TODO - implement validation of image
 function validateImage() {}
 
-function initImageUpload() {
-  let fileInput = document.getElementById("recipe-image");
-
-  // user selects file
-  fileInput.onchange = () => {
-    validateImage();
-
-    let image = fileInput.files[0];
-    document.getElementById("recipe-image-preview").src =
-      URL.createObjectURL(image);
-  };
-}
-
-// HANDLE STEPS
-
-function resetIDs() {
+function resetStepIds() {
   let stepList = document.getElementById("container-steps");
   let steps = stepList.getElementsByTagName("textarea");
 
@@ -191,7 +87,7 @@ function createTextArea() {
     // step was deleted
     if (nextStep.value === "") {
       nextItem.remove();
-      resetIDs();
+      resetStepIds();
       return false;
     }
 
@@ -204,9 +100,36 @@ function createTextArea() {
   };
 }
 
-initDifficultyBtns();
-initIngredients();
-initCuisineBtns();
-initCategoryBtns();
-initImageUpload();
+// INIT
+
+// ingredients
+let addIngredientBtn = document.getElementById("btn-add-ingredient");
+addIngredientBtn.onclick = () => {
+  let ingredientInput = document.getElementById("ingredient");
+  let ingredient = ingredientInput.value;
+  ingredientInput.value = "";
+
+  // empty or already exists
+  if (ingredient === "" || ingredients.includes(ingredient)) {
+    return false;
+  }
+
+  ingredients.push(ingredient);
+  createIngredient(ingredient);
+
+  return false;
+};
+
+// image
+let fileInput = document.getElementById("recipe-image");
+// user selects file
+fileInput.onchange = () => {
+  validateImage();
+
+  let image = fileInput.files[0];
+  document.getElementById("recipe-image-preview").src =
+    URL.createObjectURL(image);
+};
+
+// steps
 createTextArea();
