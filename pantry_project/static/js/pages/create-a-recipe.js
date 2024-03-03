@@ -133,3 +133,8 @@ fileInput.onchange = () => {
 
 // steps
 createTextArea();
+
+// FORM
+
+// TODO - validation
+// TODO - assign hidden inputs
