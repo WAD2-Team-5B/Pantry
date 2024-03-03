@@ -1,3 +1,5 @@
+const SPACER = "<SPACER>";
+
 export class Form {
   /**
    * checks a set of conditions and displays an error message if any are true
@@ -18,6 +20,18 @@ export class Form {
         event.preventDefault();
         return false;
       }
+    });
+  }
+
+  /**
+   * assigns values to a set of hidden inputs
+   *
+   * @param {Array.<HTMLInputElement>} hiddenInputs - the hidden inputs to assign values to
+   * @param {*} values - the values to assign to the hidden inputs
+   */
+  static assignHiddenInputs(hiddenInputs, values) {
+    hiddenInputs.forEach((hiddenInput, index) => {
+      hiddenInput.value = values[index].join(SPACER);
     });
   }
 }
