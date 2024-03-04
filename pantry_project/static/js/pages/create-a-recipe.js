@@ -137,45 +137,50 @@ let form = document.getElementById("create-a-recipe-form");
 form.addEventListener("submit", (e) => {
   // validation
   let errorConditions = [
-    ingredients.length === 0,
-    cuisine.length === 0,
-    difficulty.length === 0,
-    // since always defaults to one step
-    numSteps <= 1,
-    fileInput.files.length === 0 || fileInput.files.length > 1,
-    document.getElementById("recipe-name").value === "",
-    document.getElementById("recipe-description").value === "",
-    document.getElementById("recipe-prep").value === "",
-    document.getElementById("recipe-cook").value === "",
+    {
+      condition: ingredients.length === 0,
+      message: "Please have atleast one ingredient!",
+    },
+    { condition: cuisine.length === 0, message: "Please select a cuisine!" },
+    {
+      condition: difficulty.length === 0,
+      message: "Please select a difficulty!",
+    },
+    { condition: numSteps <= 1, message: "Please have atleast one step!" },
+    {
+      condition: fileInput.files.length === 0 || fileInput.files.length > 1,
+      message: "Please select a single image!",
+    },
+    {
+      condition: document.getElementById("recipe-name").value === "",
+      message: "Please enter a recipe name!",
+    },
+    {
+      condition: document.getElementById("recipe-description").value === "",
+      message: "Please enter a recipe description!",
+    },
+    {
+      condition: document.getElementById("recipe-prep").value === "",
+      message: "Please enter a recipe prep time!",
+    },
+    {
+      condition: document.getElementById("recipe-cook").value === "",
+      message: "Please enter a recipe cook time!",
+    },
   ];
-  let errorElement = document.getElementById("error-message");
-  let errorMessages = [
-    "Please have atleast one ingredient!",
-    "Please select a cuisine!",
-    "Please select a difficulty!",
-    "Please have atleast one step!",
-    "Please select a single image!",
-    "Please enter a recipe name!",
-    "Please enter a recipe description!",
-    "Please enter a recipe prep time!",
-    "Please enter a recipe cook time!",
-    // TODO - validate prep and cook time string format
-  ];
+  Form.validate(e, errorConditions, document.getElementById("error-message"));
 
-  Form.validate(e, errorConditions, errorElement, errorMessages);
-
-  let hiddenInputs = [
-    document.getElementById("ingredients"),
-    document.getElementById("difficulty"),
-    document.getElementById("steps"),
-    document.getElementById("cuisines"),
-    document.getElementById("categories"),
-  ];
+  // assign hidden inputs
   let steps = [];
   Array.from(document.getElementsByClassName("step")).forEach((step) => {
     steps.push(step.value);
   });
-  let values = [ingredients, difficulty, steps, cuisine, categories];
-
-  Form.assignHiddenInputs(hiddenInputs, values);
+  let hiddenInputs = [
+    { input: document.getElementById("ingredients"), value: ingredients },
+    { input: document.getElementById("difficulty"), value: difficulty },
+    { input: document.getElementById("steps"), value: steps },
+    { input: document.getElementById("cuisines"), value: cuisine },
+    { input: document.getElementById("categories"), value: categories },
+  ];
+  Form.assignHiddenInputs(hiddenInputs);
 });

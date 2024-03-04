@@ -1,4 +1,6 @@
+// ------------------------------
 // GLOBALS
+// ------------------------------
 
 const STARS_AMOUNT = 5;
 
@@ -6,7 +8,9 @@ let rating = 0;
 let bookmarked = false;
 let likedReviews = [];
 
-// HELPER FUNCTIONS
+// ------------------------------
+// HELPERS
+// ------------------------------
 
 function updateStars(index) {
   let stars = document.getElementsByClassName("star");
@@ -58,7 +62,9 @@ function updateReviewLike(likeButtons, index) {
   likedReviews.push(index);
 }
 
+// ------------------------------
 // INIT
+// ------------------------------
 
 // stars
 let stars = document.getElementById("stars");

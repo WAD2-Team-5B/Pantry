@@ -1,19 +1,23 @@
 import { Form } from "../utility/form.js";
 
+// ------------------------------
 // GLOBALS
+// ------------------------------
 
 let username = document.getElementById("username");
 let password = document.getElementById("password");
 
-// EVENT HANDLERS
+// ------------------------------
+// FORM
+// ------------------------------
 
-// 'submit' event listen for the login form to validate before submission
 document.getElementById("login-form").addEventListener("submit", (e) => {
-  // conditions:
-  // 1. no field is empty
-  let errorConditions = [username.value === "" || password.value === ""];
-  let errorElement = document.getElementById("error-message");
-  let errorMessages = ["Please fill out all fields!"];
-
-  Form.validate(e, errorConditions, errorElement, errorMessages);
+  // validation
+  let errorConditions = [
+    {
+      condition: username.value === "" || password.value === "",
+      message: "Please fill out all fields!",
+    },
+  ];
+  Form.validate(e, errorConditions, document.getElementById("error-message"));
 });

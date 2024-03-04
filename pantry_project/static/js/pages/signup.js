@@ -1,6 +1,8 @@
 import { Form } from "../utility/form.js";
 
+// ------------------------------
 // GLOBALS
+// ------------------------------
 
 const PASSWORD_MIN_LENGTH = 6;
 
@@ -8,27 +10,31 @@ let username = document.getElementById("username");
 let password = document.getElementById("password");
 let confirmPassword = document.getElementById("confirm-password");
 
-// EVENT HANDLERS
+// ------------------------------
+// FORM
+// ------------------------------
 
-// 'submit' event listen for the signup form to validate before submission
 document.getElementById("signup-form").addEventListener("submit", (e) => {
-  // conditions:
-  // 1. no field is empty
-  // 2. passwords match
-  // 3. password is at least 'PASSWORD_MIN_LENGTH' characters long
+  // validation
   let errorConditions = [
-    username.value === "" ||
-      password.value === "" ||
-      confirmPassword.value === "",
-    password.value !== confirmPassword.value,
-    password.value.length < PASSWORD_MIN_LENGTH,
+    {
+      condition:
+        username.value === "" ||
+        password.value === "" ||
+        confirmPassword.value === "",
+      message: "Please fill out all fields!",
+    },
+    {
+      condition: password.value !== confirmPassword.value,
+      message: "Please ensure both passwords match!",
+    },
+    {
+      condition: password.value.length < PASSWORD_MIN_LENGTH,
+      message:
+        "Password must be at least " +
+        PASSWORD_MIN_LENGTH +
+        " characters long!",
+    },
   ];
-  let errorElement = document.getElementById("error-message");
-  let errorMessages = [
-    "Please fill out all fields!",
-    "Please ensure both passwords match!",
-    "Password must be at least " + PASSWORD_MIN_LENGTH + " characters long!",
-  ];
-
-  Form.validate(e, errorConditions, errorElement, errorMessages);
+  Form.validate(e, errorConditions, document.getElementById("error-message"));
 });
