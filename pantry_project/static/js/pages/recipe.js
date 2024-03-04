@@ -1,4 +1,6 @@
+// ------------------------------
 // GLOBALS
+// ------------------------------
 
 const STARS_AMOUNT = 5;
 
@@ -6,7 +8,9 @@ let rating = 0;
 let bookmarked = false;
 let likedReviews = [];
 
-// STAR RATING
+// ------------------------------
+// HELPERS
+// ------------------------------
 
 function updateStars(index) {
   let stars = document.getElementsByClassName("star");
@@ -23,26 +27,6 @@ function updateStars(index) {
   }
 }
 
-function initStars() {
-  let container = document.getElementById("stars");
-
-  for (let i = 0; i < STARS_AMOUNT; i++) {
-    let star = document.createElement("button");
-
-    star.id = "star-" + (i + 1);
-    star.style.backgroundImage = "url(../../static/images/star-empty.svg)";
-    star.className = "star";
-
-    star.onclick = () => {
-      updateStars(i + 1);
-    };
-
-    container.appendChild(star);
-  }
-}
-
-// BOOKMARK
-
 function updateBookmark() {
   let bookmark = document.getElementById("bookmark");
 
@@ -58,19 +42,6 @@ function updateBookmark() {
   bookmarked = true;
   bookmark.style.backgroundImage = "url(../../static/images/bookmark.svg)";
 }
-
-function initBookmark() {
-  let bookmark = document.getElementById("bookmark");
-
-  bookmark.style.backgroundImage =
-    "url(../../static/images/bookmark-empty.svg)";
-
-  bookmark.onclick = () => {
-    updateBookmark();
-  };
-}
-
-// REVIEW LIKE
 
 function updateReviewLike(likeButtons, index) {
   let likeTexts = document.getElementsByClassName("review-likes");
@@ -91,19 +62,40 @@ function updateReviewLike(likeButtons, index) {
   likedReviews.push(index);
 }
 
-function initReviewLikes() {
-  let likeButtons = document.getElementsByClassName("review-heart");
+// ------------------------------
+// INIT
+// ------------------------------
 
-  for (let i = 0; i < likeButtons.length; i++) {
-    likeButtons[i].style.backgroundImage =
-      "url(../../static/images/heart-empty.svg)";
+// stars
+let stars = document.getElementById("stars");
+for (let i = 0; i < STARS_AMOUNT; i++) {
+  let star = document.createElement("button");
 
-    likeButtons[i].onclick = () => {
-      updateReviewLike(likeButtons, i);
-    };
-  }
+  star.id = "star-" + (i + 1);
+  star.style.backgroundImage = "url(../../static/images/star-empty.svg)";
+  star.className = "star";
+
+  star.onclick = () => {
+    updateStars(i + 1);
+  };
+
+  stars.appendChild(star);
 }
 
-initStars();
-initBookmark();
-initReviewLikes();
+// bookmark
+let bookmark = document.getElementById("bookmark");
+bookmark.style.backgroundImage = "url(../../static/images/bookmark-empty.svg)";
+bookmark.onclick = () => {
+  updateBookmark();
+};
+
+// review likes
+let likeButtons = document.getElementsByClassName("review-heart");
+for (let i = 0; i < likeButtons.length; i++) {
+  likeButtons[i].style.backgroundImage =
+    "url(../../static/images/heart-empty.svg)";
+
+  likeButtons[i].onclick = () => {
+    updateReviewLike(likeButtons, i);
+  };
+}

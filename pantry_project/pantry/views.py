@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.http import HttpResponse
 from django.db import IntegrityError
 from pantry.models import UserProfile
+from pantry.models import Recipe
 
 # TEMPLATE VIEWS
 
@@ -14,12 +15,8 @@ from pantry.models import UserProfile
 def index(request):
 
     # UNCOMMENT ONCE DATABASE IS SET UP
-    # highest_rated_recipes = Recipe.objects.order_by("-rating")[:10].values(
-    #     "name", "link", "image"
-    # )
-    # newest_recipes = Recipe.objects.order_by("-created_at")[:10].values(
-    #     "name", "link", "image"
-    # )
+    # newest_recipes = Recipe.objects.order_by("-rating")[:10].values("name", "photo")
+    # newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values("name", "photo")
 
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
     highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
@@ -215,3 +212,37 @@ def recipe(request):
     }
 
     return render(request, "pantry/recipe.html", context=context_dict)
+
+
+def create_a_recipe(request):
+
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
+    cuisines = [
+        "Italian",
+        "Mexican",
+        "Indian",
+        "Chinese",
+        "Japanese",
+        "Thai",
+        "French",
+        "Greek",
+        "Spanish",
+        "American",
+    ]
+    categories = [
+        "Vegan",
+        "Vegetarian",
+        "Pescatarian",
+        "Gluten-Free",
+        "Dairy-Free",
+        "Nut-Free",
+        "Soy-Free",
+        "Egg-Free",
+    ]
+
+    context_dict = {
+        "cuisines": cuisines,
+        "categories": categories,
+    }
+
+    return render(request, "pantry/create-a-recipe.html", context=context_dict)

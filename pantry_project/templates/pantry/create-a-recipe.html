@@ -1,0 +1,116 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/create-a-recipe.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %}
+<script type="module" src="{% static 'js/pages/create-a-recipe.js' %}"></script>
+{% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} Create A Recipe {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<h3>Create A Recipe</h3>
+
+<form
+  role="form"
+  id="create-a-recipe-form"
+  method="post"
+  enctype="multipart/form-data"
+  action="{% url 'pantry:create-a-recipe' %}"
+>
+  {% csrf_token %}
+  <!-- LEFT COLUMN -->
+  <div class="left-container">
+    <!-- DIFFICULTY -->
+    <div class="container-difficulty">
+      <button id="btn-beginner" class="btn-difficulty" value="beginner">
+        beginner
+      </button>
+      <button id="btn-intermediate" class="btn-difficulty" value="intermediate">
+        intermediate
+      </button>
+      <button id="btn-expert" class="btn-difficulty" value="expert">
+        expert
+      </button>
+    </div>
+
+    <!-- INGREDIENTS -->
+    <div class="container-ingredients">
+      <div class="ingredients-input">
+        <input type="text" id="ingredient" placeholder="ingredient" />
+        <button id="btn-add-ingredient">add</button>
+      </div>
+
+      <div id="ingredients-list"></div>
+    </div>
+
+    <!-- CUISINE -->
+    <div id="cuisine-list">
+      {% for cuisine in cuisines %}
+      <button class="btn-cuisine" value="{{ cuisine }}">{{ cuisine }}</button>
+      {% endfor %}
+    </div>
+
+    <!-- CATEGORIES -->
+    <div id="category-list">
+      {% for category in categories %}
+      <button class="btn-category" value="{{ category }}">
+        {{ category }}
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-container">
+    <!-- INFO -->
+    <div class="container-info">
+      <input
+        type="text"
+        id="recipe-name"
+        name="name"
+        placeholder="recipe name"
+      />
+      <input type="text" id="recipe-prep" name="prep" placeholder="prep" />
+      <input type="text" id="recipe-cook" name="cook" placeholder="cook" />
+    </div>
+
+    <div class="container-upload-image">
+      <input type="file" id="recipe-image" name="image" />
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="container-description">
+      <img id="recipe-image-preview" src="" />
+      <textarea
+        id="recipe-description"
+        name="description"
+        placeholder="description"
+      ></textarea>
+    </div>
+
+    <!-- STEPS -->
+    <ul id="container-steps"></ul>
+
+    <!-- SUBMIT -->
+    <div class="container-submit">
+      <input type="submit" id="submit" value="create" />
+    </div>
+  </div>
+
+  <!-- HIDDEN SUBMISSIONS -->
+  <input type="hidden" id="ingredients" name="ingredients" />
+  <input type="hidden" id="difficulty" name="difficulty" />
+  <input type="hidden" id="steps" name="steps" />
+  <input type="hidden" id="cuisines" name="cuisine" />
+  <input type="hidden" id="categories" name="categories" />
+</form>
+
+<h5 id="error-message"></h5>
+{% endblock %}

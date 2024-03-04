@@ -1,16 +1,23 @@
-// simple form validation
-// if passwords dont match then show error message
+import { Form } from "../utility/form.js";
+
+// ------------------------------
+// GLOBALS
+// ------------------------------
+
 let username = document.getElementById("username");
 let password = document.getElementById("password");
-let confirmPassword = document.getElementById("confirm-password");
 
-let form = document.getElementById("login-form");
-form.addEventListener("submit", (e) => {
-  if (username.value === "" || password.value === "") {
-    document.getElementById("error-message").innerHTML =
-      "Please fill out all fields!";
-    document.getElementById("error-message").className = "error-message-active";
-    e.preventDefault();
-    return false;
-  }
+// ------------------------------
+// FORM
+// ------------------------------
+
+document.getElementById("login-form").addEventListener("submit", (e) => {
+  // validation
+  let errorConditions = [
+    {
+      condition: username.value === "" || password.value === "",
+      message: "Please fill out all fields!",
+    },
+  ];
+  Form.validate(e, errorConditions, document.getElementById("error-message"));
 });

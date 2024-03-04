@@ -7,7 +7,7 @@
 
 <!-- JS -->
 {% block js_block %}
-<script src="{% static 'js/pages/recipes.js' %}"></script>
+<script type="module" src="{% static 'js/pages/recipes.js' %}"></script>
 {% endblock %}
 
 <!-- TITLE -->
@@ -27,7 +27,7 @@
   <!-- LEFT COLUMN -->
   <div class="left-container">
     <!-- CREATE RECIPE LINK -->
-    <a href="">Create A Recipe</a>
+    <a href="{% url 'pantry:create-a-recipe' %}">Create A Recipe</a>
 
     <h5>Filter</h5>
 
@@ -76,12 +76,15 @@
   <!-- RIGHT COLUMN -->
   <div class="right-container">
     <!-- SEARCH BAR -->
-    <input
-      type="text"
-      id="search"
-      name="search_query"
-      placeholder="search a recipe"
-    />
+    <div class="search-bar">
+      <input
+        type="text"
+        id="search"
+        name="search_query"
+        placeholder="search a recipe"
+      />
+      <input type="submit" id="submit" value="search" />
+    </div>
 
     <!-- SEARCH RESULTS -->
     <div id="search-results">
