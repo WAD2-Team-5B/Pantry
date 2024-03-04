@@ -19,17 +19,6 @@ class Category(models.Model):
         return self.type
 
 
-class Review(models.Model):
-    user = models.ForeignKey(User)
-    recipe = models.ForeignKey(Recipe)
-
-    likes = models.IntegerField(default=0)
-    date_pub = models.DateField('date published')
-
-    class Meta:
-        unique_together = ('user', 'recipe')
-
-
 class Recipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE)
@@ -52,6 +41,17 @@ class Recipe(models.Model):
     def __str__(self):
         return self.title
     
+    
+class Review(models.Model):
+    user = models.ForeignKey(User)
+    recipe = models.ForeignKey(Recipe)
+
+    likes = models.IntegerField(default=0)
+    date_pub = models.DateField('date published')
+
+    class Meta:
+        unique_together = ('user', 'recipe')
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
