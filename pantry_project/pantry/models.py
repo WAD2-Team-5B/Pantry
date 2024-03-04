@@ -32,6 +32,7 @@ class Recipe(models.Model):
     prep_time = models.CharField(max_length=4)
     cook_time = models.CharField(max_length=4)
     difficulty = models.CharField(max_length=1)
+    rating = models.FloatField()
     star_count = models.IntegerField()
     star_submissions = models.IntegerField()
     rating = models.FloatField()
