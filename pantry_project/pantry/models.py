@@ -45,7 +45,7 @@ class Recipe(models.Model):
 
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
     likes = models.IntegerField(default=0)
     date_pub = models.DateTimeField('date published')
