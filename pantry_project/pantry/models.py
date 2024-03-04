@@ -23,6 +23,7 @@ class Recipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category)
+    link = models.URLField()
     title = models.CharField(max_length = 200)
     image = models.ImageField(upload_to='recipe_images')
     desc = models.CharField(max_length = 500)
@@ -49,7 +50,6 @@ class Recipe(models.Model):
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-
     likes = models.IntegerField(default=0)
     date_pub = models.DateTimeField('date published')
 
