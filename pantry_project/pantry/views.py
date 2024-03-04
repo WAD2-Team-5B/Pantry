@@ -7,7 +7,7 @@ from pantry.models import Recipe
 def index(request):
 
     # UNCOMMENT ONCE DATABASE IS SET UP
-    highest_rated_recipes = Recipe.objects.order_by("-rating")[:10].values("name", "link", "image")
+    # highest_rated_recipes = Recipe.objects.order_by("-rating")[:10].values("title", "link", "image")
     # newest_recipes = Recipe.objects.order_by("-created_at")[:10].values(
     #     "name", "link", "image"
     # )
