@@ -13,18 +13,23 @@ from pantry.models import UserProfile
 
 def index(request):
 
-    # TESTING PURPOSES
-    # would use real data from database
-    recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
+    # UNCOMMENT ONCE DATABASE IS SET UP
+    # highest_rated_recipes = Recipe.objects.order_by("-rating")[:10].values(
+    #     "name", "link", "image"
+    # )
+    # newest_recipes = Recipe.objects.order_by("-created_at")[:10].values(
+    #     "name", "link", "image"
+    # )
 
-    num_highest_rated = len(recipes)
-    num_newest = len(recipes)
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
+    highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
+    newest_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
 
     context_dict = {
-        "highest_rated_recipes": recipes,
-        "newest_recipes": recipes,
-        "num_highest_rated": num_highest_rated,
-        "num_newest": num_newest,
+        "highest_rated_recipes": list(highest_rated_recipes),
+        "newest_recipes": list(newest_recipes),
+        "num_highest_rated": len(highest_rated_recipes),
+        "num_newest": len(newest_recipes),
     }
     return render(request, "pantry/index.html", context=context_dict)
 
@@ -35,8 +40,7 @@ def about(request):
 
 def recipes(request):
 
-    # TESTING PURPOSES
-    # would use real data from database
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
     recipes = [
         {
             "name": "Spag Bol",
@@ -50,9 +54,6 @@ def recipes(request):
             "cook": "0:30",
         }
     ] * 20
-
-    # TESTING PURPOSES
-    # would use real data from database
     cuisines = [
         "Italian",
         "Mexican",
@@ -65,9 +66,6 @@ def recipes(request):
         "Spanish",
         "American",
     ]
-
-    # TESTING PURPOSES
-    # would use real data from database
     categories = [
         "Vegan",
         "Vegetarian",
@@ -158,3 +156,62 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect(reverse("pantry:index"))
+
+
+def recipe(request):
+
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
+    description = (("#" * 100) + "\n") * 10
+    steps = [
+        "#" * 150,
+    ] * 10
+    categories = ["Vegan", "Vegetarian", "Pescatarian"]
+    ingredients = [
+        "Milk",
+        "Eggs",
+        "Flour",
+        "Sugar",
+        "Butter",
+        "Salt",
+        "Pepper",
+        "Tomatoes",
+        "Beef",
+        "Onions",
+        "Garlic",
+        "Pasta",
+    ]
+    reviews = [
+        {
+            "user": "GreatCook123",
+            "likes": 17,
+            "date_pub": "2023-10-21",
+            "review": "#" * 150,
+        }
+    ] * 5
+
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
+    context_dict = {
+        # header
+        "user": "John12345",
+        "user_id": "",
+        "name": "Spag Bol",
+        "date_pub": "2021-09-21",
+        # description
+        "image": "",
+        "description": description,
+        # sub info
+        "rating": 4.67,
+        "saves": 34,
+        "difficulty": "beginner",
+        "cuisine": "Italian",
+        "prep": "1:30",
+        "cook": "0:30",
+        # main info
+        "steps": steps,
+        "categories": categories,
+        "ingredients": ingredients,
+        # reviews
+        "reviews": reviews,
+    }
+
+    return render(request, "pantry/recipe.html", context=context_dict)

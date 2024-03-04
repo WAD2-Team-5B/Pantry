@@ -1,0 +1,100 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/recipe.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %}
+<script src="{% static 'js/pages/recipe.js' %}"></script>
+{% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} Recipe {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<!-- RECIPE HEADER -->
+<header class="recipe-header">
+  <div class="left-aside">
+    <a class="user" href="">{{ user }}</a>
+    <p>{{ date_pub }}</p>
+  </div>
+  <h3>{{ name }}</h3>
+  <div class="right-aside">
+    <div id="stars"></div>
+    <button id="bookmark"></button>
+  </div>
+</header>
+
+<!-- RECIPE INFO -->
+<div class="recipe-info">
+  <div class="description">
+    <img src="{{ image }}" />
+    <p>{{ description }}</p>
+  </div>
+
+  <div class="info">
+    <ul>
+      <li>
+        <img src="{% static 'images/star.svg' %}" />
+        {{ rating }}
+      </li>
+      <li>{{ saves }} saves</li>
+      <li>{{ difficulty }}</li>
+      <li>{{ cuisine }}</li>
+      <li>Prep - {{ prep }}h</li>
+      <li>Cook - {{ cook }}h</li>
+    </ul>
+  </div>
+</div>
+
+<!-- RECIPE FACTS -->
+<div class="recipe-facts">
+  <div class="steps">
+    <h5>Steps</h5>
+    <ul>
+      {% for step in steps %}
+      <li>{{ step }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="ingredients">
+    <h5>Ingredients</h5>
+    <ul>
+      {% for ingredient in ingredients %}
+      <li>{{ ingredient }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="categories">
+    <h5>Categories</h5>
+    <ul>
+      {% for category in categories %}
+      <li>{{ category }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<!-- REVIEWS -->
+<h3 id="review-header">Reviews</h3>
+{% for review in reviews %}
+<div class="review">
+  <div class="review-aside">
+    <div>
+      <a class="user" href="">{{ review.user }}</a>
+      <p>{{ review.date_pub }}</p>
+    </div>
+
+    <div class="review-rating">
+      <button class="review-heart"></button>
+      <p class="review-likes">{{ review.likes }}</p>
+    </div>
+  </div>
+  <p class="review-text">{{ review.review }}</p>
+</div>
+{% endfor %} {% endblock %}
