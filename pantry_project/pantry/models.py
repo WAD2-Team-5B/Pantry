@@ -31,13 +31,16 @@ class Recipe(models.Model):
     prep_time = models.CharField(max_length=4)
     cook_time = models.CharField(max_length=4)
     difficulty = models.CharField(max_length=1)
-    rating = models.FloatField()
-    star_count = models.IntegerField()
-    star_submissions = models.IntegerField()
-    rating = models.FloatField()
+    rating = models.FloatField(default=0)
+    star_count = models.IntegerField(default=0)
+    star_submissions = models.IntegerField(default=0)
     no_of_saves = models.IntegerField()
     date_pub = models.DateTimeField()
     
+    def save(self, *args, **kwargs):
+        # every time an instance of the model is saved to the DB we recalculate the avg star rating
+        self.rating = round(self.star_count/self.star_submissions, 2)
+        super(Recipe, self).save(*args, **kwargs)
     
     def __str__(self):
         return self.title
