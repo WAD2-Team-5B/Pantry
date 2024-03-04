@@ -34,20 +34,21 @@ class Recipe(models.Model):
     difficulty = models.CharField(max_length=1)
     star_count = models.IntegerField()
     star_submissions = models.IntegerField()
+    rating = models.FloatField()
     no_of_saves = models.IntegerField()
-    date_pub = models.DateField()
+    date_pub = models.DateTimeField()
     
     
     def __str__(self):
         return self.title
     
-    
+
 class Review(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe)
 
     likes = models.IntegerField(default=0)
-    date_pub = models.DateField('date published')
+    date_pub = models.DateTimeField('date published')
 
     class Meta:
         unique_together = ('user', 'recipe')
