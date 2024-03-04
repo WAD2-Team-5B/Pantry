@@ -24,7 +24,7 @@ class Recipe(models.Model):
     cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category)
     title = models.CharField(max_length = 200)
-    photo = models.ImageField(upload_to='recipe_images')
+    image = models.ImageField(upload_to='recipe_images')
     desc = models.CharField(max_length = 500)
     ingredients = models.CharField(max_length = 2000)
     steps = models.CharField(max_length = 10_000)
@@ -56,7 +56,7 @@ class Review(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='profile_images', blank=True)
+    image = models.ImageField(upload_to='profile_images', blank=True)
 
     def __str__(self):
         return self.user.username
