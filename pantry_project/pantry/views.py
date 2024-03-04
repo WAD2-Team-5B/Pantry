@@ -1,7 +1,5 @@
 from django.shortcuts import render
-
-# UNCOMMENT ONCE MODEL IS SET UP
-# from .models import Recipe
+from pantry.models import Recipe
 
 # TEMPLATE VIEWS
 
@@ -9,9 +7,7 @@ from django.shortcuts import render
 def index(request):
 
     # UNCOMMENT ONCE DATABASE IS SET UP
-    # highest_rated_recipes = Recipe.objects.order_by("-rating")[:10].values(
-    #     "name", "link", "image"
-    # )
+    highest_rated_recipes = Recipe.objects.order_by("-rating")[:10].values("name", "link", "image")
     # newest_recipes = Recipe.objects.order_by("-created_at")[:10].values(
     #     "name", "link", "image"
     # )
