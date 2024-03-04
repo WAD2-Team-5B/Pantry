@@ -63,18 +63,6 @@
 
   - cuisines : List of String
   - categories : List of String
-  - recipes : List of Dictionaries
-    - {
-      name: String,
-      link: String?,
-      image: String?,
-      rating: Float,
-      saves: Integer,
-      difficulty: String,
-      cuisine: Italian,
-      prep: String,
-      cook: String
-      }
 
 #### Redirect
 
@@ -84,7 +72,6 @@
 
 - Context_Dict:
 
-  - search_query : String
   - cuisines : List of String
   - categories : List of String
   - recipes : List of Dictionaries
@@ -105,7 +92,6 @@
 - Description:
 
   - User types in search bar or selects a filter or selects a sort.
-  - We need to display search results of his query but need to give frontend back the search query itself along with any of his selected filters or sorts so can display nice css.
   - If passed parameters for any of the filters or sorts are NOT empty then user has selected them so must carry out the filter or sort on the data before sending back.
 
 - Parameters:
@@ -118,11 +104,6 @@
 
 - Context_Dict:
 
-  - search_query : String
-  - selected_difficulty : String
-  - selected_cuisines : List of String
-  - selected_categories : List of String
-  - selected_sort : String
   - cuisines : List of String
   - categories : List of String
   - recipes : List of Dictionaries
