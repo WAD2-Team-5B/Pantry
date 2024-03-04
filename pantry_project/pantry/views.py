@@ -116,9 +116,9 @@ def signup(request):
         if user:
 
             # if django user object created, a UserProfile can be created with additional fields required by pantry
-            userProfile = UserProfile.objects.create(user=user)
+            user_profile = UserProfile.objects.create(user=user)
 
-            if userProfile:
+            if user_profile:
                 auth.login(request, user)
                 return redirect(reverse("pantry:index"))
 
