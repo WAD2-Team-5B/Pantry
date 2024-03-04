@@ -74,25 +74,15 @@
       <input
         type="text"
         id="recipe-name"
-        name="recipe-name"
+        name="name"
         placeholder="recipe name"
       />
-      <input
-        type="text"
-        id="recipe-prep"
-        name="recipe-prep"
-        placeholder="prep"
-      />
-      <input
-        type="text"
-        id="recipe-cook"
-        name="recipe-cook"
-        placeholder="cook"
-      />
+      <input type="text" id="recipe-prep" name="prep" placeholder="prep" />
+      <input type="text" id="recipe-cook" name="cook" placeholder="cook" />
     </div>
 
     <div class="container-upload-image">
-      <input type="file" id="recipe-image" name="recipe-image" />
+      <input type="file" id="recipe-image" name="image" />
     </div>
 
     <!-- DESCRIPTION -->
@@ -100,7 +90,7 @@
       <img id="recipe-image-preview" src="" />
       <textarea
         id="recipe-description"
-        name="recipe-description"
+        name="description"
         placeholder="description"
       ></textarea>
     </div>
@@ -113,5 +103,14 @@
       <input type="submit" id="submit" value="create" />
     </div>
   </div>
+
+  <!-- HIDDEN SUBMISSIONS -->
+  <input type="hidden" id="ingredients" name="ingredients" />
+  <input type="hidden" id="difficulty" name="difficulty" />
+  <input type="hidden" id="steps" name="steps" />
+  <input type="hidden" id="cuisines" name="cuisine" />
+  <input type="hidden" id="categories" name="categories" />
 </form>
+
+<h5 id="error-message"></h5>
 {% endblock %}

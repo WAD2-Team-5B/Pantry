@@ -1,4 +1,4 @@
-import { Form } from "../misc/form.js";
+import { Form } from "../utility/form.js";
 
 // GLOBALS
 
@@ -23,9 +23,7 @@ document.getElementById("signup-form").addEventListener("submit", (e) => {
     password.value !== confirmPassword.value,
     password.value.length < PASSWORD_MIN_LENGTH,
   ];
-
   let errorElement = document.getElementById("error-message");
-
   let errorMessages = [
     "Please fill out all fields!",
     "Please ensure both passwords match!",

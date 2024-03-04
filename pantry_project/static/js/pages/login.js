@@ -1,4 +1,4 @@
-import { Form } from "../misc/form.js";
+import { Form } from "../utility/form.js";
 
 // GLOBALS
 
@@ -12,9 +12,7 @@ document.getElementById("login-form").addEventListener("submit", (e) => {
   // conditions:
   // 1. no field is empty
   let errorConditions = [username.value === "" || password.value === ""];
-
   let errorElement = document.getElementById("error-message");
-
   let errorMessages = ["Please fill out all fields!"];
 
   Form.validate(e, errorConditions, errorElement, errorMessages);

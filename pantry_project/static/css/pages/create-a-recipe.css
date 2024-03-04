@@ -24,7 +24,7 @@ textarea {
   width: 75%;
   height: 28rem;
 
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 /* LEFT COLUMN */
@@ -397,12 +397,32 @@ textarea {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  align-items: center;
 
   width: 100%;
 }
 
 #submit {
   width: 5rem;
+}
+
+/* ERROR MESSAGE */
+
+#error-message {
+  width: 75%;
+
+  margin-bottom: 2rem;
+
+  border-radius: 0.5rem;
+
+  color: var(--color-3);
+  background-color: red;
+
+  text-align: center;
+}
+
+.error-message-active {
+  padding: 0.5rem;
 }
 
 /* WINDOW WIDTH CHANGE */
@@ -442,5 +462,9 @@ textarea {
     height: 8rem;
 
     margin: 0.5rem;
+  }
+
+  #error-message {
+    width: 20rem;
   }
 }

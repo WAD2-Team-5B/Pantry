@@ -1,5 +1,5 @@
-import { Init } from "../misc/init.js";
-import { Form } from "../misc/form.js";
+import { initButtons } from "../utility/helpers.js";
+import { Form } from "../utility/form.js";
 
 // GLOBALS
 
@@ -9,7 +9,7 @@ let selectedCategories = [];
 let selectedDifficulty = [];
 let selectedSortBy = [];
 
-//  INIT CUISINE / CATEGORY / DIFFICULTY / SORTBY BUTTONS
+//  INIT
 
 let cuisineBtns = Array.from(document.getElementsByClassName("btn-cuisine"));
 let categoryBtns = Array.from(document.getElementsByClassName("btn-category"));
@@ -18,10 +18,10 @@ let difficultyBtns = Array.from(
 );
 let sortByBtns = Array.from(document.getElementsByClassName("btn-sort-by"));
 
-Init.buttons(cuisineBtns, selectedCuisines, "btn-cuisine-active", true);
-Init.buttons(categoryBtns, selectedCategories, "btn-category-active", true);
-Init.buttons(difficultyBtns, selectedDifficulty, "btn-difficulty-active");
-Init.buttons(sortByBtns, selectedSortBy, "btn-sort-by-active");
+initButtons(cuisineBtns, selectedCuisines, "btn-cuisine-active", true);
+initButtons(categoryBtns, selectedCategories, "btn-category-active", true);
+initButtons(difficultyBtns, selectedDifficulty, "btn-difficulty-active");
+initButtons(sortByBtns, selectedSortBy, "btn-sort-by-active");
 
 // FORM
 
