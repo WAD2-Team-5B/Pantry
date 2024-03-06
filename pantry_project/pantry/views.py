@@ -214,6 +214,7 @@ def recipe(request):
     return render(request, "pantry/recipe.html", context=context_dict)
 
 
+@login_required
 def create_a_recipe(request):
 
     # TESTING PURPOSES UNTIL DATABASE IS SET UP

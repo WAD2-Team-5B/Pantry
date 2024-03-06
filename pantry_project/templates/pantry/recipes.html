@@ -27,7 +27,9 @@
   <!-- LEFT COLUMN -->
   <div class="left-container">
     <!-- CREATE RECIPE LINK -->
+    {% if user.is_authenticated %}
     <a href="{% url 'pantry:create-a-recipe' %}">Create A Recipe</a>
+    {% endif %}
 
     <h5>Filter</h5>
 

@@ -23,8 +23,10 @@
   </div>
   <h3>{{ name }}</h3>
   <div class="right-aside">
+    {% if user.is_authenticated %}
     <div id="stars"></div>
     <button id="bookmark"></button>
+    {% endif %}
   </div>
 </header>
 
@@ -83,12 +85,14 @@
 <!-- REVIEWS -->
 <h3 id="review-header">Reviews</h3>
 
+{% if user.is_authenticated %}
 <div class="user-review">
   <textarea id="review" placeholder="I love this recipe..."></textarea>
   <div class="user-review-submit-container">
     <button id="user-review-submit">post</button>
   </div>
 </div>
+{% endif %} 
 
 {% for review in reviews %}
 <div class="review">
@@ -99,7 +103,14 @@
     </div>
 
     <div class="review-rating">
+      {% if user.is_authenticated %}
       <button class="review-heart"></button>
+      {% else %}
+      <img
+        class="review-heart-image"
+        src="{% static 'images/heart-empty.svg' %}"
+      />
+      {% endif %}
       <p class="review-likes">{{ review.likes }}</p>
     </div>
   </div>
