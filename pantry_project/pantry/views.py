@@ -1,4 +1,12 @@
 from django.shortcuts import render
+from django.contrib import auth
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.http import HttpResponse
+from django.db import IntegrityError
+from pantry.models import UserProfile
 from pantry.models import Recipe
 
 # TEMPLATE VIEWS
@@ -7,8 +15,8 @@ from pantry.models import Recipe
 def index(request):
 
     # UNCOMMENT ONCE DATABASE IS SET UP
-   #newest_recipes = Recipe.objects.order_by("-rating")[:10].values("name", "photo")
-   # newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values("name", "photo")
+    # newest_recipes = Recipe.objects.order_by("-rating")[:10].values("name", "photo")
+    # newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values("name", "photo")
 
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
     highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
@@ -74,13 +82,77 @@ def recipes(request):
     return render(request, "pantry/recipes.html", context=context_dict)
 
 
+def signup(request):
+    PASSWORD_MIN_LENGTH = 6
+    USERNAME_MIN_LENGTH = 1
+
+    context_dict = {"success": True, "error": ""}
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        if len(username) < USERNAME_MIN_LENGTH:
+            context_dict["success"] = False
+            context_dict["error"] = (
+                f"Username must be at least {USERNAME_MIN_LENGTH} characters long!"
+            )
+            return render(request, "pantry/signup.html", context_dict)
+
+        if len(password) < PASSWORD_MIN_LENGTH:
+            context_dict["success"] = False
+            context_dict["error"] = (
+                f"Password must be at least {PASSWORD_MIN_LENGTH} characters long!"
+            )
+            return render(request, "pantry/signup.html", context_dict)
+
+        try:
+            user = User.objects.create_user(username=username, password=password)
+
+        except IntegrityError:  # the username already exists
+            context_dict["success"] = False
+            context_dict["error"] = f"Username '{username}' already exists"
+            return render(request, "pantry/signup.html", context_dict)
+
+        if user:
+
+            # if django user object created, a UserProfile can be created with additional fields required by pantry
+            user_profile = UserProfile.objects.create(user=user)
+
+            if user_profile:
+                auth.login(request, user)
+                return redirect(reverse("pantry:index"))
+
+        # either the User or UserProfile have failed to be created
+        context_dict["success"] = False
+        context_dict["error"] = "Unknown error"
+        return render(request, "pantry/signup.html", context_dict)
+
+    else:
+        return render(request, "pantry/signup.html", context_dict)
+
+
 def login(request):
     context_dict = {"success": True}
-    return render(request, "pantry/login.html", context=context_dict)
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = auth.authenticate(username=username, password=password)
+
+        if user:
+            auth.login(request, user)
+            return redirect(reverse("pantry:index"))
+        else:
+            context_dict["success"] = False
+            return render(request, "pantry/login.html", context=context_dict)
+    else:
+        return render(request, "pantry/login.html", context=context_dict)
 
 
-def signup(request):
-    return render(request, "pantry/signup.html")
+@login_required
+def logout(request):
+    auth.logout(request)
+    return redirect(reverse("pantry:index"))
 
 
 def recipe(request):

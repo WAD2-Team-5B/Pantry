@@ -30,6 +30,11 @@
   <h4>Confirm Password</h4>
   <input type="password" id="confirm-password" value="" />
   <input id="submit" type="submit" value="Sign Up" />
+
+  {% if success %}
   <h5 id="error-message"></h5>
+  {% else %}
+  <h5 id="error-message" class="error-message-active">{{ error }}</h5>
+  {% endif %}
 </form>
 {% endblock %}

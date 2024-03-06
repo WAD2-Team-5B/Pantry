@@ -59,6 +59,20 @@
       <div class="vertical-spacer"></div>
 
       <div class="user">
+        {% if user.is_authenticated %}
+        <a href="">
+          <img src="{% static 'images/navbar-profile.svg' %}" />
+          {{ user.username }}
+          <!--Profile-->
+        </a>
+
+        <div class="spacer"></div>
+
+        <a href="{% url 'pantry:logout' %}">
+          <img src="{% static 'images/navbar-logout.svg' %}" />
+          Logout
+        </a>
+        {% else %}
         <a href="{% url 'pantry:signup' %}">
           <img src="{% static 'images/navbar-signup.svg' %}" />
           Sign Up
@@ -70,18 +84,7 @@
           <img src="{% static 'images/navbar-login.svg' %}" />
           Login
         </a>
-
-        <!-- <a href="">
-          <img src="{% static 'images/navbar-profile.svg' %}" />
-          Profile
-        </a>
-
-        <div class="spacer"></div>
-
-        <a href="">
-          <img src="{% static 'images/navbar-logout.svg' %}" />
-          Logout
-        </a> -->
+        {% endif %}
       </div>
     </nav>
 
