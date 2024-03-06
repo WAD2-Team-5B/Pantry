@@ -1,0 +1,54 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/user-profile.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %} {% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} User Profile {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<h3 id="user">{{ user }}</h3>
+
+<div class="super-container">
+  <!-- BIO -->
+  <div class="bio">
+    <img src="{{ user_image }}" />
+    <p>{{ user_bio }}</p>
+  </div>
+
+  <!-- TOOLS -->
+  <div class="tools">
+    <!-- SEARCH -->
+    <div class="search">
+      <input
+        type="text"
+        id="search"
+        name="search_query"
+        placeholder="search a user"
+      />
+      <ul id="search-results"></ul>
+    </div>
+
+    <!-- LINKS -->
+    <ul class="links">
+      {% if own_profile %}
+      <li><a href="">My Recipes</a></li>
+      <li><a href="">My Reviews</a></li>
+      <li><a href="">Saved Recipes</a></li>
+      <li><a href="">Create A Recipe</a></li>
+      <li><a href="">Edit Profile</a></li>
+      {% else %}
+      <li><a href="">{{ user }} Recipes</a></li>
+      <li><a href="">{{ user }} Reviews</a></li>
+      <li><a href="">{{ user }}'s Saved Recipes</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

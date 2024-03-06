@@ -247,3 +247,20 @@ def create_a_recipe(request):
     }
 
     return render(request, "pantry/create-a-recipe.html", context=context_dict)
+
+
+def user_profile(request):
+
+    # TODO - CHECK IF OUR USER ID MATCHES THE USER ID OF USER'S PROFILE WE ARE VISITNG.
+    # IF IT DOES, THEN IT'S OUR OWN PROFILE
+
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
+    context_dict = {
+        "user": "John23",
+        "user_image": "",
+        "user_bio": "#" * 200,
+        # needed for knowing if we are visiting our OWN profile or another users
+        "own_profile": True,
+    }
+
+    return render(request, "pantry/user-profile.html", context=context_dict)
