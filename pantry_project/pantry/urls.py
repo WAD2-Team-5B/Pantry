@@ -18,4 +18,13 @@ urlpatterns = [
     # TESTING PURPOSE
     # TODO - CHANGE TO USER ID
     path("user-profile/", views.user_profile, name="user-profile"),
+    # TESTING PURPOSE
+    # TODO - CHANGE TO USER ID
+    path("user-profile/user-recipes/", views.user_recipes, name="user-recipes"),
+    # TESTING PURPOSE
+    # TODO - CHANGE TO USER ID
+    path("user-profile/saved-recipes/", views.saved_recipes, name="saved-recipes"),
+    # TESTING PURPOSE
+    # TODO - CHANGE TO USER ID
+    path("user-profile/user-reviews/", views.user_reviews, name="user-reviews"),
 ]

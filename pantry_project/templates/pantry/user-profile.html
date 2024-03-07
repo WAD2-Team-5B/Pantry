@@ -38,15 +38,21 @@
     <!-- LINKS -->
     <ul class="links">
       {% if own_profile %}
-      <li><a href="">My Recipes</a></li>
-      <li><a href="">My Reviews</a></li>
-      <li><a href="">Saved Recipes</a></li>
-      <li><a href="">Create A Recipe</a></li>
+      <li>
+        <a href="{% url 'pantry:user-recipes' %}">My Recipes</a>
+      </li>
+      <li><a href="{% url 'pantry:user-reviews' %}">My Reviews</a></li>
+      <li><a href="{% url 'pantry:saved-recipes' %}">Saved Recipes</a></li>
+      <li><a href="{% url 'pantry:create-a-recipe' %}">Create A Recipe</a></li>
       <li><a href="">Edit Profile</a></li>
       {% else %}
-      <li><a href="">{{ user }} Recipes</a></li>
-      <li><a href="">{{ user }} Reviews</a></li>
-      <li><a href="">{{ user }}'s Saved Recipes</a></li>
+      <li><a href="{% url 'pantry:user-recipes' %}">{{ user }} Recipes</a></li>
+      <li><a href="{% url 'pantry:user-reviews' %}">{{ user }} Reviews</a></li>
+      <li>
+        <a href="{% url 'pantry:saved-recipes' %}"
+          >{{ user }}'s Saved Recipes</a
+        >
+      </li>
       {% endif %}
     </ul>
   </div>

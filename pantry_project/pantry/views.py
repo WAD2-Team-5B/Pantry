@@ -264,3 +264,15 @@ def user_profile(request):
     }
 
     return render(request, "pantry/user-profile.html", context=context_dict)
+
+
+def user_recipes(request):
+    return render(request, "pantry/user-data.html")
+
+
+def saved_recipes(request):
+    return render(request, "pantry/user-data.html")
+
+
+def user_reviews(request):
+    return render(request, "pantry/user-data.html")
