@@ -28,20 +28,19 @@
 {% endif %}
 
 <!-- MY RECIPES / MY SAVED RECIPES / MY REVIEWS -->
-<div id="data-list">
+<ul id="data-list">
   {% for data in user_data %}
-  <a class="recipe-card" href="data.link">
-    <h5>{{ data.name }}</h5>
-    <img src="{{ data.image }}" />
+  <li>
+    <a class="recipe-card" href="{{ data.link }}">
+      <h5>{{ data.name }}</h5>
+      <img src="{{ data.image }}" />
+    </a>
 
-    <!-- if own profile then can remove -->
     {% if own_profile %}
-    <div class="remove">
-      <button class="btn-remove">remove</button>
-    </div>
+    <button class="btn-remove">remove</button>
     {% endif %}
-  </a>
+  </li>
   {% endfor %}
-</div>
+</ul>
 
 {% endblock %}

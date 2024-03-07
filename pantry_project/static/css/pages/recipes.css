@@ -19,7 +19,7 @@ h5 {
   align-items: center;
 
   width: 75%;
-  height: 28rem;
+  height: 70vh;
 
   margin-bottom: 2rem;
 }
@@ -271,18 +271,21 @@ h5 {
   transition: background-color var(--animation-time) ease-in-out;
 }
 
-.recipe img {
+.recipe-image {
   width: var(--recipe-image-width);
   height: var(--recipe-image-height);
 
   margin-right: 1rem;
 
   border-radius: 1rem;
+
+  background-color: var(--color-1);
 }
 
 .recipe ul li {
   display: flex;
   flex-direction: row;
+  align-items: center;
 
   color: var(--color-1);
 

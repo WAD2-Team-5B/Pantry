@@ -7,7 +7,7 @@ h3 {
 h5 {
   color: var(--color-1);
 
-  margin: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 /* SORT BY */
@@ -34,9 +34,10 @@ h5 {
 }
 
 .btn-sort-by {
-  width: 5rem;
+  width: 6.6rem;
 
   padding: 0.25rem;
+  margin-bottom: 1rem;
 
   border: 0.1rem solid var(--color-1);
 
@@ -68,6 +69,75 @@ h5 {
   font-weight: bold;
 }
 
+/* DATA */
+
+#data-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  width: 75%;
+  gap: 1rem;
+
+  margin-bottom: 2rem;
+}
+
+#data-list li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  list-style-type: none;
+}
+
+.recipe-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  padding-top: 0.5rem;
+
+  border-radius: 1rem;
+  box-shadow: 0 0 0.5rem gray;
+
+  text-decoration: none;
+}
+
+/* if we hover on button dont do background color */
+.recipe-card:hover {
+  background-color: var(--color-2);
+}
+
+.recipe-card img {
+  /* scaled (roughly) */
+  height: 7.5rem;
+  width: 13.2rem;
+
+  border-radius: 1rem;
+
+  background-color: var(--color-1);
+}
+
+.btn-remove {
+  margin-top: 0.5rem;
+  padding: 0.25rem;
+  padding-inline: 2rem;
+
+  border-radius: 0.5rem;
+  border: none;
+
+  background-color: red;
+  color: var(--color-3);
+}
+
+.btn-remove:hover {
+  cursor: pointer;
+
+  font-weight: bold;
+}
+
 /* WINDOW WIDTH CHANGE */
 
 @media (max-width: 50rem) {
@@ -77,5 +147,16 @@ h5 {
 
   .btn-sort-by {
     width: 10rem;
+  }
+
+  #data-list,
+  .recipe-card {
+    width: 20rem;
+  }
+
+  .recipe-card img {
+    /* scaled (roughly) */
+    height: 11.35rem;
+    width: 20rem;
   }
 }
