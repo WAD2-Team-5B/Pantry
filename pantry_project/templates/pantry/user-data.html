@@ -9,7 +9,39 @@
 {% block js_block %} {% endblock %}
 
 <!-- TITLE -->
-{% block title_block %} {% endblock %}
+{% block title_block %} {{ page_name }} {% endblock %}
 
 <!-- CONTENT -->
-{% block main_block %} {% endblock %}
+{% block main_block %}
+<h3>{{ page_name }}</h3>
+
+{% if own_profile %}
+<div class="container">
+  <div class="container-sort-by">
+    <h5>Sort By</h5>
+    <div>
+      <button id="btn-newest" class="btn-sort-by" value="newest">newest</button>
+      <button id="btn-oldest" class="btn-sort-by" value="oldest">oldest</button>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- MY RECIPES / MY SAVED RECIPES / MY REVIEWS -->
+<div id="data-list">
+  {% for data in user_data %}
+  <a class="recipe-card" href="data.link">
+    <h5>{{ data.name }}</h5>
+    <img src="{{ data.image }}" />
+
+    <!-- if own profile then can remove -->
+    {% if own_profile %}
+    <div class="remove">
+      <button class="btn-remove">remove</button>
+    </div>
+    {% endif %}
+  </a>
+  {% endfor %}
+</div>
+
+{% endblock %}

@@ -267,7 +267,22 @@ def user_profile(request):
 
 
 def user_recipes(request):
-    return render(request, "pantry/user-data.html")
+
+    # TODO - CHANGE TO EITHER 'My Recipes' OR 'JOHN123's Recipes'
+    # BASED ON IF COMING FROM OUR OWN PROFILE OR ANOTHER USER'S
+    page_name = "My Recipes"
+
+    # TODO - CHANGE TO REAL DATA FROM DB
+    recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 20
+
+    context_dict = {
+        "page_name": page_name,
+        "user_data": recipes,
+        # needed for knowing if we are visiting our OWN profile or another users
+        "own_profile": True,
+    }
+
+    return render(request, "pantry/user-data.html", context=context_dict)
 
 
 def saved_recipes(request):

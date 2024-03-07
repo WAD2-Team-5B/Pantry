@@ -1,0 +1,81 @@
+h3 {
+  color: var(--color-1);
+
+  margin: 1rem;
+}
+
+h5 {
+  color: var(--color-1);
+
+  margin: 0.5rem;
+}
+
+/* SORT BY */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  width: 75%;
+
+  margin-bottom: 1rem;
+}
+
+.container-sort-by {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-sort-by div {
+  display: flex;
+}
+
+.btn-sort-by {
+  width: 5rem;
+
+  padding: 0.25rem;
+
+  border: 0.1rem solid var(--color-1);
+
+  color: var(--color-1);
+  background-color: transparent;
+}
+
+.btn-sort-by:first-child {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.btn-sort-by:last-child {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.btn-sort-by:hover {
+  background-color: var(--color-2);
+
+  cursor: pointer;
+}
+
+.btn-sort-by-active,
+.btn-sort-by-active:hover {
+  color: var(--color-3);
+  background-color: var(--color-1);
+
+  font-weight: bold;
+}
+
+/* WINDOW WIDTH CHANGE */
+
+@media (max-width: 50rem) {
+  .container {
+    align-items: center;
+  }
+
+  .btn-sort-by {
+    width: 10rem;
+  }
+}
