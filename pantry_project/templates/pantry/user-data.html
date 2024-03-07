@@ -33,7 +33,11 @@
   <li>
     <a class="recipe-card" href="{{ data.link }}">
       <h5>{{ data.name }}</h5>
+      {% if is_reviews_page %}
+      <p>{{ data.review }}</p>
+      {% else %}
       <img src="{{ data.image }}" />
+      {% endif %}
     </a>
 
     {% if own_profile %}

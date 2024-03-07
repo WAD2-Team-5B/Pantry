@@ -13,7 +13,7 @@
 
 <!-- CONTENT -->
 {% block main_block %}
-<h3 id="user">{{ user }}</h3>
+<h3 id="user">{{ username }}</h3>
 
 <div class="super-container">
   <!-- BIO -->
@@ -46,11 +46,15 @@
       <li><a href="{% url 'pantry:create-a-recipe' %}">Create A Recipe</a></li>
       <li><a href="">Edit Profile</a></li>
       {% else %}
-      <li><a href="{% url 'pantry:user-recipes' %}">{{ user }} Recipes</a></li>
-      <li><a href="{% url 'pantry:user-reviews' %}">{{ user }} Reviews</a></li>
+      <li>
+        <a href="{% url 'pantry:user-recipes' %}">{{ username }} Recipes</a>
+      </li>
+      <li>
+        <a href="{% url 'pantry:user-reviews' %}">{{ username }} Reviews</a>
+      </li>
       <li>
         <a href="{% url 'pantry:saved-recipes' %}"
-          >{{ user }}'s Saved Recipes</a
+          >{{ username }}'s Saved Recipes</a
         >
       </li>
       {% endif %}

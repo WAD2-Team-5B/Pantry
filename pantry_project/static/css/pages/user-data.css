@@ -120,6 +120,23 @@ h5 {
   background-color: var(--color-1);
 }
 
+/* if review */
+
+.recipe-card p {
+  max-height: 8rem;
+  width: 15rem;
+
+  margin-inline: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.25rem;
+
+  border-radius: 1rem;
+  border: 0.1rem solid var(--color-1);
+
+  overflow-wrap: break-word;
+  overflow-y: auto;
+}
+
 .btn-remove {
   margin-top: 0.5rem;
   padding: 0.25rem;
@@ -158,5 +175,10 @@ h5 {
     /* scaled (roughly) */
     height: 11.35rem;
     width: 20rem;
+  }
+
+  .recipe-card p {
+    width: 18rem;
+    max-height: 9rem;
   }
 }

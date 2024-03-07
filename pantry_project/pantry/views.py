@@ -179,7 +179,7 @@ def recipe(request):
     ]
     reviews = [
         {
-            "user": "GreatCook123",
+            "username": "GreatCook123",
             "likes": 17,
             "date_pub": "2023-10-21",
             "review": "#" * 150,
@@ -189,7 +189,7 @@ def recipe(request):
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
     context_dict = {
         # header
-        "user": "John12345",
+        "username": "John12345",
         "user_id": "",
         "name": "Spag Bol",
         "date_pub": "2021-09-21",
@@ -253,10 +253,14 @@ def user_profile(request):
 
     # TODO - CHECK IF OUR USER ID MATCHES THE USER ID OF USER'S PROFILE WE ARE VISITNG.
     # IF IT DOES, THEN IT'S OUR OWN PROFILE
+    username = "JOHN123"
+
+    if request.user.is_authenticated:
+        username = request.user.username
 
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
     context_dict = {
-        "user": "John23",
+        "username": username,
         "user_image": "",
         "user_bio": "#" * 200,
         # needed for knowing if we are visiting our OWN profile or another users
@@ -286,8 +290,40 @@ def user_recipes(request):
 
 
 def saved_recipes(request):
-    return render(request, "pantry/user-data.html")
+
+    # TODO - CHANGE TO EITHER 'My Recipes' OR 'JOHN123's Recipes'
+    # BASED ON IF COMING FROM OUR OWN PROFILE OR ANOTHER USER'S
+    page_name = "My Saved Recipes"
+
+    # TODO - CHANGE TO REAL DATA FROM DB
+    recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 20
+
+    context_dict = {
+        "page_name": page_name,
+        "user_data": recipes,
+        # needed for knowing if we are visiting our OWN profile or another users
+        "own_profile": True,
+    }
+
+    return render(request, "pantry/user-data.html", context=context_dict)
 
 
 def user_reviews(request):
-    return render(request, "pantry/user-data.html")
+
+    # TODO - CHANGE TO EITHER 'My Recipes' OR 'JOHN123's Recipes'
+    # BASED ON IF COMING FROM OUR OWN PROFILE OR ANOTHER USER'S
+    page_name = "My Saved Recipes"
+
+    # TODO - CHANGE TO REAL DATA FROM DB
+    reviews = [{"name": "Spag Bol", "link": "", "review": "#" * 200}] * 20
+
+    context_dict = {
+        "page_name": page_name,
+        "user_data": reviews,
+        # needed for knowing if we are visiting our OWN profile or another users
+        "own_profile": True,
+        # needed since reusing templates
+        "is_reviews_page": True,
+    }
+
+    return render(request, "pantry/user-data.html", context=context_dict)
