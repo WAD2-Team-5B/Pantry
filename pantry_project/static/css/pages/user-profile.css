@@ -1,0 +1,181 @@
+h3 {
+  color: var(--color-1);
+
+  margin: 1rem;
+}
+
+.super-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 41rem;
+
+  margin-bottom: 2rem;
+}
+
+/* BIO */
+
+.bio,
+.tools {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 28rem;
+  width: 20rem;
+
+  padding: 1rem;
+
+  border-radius: 1rem;
+  box-shadow: 0 0 0.5rem gray;
+}
+
+.bio img {
+  /* scaled according to 8.8x5 */
+  height: 10rem;
+  width: 17.6rem;
+
+  border-radius: 1rem;
+
+  background-color: var(--color-1);
+}
+
+.bio p,
+#search-results {
+  display: flex;
+  flex-direction: column;
+
+  /* match the image width */
+  width: 17.6rem;
+  flex-grow: 1;
+
+  margin-top: 1rem;
+  padding: 0.5rem;
+
+  border-radius: 1rem;
+  border: 0.1rem solid var(--color-1);
+
+  overflow-wrap: break-word;
+  overflow-y: auto;
+}
+
+/* TOOLS */
+
+.tools {
+  box-shadow: none;
+}
+
+.search,
+.links {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+}
+
+#search {
+  display: flex;
+
+  /* take up rest of width */
+  flex-grow: 1;
+
+  padding: 0.25rem;
+
+  border: 0.1rem solid var(--color-1);
+  border-radius: 0.5rem;
+}
+
+#search-results {
+  width: 100%;
+  max-height: 12rem;
+
+  padding: 0;
+  margin-bottom: 0.5rem;
+
+  border: none;
+
+  overflow-y: auto;
+}
+
+/* only have border when displaying results */
+#search-results:has(li) {
+  border: 0.1rem solid var(--color-1);
+}
+
+#search-results li {
+  width: 100%;
+
+  list-style-type: none;
+}
+
+#search-results li a {
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
+
+  padding: 0.25rem;
+
+  background-color: transparent;
+
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+
+#search-results li a:hover {
+  cursor: pointer;
+
+  background-color: var(--color-2);
+  color: var(--color-1);
+
+  font-weight: bold;
+}
+
+.links li {
+  width: 100%;
+
+  margin-top: 0.5rem;
+
+  list-style-type: none;
+}
+
+.links li a {
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
+
+  padding: 0.25rem;
+
+  border: 0.1rem solid var(--color-1);
+  border-radius: 0.5rem;
+
+  color: var(--color-3);
+  background-color: var(--color-1);
+
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.links li a:hover {
+  color: var(--color-1);
+  background-color: var(--color-2);
+}
+
+/* WINDOW WIDTH CHANGE */
+
+@media (max-width: 50rem) {
+  .super-container {
+    flex-direction: column;
+  }
+
+  .tools {
+    justify-content: flex-start;
+
+    margin-top: 1rem;
+  }
+}
