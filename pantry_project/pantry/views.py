@@ -114,7 +114,6 @@ def signup(request):
             return render(request, "pantry/signup.html", context_dict)
 
         if user:
-
             # if django user object created, a UserProfile can be created with additional fields required by pantry
             user_profile = UserProfile.objects.create(user=user)
 

@@ -52,8 +52,8 @@ class TestViewsAuthentication(TestCase):
             username=self.username, password=self.password
         )
 
-    # tests if base.html template shows correct navbar when user is logged in
-    def test_base_html_navbar_authenticated(self):
+    # tests if template shows correct navbar when user is logged in
+    def test_index_navbar_authenticated(self):
         self.client.login(username=self.username, password=self.password)
         index = self.client.get("/")
         self.assertContains(index, "Logout")
@@ -62,7 +62,7 @@ class TestViewsAuthentication(TestCase):
         self.assertNotContains(index, "Login")
 
     # tests if base.html template shows correct navbar when user is logged out
-    def test_base_html_navbar_anonymous(self):
+    def test_index_navbar_anonymous(self):
         self.client.logout()
         index = self.client.get("/")
         self.assertContains(index, "Sign Up")
