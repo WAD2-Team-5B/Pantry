@@ -1,6 +1,9 @@
 import { imagePreview } from "../utility/helpers.js";
 import { Form } from "../utility/form.js";
 
+const WARNING =
+  "WARNING\n\nAre you sure?\nDeleting an account is permanent and cannot be undone!";
+
 // ------------------------------
 // INIT
 // ------------------------------
@@ -9,6 +12,12 @@ imagePreview(
   document.getElementById("profile-image"),
   document.getElementById("profile-image-preview")
 );
+
+document.getElementById("btn-delete-account").onclick = () => {
+  if (confirm(WARNING)) {
+    // TODO - REQUEST TO DELETE ACCOUNT
+  }
+};
 
 // ------------------------------
 // FORM
