@@ -330,4 +330,14 @@ def user_reviews(request):
 
 
 def edit_profile(request):
-    return render(request, "pantry/edit-profile.html")
+
+    username = request.user.username
+
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
+    context_dict = {
+        "username": username,
+        "user_image": "",
+        "user_bio": "#" * 200,
+    }
+
+    return render(request, "pantry/edit-profile.html", context=context_dict)

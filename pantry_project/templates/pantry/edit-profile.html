@@ -34,7 +34,7 @@
         id="username"
         class="input-text-small"
         name="changed_username"
-        value=""
+        value="{{ username }}"
       />
       <h4>Change Password</h4>
       <input
@@ -50,13 +50,13 @@
     <div class="subcontainer-right">
       <h4>Change Profile Image</h4>
       <input type="file" id="profile-image" name="changed_image" />
-      <img id="profile-image-preview" src="" />
+      <img id="profile-image-preview" src="{{ user_image }}" />
     </div>
   </div>
 
   <!-- BIO -->
   <h4>Change Bio</h4>
-  <textarea id="profile-bio" name="changed_bio"></textarea>
+  <textarea id="profile-bio" name="changed_bio">{{ user_bio }}</textarea>
 
   <h5 id="error-message"></h5>
 
