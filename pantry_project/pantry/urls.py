@@ -27,4 +27,7 @@ urlpatterns = [
     # TESTING PURPOSE
     # TODO - CHANGE TO USER ID
     path("user-profile/user-reviews/", views.user_reviews, name="user-reviews"),
+    # TESTING PURPOSE
+    # TODO - CHANGE TO USER ID
+    path("user-profile/edit-profile/", views.edit_profile, name="edit-profile"),
 ]

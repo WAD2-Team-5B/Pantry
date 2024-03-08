@@ -323,3 +323,17 @@ def user_reviews(request):
     }
 
     return render(request, "pantry/user-data.html", context=context_dict)
+
+
+def edit_profile(request):
+
+    username = request.user.username
+
+    # TESTING PURPOSES UNTIL DATABASE IS SET UP
+    context_dict = {
+        "username": username,
+        "user_image": "",
+        "user_bio": "#" * 200,
+    }
+
+    return render(request, "pantry/edit-profile.html", context=context_dict)
