@@ -15,12 +15,12 @@ from pantry.models import Recipe
 def index(request):
 
     # UNCOMMENT ONCE DATABASE IS SET UP
-    # newest_recipes = Recipe.objects.order_by("-rating")[:10].values("name", "photo")
-    # newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values("name", "photo")
+    highest_rated_recipes = Recipe.objects.order_by("-rating","-pub_date")[:10].values("name", "image", "link")
+    newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values("name", "image", "link")
 
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
-    newest_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
+    # highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
+    # newest_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
 
     context_dict = {
         "highest_rated_recipes": list(highest_rated_recipes),
@@ -253,19 +253,24 @@ def user_profile(request):
 
     # TODO - CHECK IF OUR USER ID MATCHES THE USER ID OF USER'S PROFILE WE ARE VISITNG.
     # IF IT DOES, THEN IT'S OUR OWN PROFILE
-    username = "JOHN123"
+    # username = "JOHN123"
+    
 
     if request.user.is_authenticated:
         username = request.user.username
+        user_profile = UserProfile.objects.get(user=request.user)
+        image = user_profile.image
+        bio = user_profile.bio
+        context_dict = {"username": username,"image": image,"user_bio": bio * 200,
+        "own_profile": True,}
+    else:
+         context_dict = {"username":None,"user_image":None,"user_bio":None,"own_profile": False,}
+        
 
-    # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    context_dict = {
-        "username": username,
-        "user_image": "",
-        "user_bio": "#" * 200,
-        # needed for knowing if we are visiting our OWN profile or another users
-        "own_profile": True,
-    }
+        
+    
+
+    
 
     return render(request, "pantry/user-profile.html", context=context_dict)
 

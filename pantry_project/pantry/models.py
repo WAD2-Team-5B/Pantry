@@ -61,6 +61,7 @@ class Review(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="profile_images", blank=True)
+    bio = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
         return self.user.username

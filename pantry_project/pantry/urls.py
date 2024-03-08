@@ -17,7 +17,7 @@ urlpatterns = [
     path("create-a-recipe/", views.create_a_recipe, name="create-a-recipe"),
     # TESTING PURPOSE
     # TODO - CHANGE TO USER ID
-    path("user-profile/", views.user_profile, name="user-profile"),
+    path("user-profile/user_id", views.user_profile, name="user-profile"),
     # TESTING PURPOSE
     # TODO - CHANGE TO USER ID
     path("user-profile/user-recipes/", views.user_recipes, name="user-recipes"),

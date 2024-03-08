@@ -92,7 +92,7 @@
     <div id="search-results">
       {% for recipe in recipes %}
       <a class="recipe" href="{{ recipe.link }}">
-        <img class="recipe-image" src="{{ recipe.image }}" />
+        <img class="recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" />
         <ul>
           <li>{{ recipe.name }}</li>
           <li>
