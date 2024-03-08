@@ -6,7 +6,9 @@
 {% endblock %}
 
 <!-- JS -->
-{% block js_block %} {% endblock %}
+{% block js_block %}
+<script type="module" src="{% static 'js/pages/edit-profile.js' %}"></script>
+{% endblock %}
 
 <!-- TITLE -->
 {% block title_block %} Edit Profile {% endblock %}
@@ -55,6 +57,8 @@
   <!-- BIO -->
   <h4>Change Bio</h4>
   <textarea id="profile-bio" name="changed_bio"></textarea>
+
+  <h5 id="error-message"></h5>
 
   <!-- ACCOUNT DELETION / SUBMIT -->
   <div class="container-submit">

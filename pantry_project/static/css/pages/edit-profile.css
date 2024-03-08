@@ -149,6 +149,24 @@ h4:first-of-type {
   cursor: pointer;
 }
 
+/* ERROR MESSAGE */
+
+#error-message {
+  width: 100%;
+
+  border-radius: 0.5rem;
+
+  color: var(--color-3);
+  background-color: red;
+
+  text-align: center;
+}
+
+.error-message-active {
+  padding: 0.5rem;
+  margin-top: 1rem;
+}
+
 /* WINDOW WIDTH CHANGE */
 
 @media (max-width: 50rem) {

@@ -36,3 +36,17 @@ export function initButtons(
     };
   });
 }
+
+/**
+ *  switches preview image upon user uploading image
+ *
+ * @param {HTMLElement} imageInput - the <input type="file"> where the image was uploaded
+ * @param {HTMLElement} imagePreview - the <img> where the image is to be previewed
+ */
+export function imagePreview(imageInput, imagePreview) {
+  // user selects file
+  imageInput.onchange = () => {
+    let image = imageInput.files[0];
+    imagePreview.src = URL.createObjectURL(image);
+  };
+}

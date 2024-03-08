@@ -1,4 +1,4 @@
-import { initButtons } from "../utility/helpers.js";
+import { initButtons, imagePreview } from "../utility/helpers.js";
 import { Form } from "../utility/form.js";
 
 // ------------------------------
@@ -119,13 +119,10 @@ addIngredientBtn.onclick = () => {
   return false;
 };
 
-let fileInput = document.getElementById("recipe-image");
-// user selects file
-fileInput.onchange = () => {
-  let image = fileInput.files[0];
-  document.getElementById("recipe-image-preview").src =
-    URL.createObjectURL(image);
-};
+imagePreview(
+  document.getElementById("recipe-image"),
+  document.getElementById("recipe-image-preview")
+);
 
 createStep();
 
@@ -148,7 +145,9 @@ form.addEventListener("submit", (e) => {
     },
     { condition: numSteps <= 1, message: "Please have atleast one step!" },
     {
-      condition: fileInput.files.length === 0 || fileInput.files.length > 1,
+      condition:
+        document.getElementById("recipe-image").value === "" ||
+        document.getElementById("recipe-image").files.length > 1,
       message: "Please select a single image!",
     },
     {
