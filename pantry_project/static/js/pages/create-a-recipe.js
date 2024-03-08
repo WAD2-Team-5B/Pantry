@@ -92,11 +92,9 @@ function createStep() {
 //  INIT
 // ------------------------------
 
-let difficultyBtns = Array.from(
-  document.getElementsByClassName("btn-difficulty")
-);
-let cuisineBtns = Array.from(document.getElementsByClassName("btn-cuisine"));
-let categoryBtns = Array.from(document.getElementsByClassName("btn-category"));
+let difficultyBtns = document.getElementsByClassName("btn-difficulty");
+let cuisineBtns = document.getElementsByClassName("btn-cuisine");
+let categoryBtns = document.getElementsByClassName("btn-category");
 
 initButtons(difficultyBtns, difficulty, "btn-difficulty-active");
 initButtons(cuisineBtns, cuisine, "btn-cuisine-active");
