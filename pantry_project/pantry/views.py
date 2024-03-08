@@ -327,3 +327,26 @@ def user_reviews(request):
     }
 
     return render(request, "pantry/user-data.html", context=context_dict)
+
+
+
+def get_recipe_list(max_results=0, starts_with=''):
+    recipe_list = []
+    if starts_with:
+        recipe_list = Recipe.objects.filter(title__istartswith=starts_with)
+
+        if max_results > 0:
+            if len(recipe_list) > max_results:
+                recipe_list = recipe_list[:max_results]
+    return recipe_list
+
+
+def show_search_results(request):
+    recipe_list = []
+    starts_with = ''
+
+    if request.method == 'GET':
+        starts_with = request.GET['search']
+        recipe_list = get_recipe_list(8, starts_with)
+
+    return render(request, 'pantry/recipe.html', {'recipes': recipe_list })

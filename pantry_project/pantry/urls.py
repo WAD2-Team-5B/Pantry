@@ -11,6 +11,7 @@ urlpatterns = [
     path("login/", views.login, name="login"),
     path("signup/", views.signup, name="signup"),
     path("logout/", views.logout, name="logout"),
+    path("search/", views.get_recipe_list, name = "search"),
     # TESTING PURPOSES
     # TODO - CHANGE TO INCLUDE USER ID AND RECIPE ID
     path("recipe/", views.recipe, name="recipe"),
