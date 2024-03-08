@@ -327,3 +327,7 @@ def user_reviews(request):
     }
 
     return render(request, "pantry/user-data.html", context=context_dict)
+
+
+def edit_profile(request):
+    return render(request, "pantry/edit-profile.html")
