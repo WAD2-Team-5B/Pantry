@@ -58,7 +58,8 @@ h3 {
 
 .star,
 #bookmark,
-.review-heart {
+.review-heart,
+.review-heart-image {
   width: 1.5rem;
   height: 1.5rem;
 
@@ -106,6 +107,7 @@ h3 {
   width: 14.08rem;
 
   border-radius: 1rem;
+
   background-color: var(--color-1);
 }
 
@@ -247,6 +249,10 @@ h3 {
   font-size: 1rem;
 }
 
+#review-header {
+  margin-bottom: 1rem;
+}
+
 .user-review {
   display: flex;
   flex-direction: column;
@@ -254,7 +260,6 @@ h3 {
   align-items: center;
 
   width: 75%;
-  margin-top: 1rem;
   margin-bottom: 2rem;
 
   padding: 1rem;

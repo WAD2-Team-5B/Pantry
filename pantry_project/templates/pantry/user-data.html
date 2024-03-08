@@ -1,0 +1,50 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/user-data.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %} {% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} {{ page_name }} {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<h3>{{ page_name }}</h3>
+
+{% if own_profile %}
+<div class="container">
+  <div class="container-sort-by">
+    <h5>Sort By</h5>
+    <div>
+      <button id="btn-newest" class="btn-sort-by" value="newest">newest</button>
+      <button id="btn-oldest" class="btn-sort-by" value="oldest">oldest</button>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- MY RECIPES / MY SAVED RECIPES / MY REVIEWS -->
+<ul id="data-list">
+  {% for data in user_data %}
+  <li>
+    <a class="recipe-card" href="{{ data.link }}">
+      <h5>{{ data.name }}</h5>
+      {% if is_reviews_page %}
+      <p>{{ data.review }}</p>
+      {% else %}
+      <img src="{{ data.image }}" />
+      {% endif %}
+    </a>
+
+    {% if own_profile %}
+    <button class="btn-remove">remove</button>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

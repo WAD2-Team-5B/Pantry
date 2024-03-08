@@ -1,0 +1,64 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/user-profile.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %} {% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} User Profile {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<h3 id="user">{{ username }}</h3>
+
+<div class="super-container">
+  <!-- BIO -->
+  <div class="bio">
+    <img src="{{ user_image }}" />
+    <p>{{ user_bio }}</p>
+  </div>
+
+  <!-- TOOLS -->
+  <div class="tools">
+    <!-- SEARCH -->
+    <div class="search">
+      <input
+        type="text"
+        id="search"
+        name="search_query"
+        placeholder="search a user"
+      />
+      <ul id="search-results"></ul>
+    </div>
+
+    <!-- LINKS -->
+    <ul class="links">
+      {% if own_profile %}
+      <li>
+        <a href="{% url 'pantry:user-recipes' %}">My Recipes</a>
+      </li>
+      <li><a href="{% url 'pantry:user-reviews' %}">My Reviews</a></li>
+      <li><a href="{% url 'pantry:saved-recipes' %}">Saved Recipes</a></li>
+      <li><a href="{% url 'pantry:create-a-recipe' %}">Create A Recipe</a></li>
+      <li><a href="">Edit Profile</a></li>
+      {% else %}
+      <li>
+        <a href="{% url 'pantry:user-recipes' %}">{{ username }} Recipes</a>
+      </li>
+      <li>
+        <a href="{% url 'pantry:user-reviews' %}">{{ username }} Reviews</a>
+      </li>
+      <li>
+        <a href="{% url 'pantry:saved-recipes' %}"
+          >{{ username }}'s Saved Recipes</a
+        >
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
