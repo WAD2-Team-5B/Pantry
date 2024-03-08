@@ -6,7 +6,9 @@
 {% endblock %}
 
 <!-- JS -->
-{% block js_block %} {% endblock %}
+{% block js_block %}
+<script type="module" src="{% static 'js/pages/user-data.js' %}"></script>
+{% endblock %}
 
 <!-- TITLE -->
 {% block title_block %} {{ page_name }} {% endblock %}
@@ -31,7 +33,7 @@
 <ul id="data-list">
   {% for data in user_data %}
   <li>
-    <a class="recipe-card" href="{{ data.link }}">
+    <a class="data-card" href="{{ data.link }}">
       <h5>{{ data.name }}</h5>
       {% if is_reviews_page %}
       <p>{{ data.review }}</p>

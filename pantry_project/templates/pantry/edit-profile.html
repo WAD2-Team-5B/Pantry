@@ -1,0 +1,69 @@
+{% extends 'pantry/base/base.html' %} {% load staticfiles %}
+
+<!-- CSS -->
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'css/pages/edit-profile.css' %}" />
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %}
+<script type="module" src="{% static 'js/pages/edit-profile.js' %}"></script>
+{% endblock %}
+
+<!-- TITLE -->
+{% block title_block %} Edit Profile {% endblock %}
+
+<!-- CONTENT -->
+{% block main_block %}
+<h3>Edit Profile</h3>
+
+<form
+  role="form"
+  id="edit-profile-form"
+  method="post"
+  enctype="multipart/form-data"
+  action="{% url 'pantry:edit-profile' %}"
+>
+  {% csrf_token %}
+  <div class="container">
+    <!-- USERNAME / PASSWORD -->
+    <div class="subcontainer-left">
+      <h4>Change Username</h4>
+      <input
+        type="text"
+        id="username"
+        class="input-text-small"
+        name="changed_username"
+        value="{{ username }}"
+      />
+      <h4>Change Password</h4>
+      <input
+        type="password"
+        id="password"
+        class="input-text-small"
+        name="changed_password"
+        value=""
+      />
+    </div>
+
+    <!-- IMAGE -->
+    <div class="subcontainer-right">
+      <h4>Change Profile Image</h4>
+      <input type="file" id="profile-image" name="changed_image" />
+      <img id="profile-image-preview" src="{{ user_image }}" />
+    </div>
+  </div>
+
+  <!-- BIO -->
+  <h4>Change Bio</h4>
+  <textarea id="profile-bio" name="changed_bio">{{ user_bio }}</textarea>
+
+  <h5 id="error-message"></h5>
+
+  <!-- ACCOUNT DELETION / SUBMIT -->
+  <div class="container-submit">
+    <input type="submit" id="submit" value="confirm" />
+    <button id="btn-delete-account">delete account</button>
+  </div>
+</form>
+{% endblock %}
