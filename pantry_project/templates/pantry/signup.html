@@ -21,14 +21,20 @@
   id="signup-form"
   method="post"
   action="{% url 'pantry:signup' %}"
->
-  {% csrf_token %}
+  enctype="multipart/form-data">
+  {% csrf_token %} 
+  
+  {{user_form}} 
+  {{profile_form}}
+
+  <!--
   <h4>Username</h4>
   <input type="text" id="username" name="username" value="" />
   <h4>Password</h4>
   <input type="password" id="password" name="password" value="" />
   <h4>Confirm Password</h4>
   <input type="password" id="confirm-password" value="" />
+  -->
   <input id="submit" type="submit" value="Sign Up" />
 
   {% if success %}

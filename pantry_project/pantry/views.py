@@ -8,6 +8,8 @@ from django.http import HttpResponse
 from django.db import IntegrityError
 from pantry.models import UserProfile
 from pantry.models import Recipe
+from django.http import HttpResponseNotFound
+from pantry.forms import UserForm, UserProfileForm
 
 # TEMPLATE VIEWS
 
@@ -15,8 +17,12 @@ from pantry.models import Recipe
 def index(request):
 
     # UNCOMMENT ONCE DATABASE IS SET UP
-    highest_rated_recipes = Recipe.objects.order_by("-rating","-pub_date")[:10].values("name", "image", "link")
-    newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values("name", "image", "link")
+    highest_rated_recipes = Recipe.objects.order_by("-rating", "-date_pub")[:10].values(
+        "title", "image", "link"
+    )
+    newest_recipes = Recipe.objects.order_by("-date_pub")[:10].values(
+        "title", "image", "link"
+    )
 
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
     # highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
@@ -83,53 +89,34 @@ def recipes(request):
 
 
 def signup(request):
-    PASSWORD_MIN_LENGTH = 6
-    USERNAME_MIN_LENGTH = 1
+    success = False
 
-    context_dict = {"success": True, "error": ""}
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+    if request.method=="POST":
+        user_form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST)
 
-        if len(username) < USERNAME_MIN_LENGTH:
-            context_dict["success"] = False
-            context_dict["error"] = (
-                f"Username must be at least {USERNAME_MIN_LENGTH} characters long!"
-            )
-            return render(request, "pantry/signup.html", context_dict)
+        if user_form.is_valid() and profile_form.is_valid:
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
 
-        if len(password) < PASSWORD_MIN_LENGTH:
-            context_dict["success"] = False
-            context_dict["error"] = (
-                f"Password must be at least {PASSWORD_MIN_LENGTH} characters long!"
-            )
-            return render(request, "pantry/signup.html", context_dict)
+            profile = profile_form.save(commit=False)
+            profile.user = user
 
-        try:
-            user = User.objects.create_user(username=username, password=password)
+            if "image" in request.FILES:
+                profile.image = request.FILES["image"]
 
-        except IntegrityError:  # the username already exists
-            context_dict["success"] = False
-            context_dict["error"] = f"Username '{username}' already exists"
-            return render(request, "pantry/signup.html", context_dict)
+            profile.save()
 
-        if user:
+            success = True
 
-            # if django user object created, a UserProfile can be created with additional fields required by pantry
-            user_profile = UserProfile.objects.create(user=user)
-
-            if user_profile:
-                auth.login(request, user)
-                return redirect(reverse("pantry:index"))
-
-        # either the User or UserProfile have failed to be created
-        context_dict["success"] = False
-        context_dict["error"] = "Unknown error"
-        return render(request, "pantry/signup.html", context_dict)
-
+        else:
+            render(request, "pantry/signup.html",{"success":success, "error":"", "user_form":user_form, "profile_form":profile_form})
     else:
-        return render(request, "pantry/signup.html", context_dict)
+        user_form = UserForm()
+        profile_form=UserProfileForm()
 
+    return render(request, "pantry/signup.html",{"success":True, "error":"", "user_form":user_form, "profile_form":profile_form})
 
 def login(request):
     context_dict = {"success": True}
@@ -249,28 +236,32 @@ def create_a_recipe(request):
     return render(request, "pantry/create-a-recipe.html", context=context_dict)
 
 
-def user_profile(request):
+def user_profile(request, user_id):
 
     # TODO - CHECK IF OUR USER ID MATCHES THE USER ID OF USER'S PROFILE WE ARE VISITNG.
     # IF IT DOES, THEN IT'S OUR OWN PROFILE
     # username = "JOHN123"
-    
 
+    own_profile = False
     if request.user.is_authenticated:
-        username = request.user.username
-        user_profile = UserProfile.objects.get(user=request.user)
-        image = user_profile.image
-        bio = user_profile.bio
-        context_dict = {"username": username,"image": image,"user_bio": bio * 200,
-        "own_profile": True,}
-    else:
-         context_dict = {"username":None,"user_image":None,"user_bio":None,"own_profile": False,}
-        
+        if user_id == request.user.id:
+            own_profile = True
 
-        
-    
+    profile_user = User.objects.get(id=user_id)
 
-    
+    if not profile_user:
+        return HttpResponseNotFound("Profile does not exist.")
+
+    username = profile_user.username
+    user_profile = UserProfile.objects.get(user=profile_user)
+    image = user_profile.image
+    bio = user_profile.bio
+    context_dict = {
+        "username": username,
+        "image": image,
+        "user_bio": bio,
+        "own_profile": own_profile,
+    }
 
     return render(request, "pantry/user-profile.html", context=context_dict)
 
