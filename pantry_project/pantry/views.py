@@ -89,13 +89,11 @@ def recipes(request):
 
 
 def signup(request):
-    success = False
-
     if request.method=="POST":
         user_form = UserForm(request.POST)
         profile_form = UserProfileForm(request.POST)
 
-        if user_form.is_valid() and profile_form.is_valid:
+        if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
             user.set_password(user.password)
             user.save()
@@ -107,16 +105,16 @@ def signup(request):
                 profile.image = request.FILES["image"]
 
             profile.save()
-
-            success = True
+            auth.login(request, user)
+            return redirect(reverse("pantry:index"))
 
         else:
-            render(request, "pantry/signup.html",{"success":success, "error":"", "user_form":user_form, "profile_form":profile_form})
+            return render(request, "pantry/signup.html",{"user_form":user_form, "profile_form":profile_form})
     else:
         user_form = UserForm()
-        profile_form=UserProfileForm()
+        profile_form= UserProfileForm()
 
-    return render(request, "pantry/signup.html",{"success":True, "error":"", "user_form":user_form, "profile_form":profile_form})
+    return render(request, "pantry/signup.html",{"user_form":user_form, "profile_form":profile_form})
 
 def login(request):
     context_dict = {"success": True}

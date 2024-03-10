@@ -2,16 +2,10 @@ from django import forms
 from django.contrib.auth.models import User
 from pantry.models import UserProfile, Recipe, Review
 
-
 class UserForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        kwargs["label_suffix"] = "" # removes the colon after each field label
-        super().__init__(*args, **kwargs)
-
     username = forms.CharField(widget=forms.TextInput(attrs={"id":"username"}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={"id":"password"}))
-    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={"id":"confirm-password"}), label="Confirm Password")
-
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={"id":"confirm-password"}))
 
     class Meta:
         model = User
