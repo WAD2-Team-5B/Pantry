@@ -220,18 +220,13 @@ def create_a_recipe(request):
 
     if request.method == "POST":
 
-        # create their media recipe directory
-        super_dir_name = "user-id-" + str(request.user.id)
-        recipe_id = len(Recipe.objects.filter(user=request.user)) + 1
-        dir_name = "recipe-id-" + str(recipe_id)
-        print(recipe_id)
-        os.mkdir(os.path.join(MEDIA_DIR, super_dir_name, "recipes", dir_name))
-
         # get our cuisine instance
         cuisine = Cuisine.objects.get(type=request.POST.get("cuisine"))
 
-        # upload the image
+        # create the recipe instance
         instance = Recipe.objects.create(user=request.user, cuisine=cuisine)
+
+        # upload the image
         image = request.FILES.get("image")
         instance.image = image
         instance.save()
