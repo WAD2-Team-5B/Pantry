@@ -11,6 +11,10 @@ from pantry.models import Recipe
 from django.http import HttpResponseNotFound
 from pantry.forms import UserForm, UserProfileForm
 from django.db.models import Q
+from pantry.models import Cuisine
+
+import os
+from pantry_project.settings import MEDIA_DIR
 
 # TEMPLATE VIEWS
 
@@ -18,8 +22,12 @@ from django.db.models import Q
 def index(request):
 
     # UNCOMMENT ONCE DATABASE IS SET UP
-    highest_rated_recipes = Recipe.objects.order_by("-rating","-pub_date")[:10].values("title", "image", "link")
-    newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values("title", "image", "link")
+    highest_rated_recipes = Recipe.objects.order_by("-rating", "-pub_date")[:10].values(
+        "title", "image", "link"
+    )
+    newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values(
+        "title", "image", "link"
+    )
 
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
     # highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
@@ -42,53 +50,53 @@ def recipes(request):
 
     # what will the form of the request be?
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    
+
     # assume that request method = post? - what of they have jumped to find recipes page
-    
+
     recipes = [{}]
-    
+
     if request.method == "POST":
-        
-        difficulties = request.POST.get("selected_difficulty") 
+
+        difficulties = request.POST.get("selected_difficulty")
         cuisines = request.POST.get("selected_cuisines")
         categories = request.POST.get("selected_categories")
         sort = request.POST.get("selected_sort")
-       
-        difficulty_query =  Q()
+
+        difficulty_query = Q()
         # reviews is the only different one
         for difficulty in difficulties:
             difficulty_query |= Q(difficulty=difficulty)
-            
+
         cuisine_query = Q()
-        
+
         for cuisine in cuisines:
             cuisine_query |= Q(cuisine=cuisine)
-            
+
         category_query = Q()
-        
+
         for category in categories:
             categories |= Q(category=category)
-            
-        recipes = Recipe.objects.filter(difficulty_query,cuisine_query,category_query)
+
+        recipes = Recipe.objects.filter(difficulty_query, cuisine_query, category_query)
         if sort != "":
-            recipes = recipes.order_by("-"+sort)
+            recipes = recipes.order_by("-" + sort)
         else:
             recipes = recipes.order_by("-pub_date")
-            
-        recipes = recipes.values("title","link","image","rating","saves","difficulty","cuisine","prep","cook")
-            
-    cuisines = [
-        "Italian",
-        "Mexican",
-        "Indian",
-        "Chinese",
-        "Japanese",
-        "Thai",
-        "French",
-        "Greek",
-        "Spanish",
-        "American",
-    ]
+
+        recipes = recipes.values(
+            "title",
+            "link",
+            "image",
+            "rating",
+            "saves",
+            "difficulty",
+            "cuisine",
+            "prep",
+            "cook",
+        )
+
+    cuisines = Cuisine.objects.all().values_list("type", flat=True)
+
     categories = [
         "Vegan",
         "Vegetarian",
@@ -109,7 +117,7 @@ def recipes(request):
 
 
 def signup(request):
-    if request.method=="POST":
+    if request.method == "POST":
         user_form = UserForm(request.POST)
         profile_form = UserProfileForm(request.POST)
 
@@ -126,15 +134,31 @@ def signup(request):
 
             profile.save()
             auth.login(request, user)
+
+            # create their media folder using their id
+            dir_name = "user-id-" + str(user.pk)
+            os.mkdir(os.path.join(MEDIA_DIR, dir_name))
+            os.mkdir(os.path.join(MEDIA_DIR, dir_name, "profile"))
+            os.mkdir(os.path.join(MEDIA_DIR, dir_name, "recipes"))
+
             return redirect(reverse("pantry:index"))
 
         else:
-            return render(request, "pantry/signup.html",{"user_form":user_form, "profile_form":profile_form})
+            return render(
+                request,
+                "pantry/signup.html",
+                {"user_form": user_form, "profile_form": profile_form},
+            )
     else:
         user_form = UserForm()
-        profile_form= UserProfileForm()
+        profile_form = UserProfileForm()
 
-    return render(request, "pantry/signup.html",{"user_form":user_form, "profile_form":profile_form})
+    return render(
+        request,
+        "pantry/signup.html",
+        {"user_form": user_form, "profile_form": profile_form},
+    )
+
 
 def login(request):
     context_dict = {"success": True}
@@ -222,19 +246,22 @@ def recipe(request):
 @login_required
 def create_a_recipe(request):
 
+    if request.method == "POST":
+
+        # get our cuisine instance
+        cuisine = Cuisine.objects.get(type=request.POST.get("cuisine"))
+
+        # create the recipe instance
+        instance = Recipe.objects.create(user=request.user, cuisine=cuisine)
+
+        # upload the image
+        image = request.FILES.get("image")
+        instance.image = image
+        instance.save()
+
+    cuisines = Cuisine.objects.all().values_list("type", flat=True)
+
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    cuisines = [
-        "Italian",
-        "Mexican",
-        "Indian",
-        "Chinese",
-        "Japanese",
-        "Thai",
-        "French",
-        "Greek",
-        "Spanish",
-        "American",
-    ]
     categories = [
         "Vegan",
         "Vegetarian",
