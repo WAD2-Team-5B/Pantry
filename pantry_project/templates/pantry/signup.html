@@ -21,20 +21,27 @@
   id="signup-form"
   method="post"
   action="{% url 'pantry:signup' %}"
->
-  {% csrf_token %}
+  enctype="multipart/form-data">
+  {% csrf_token %} 
+  
   <h4>Username</h4>
-  <input type="text" id="username" name="username" value="" />
+  {{user_form.username}}
   <h4>Password</h4>
-  <input type="password" id="password" name="password" value="" />
+  {{user_form.password}}
   <h4>Confirm Password</h4>
-  <input type="password" id="confirm-password" value="" />
+  {{user_form.confirm_password}}
+  {{user_form.hidden}}
+
   <input id="submit" type="submit" value="Sign Up" />
 
-  {% if success %}
-  <h5 id="error-message"></h5>
+  {% if user_form.errors %}
+    {% for field in user_form %} 
+      {% for error in field.errors %}
+      <h5 id="error-message" class="error-message-active">{{ error }}</h5>
+      {% endfor %}
+    {% endfor %}
   {% else %}
-  <h5 id="error-message" class="error-message-active">{{ error }}</h5>
+    <h5 id="error-message"></h5>
   {% endif %}
 </form>
 {% endblock %}

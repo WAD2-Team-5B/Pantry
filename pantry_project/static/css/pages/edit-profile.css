@@ -1,0 +1,197 @@
+h3 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  color: var(--color-1);
+}
+
+h4 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+h4:first-of-type {
+  margin-top: 0;
+}
+
+#edit-profile-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 1rem;
+  margin-bottom: 2rem;
+
+  border-radius: 1rem;
+  box-shadow: 0 0 0.5rem gray;
+}
+
+.container {
+  display: flex;
+}
+
+/* USERNAME / PASSWORD */
+
+.subcontainer-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 15rem;
+
+  margin-right: 2rem;
+}
+
+.input-text-small {
+  width: 100%;
+
+  padding: 0.5rem;
+
+  border: 0.1rem solid var(--color-1);
+  border-radius: 0.5rem;
+}
+
+/* IMAGE */
+
+.subcontainer-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#profile-image {
+  width: 13.2rem;
+}
+
+#profile-image::file-selector-button {
+  padding: 0.25rem;
+
+  border-radius: 0.25rem;
+  border: none;
+
+  background-color: var(--color-1);
+  color: var(--color-3);
+}
+
+#profile-image::file-selector-button:hover {
+  cursor: pointer;
+}
+
+#profile-image-preview {
+  height: 7.5rem;
+  width: 13.2rem;
+
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+
+  border-radius: 1rem;
+
+  background-color: var(--color-1);
+}
+
+/* BIO */
+
+#profile-bio {
+  width: 100%;
+  height: 5rem;
+
+  padding: 0.25rem;
+
+  border: 0.1rem solid var(--color-1);
+  border-radius: 0.5rem;
+
+  /* users arent allowed to resize */
+  resize: none;
+  overflow-y: auto;
+}
+
+/* SUBMIT / DELETE */
+
+.container-submit {
+  display: flex;
+  justify-content: space-between;
+
+  width: 100%;
+
+  margin-top: 1rem;
+}
+
+#submit,
+#btn-delete-account {
+  text-align: center;
+  font-weight: bold;
+
+  width: calc(50% - 0.5rem);
+
+  padding: 0.25rem;
+
+  border: 0.1rem solid var(--color-1);
+  border-radius: 0.5rem;
+
+  color: var(--color-3);
+  background-color: var(--color-1);
+}
+
+#submit:hover {
+  color: var(--color-1);
+  background-color: var(--color-2);
+
+  cursor: pointer;
+}
+
+#btn-delete-account {
+  border: 0.1rem solid red;
+
+  background-color: red;
+}
+
+#btn-delete-account:hover {
+  cursor: pointer;
+}
+
+/* ERROR MESSAGE */
+
+#error-message {
+  width: 100%;
+
+  border-radius: 0.5rem;
+
+  color: var(--color-3);
+  background-color: red;
+
+  text-align: center;
+}
+
+.error-message-active {
+  padding: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* WINDOW WIDTH CHANGE */
+
+@media (max-width: 50rem) {
+  #edit-profile-form {
+    width: 20rem;
+  }
+
+  .container {
+    flex-direction: column;
+
+    width: 100%;
+  }
+
+  .subcontainer-left,
+  #submit {
+    width: 100%;
+
+    margin-bottom: 1rem;
+  }
+
+  .container-submit {
+    flex-direction: column;
+  }
+
+  #btn-delete-account {
+    width: 100%;
+  }
+}

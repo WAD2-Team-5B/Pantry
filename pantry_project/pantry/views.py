@@ -105,53 +105,32 @@ def recipes(request):
 
 
 def signup(request):
-    PASSWORD_MIN_LENGTH = 6
-    USERNAME_MIN_LENGTH = 1
+    if request.method=="POST":
+        user_form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST)
 
-    context_dict = {"success": True, "error": ""}
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
 
-        if len(username) < USERNAME_MIN_LENGTH:
-            context_dict["success"] = False
-            context_dict["error"] = (
-                f"Username must be at least {USERNAME_MIN_LENGTH} characters long!"
-            )
-            return render(request, "pantry/signup.html", context_dict)
+            profile = profile_form.save(commit=False)
+            profile.user = user
 
-        if len(password) < PASSWORD_MIN_LENGTH:
-            context_dict["success"] = False
-            context_dict["error"] = (
-                f"Password must be at least {PASSWORD_MIN_LENGTH} characters long!"
-            )
-            return render(request, "pantry/signup.html", context_dict)
+            if "image" in request.FILES:
+                profile.image = request.FILES["image"]
 
-        try:
-            user = User.objects.create_user(username=username, password=password)
+            profile.save()
+            auth.login(request, user)
+            return redirect(reverse("pantry:index"))
 
-        except IntegrityError:  # the username already exists
-            context_dict["success"] = False
-            context_dict["error"] = f"Username '{username}' already exists"
-            return render(request, "pantry/signup.html", context_dict)
-
-        if user:
-
-            # if django user object created, a UserProfile can be created with additional fields required by pantry
-            user_profile = UserProfile.objects.create(user=user)
-
-            if user_profile:
-                auth.login(request, user)
-                return redirect(reverse("pantry:index"))
-
-        # either the User or UserProfile have failed to be created
-        context_dict["success"] = False
-        context_dict["error"] = "Unknown error"
-        return render(request, "pantry/signup.html", context_dict)
-
+        else:
+            return render(request, "pantry/signup.html",{"user_form":user_form, "profile_form":profile_form})
     else:
-        return render(request, "pantry/signup.html", context_dict)
+        user_form = UserForm()
+        profile_form= UserProfileForm()
 
+    return render(request, "pantry/signup.html",{"user_form":user_form, "profile_form":profile_form})
 
 def login(request):
     context_dict = {"success": True}
@@ -228,17 +207,24 @@ def create_a_recipe(request):
     return render(request, "pantry/create-a-recipe.html", context=context_dict)
 
 
-def user_profile(request, user_id):
+def user_profile(request):
 
-    user = request.user
-    other_user = User.objects.get(id=user_id)
+    # TODO - CHECK IF OUR USER ID MATCHES THE USER ID OF USER'S PROFILE WE ARE VISITNG.
+    # IF IT DOES, THEN IT'S OUR OWN PROFILE
+    # username = "JOHN123"
     
-    own_profile = own_profile(user,other_user)
+
+    if request.user.is_authenticated:
+        username = request.user.username
+        user_profile = UserProfile.objects.get(user=request.user)
+        image = user_profile.image
+        bio = user_profile.bio
+        context_dict = {"username": username,"image": image,"user_bio": bio * 200,
+        "own_profile": True,}
+    else:
+         context_dict = {"username":None,"user_image":None,"user_bio":None,"own_profile": False,}
     
-    other_user_profile = UserProfile.objects.get(user=request.user)
-       
-    context_dict = {"user":other_user, "user_profile": other_user_profile, "own_profile": own_profile}
-    
+
     return render(request, "pantry/user-profile.html", context=context_dict)
 
 # helper function!
@@ -295,4 +281,4 @@ def saved_recipes(request, user_id):
 
 def user_reviews(request, user_id):
 
-    return render(request, "pantry/user-data.html", context=get_user_data_context_dict(request, user_id, "Reviewed Recipe", Review))
+    return render(request, "pantry/user-data.html", context=context_dict)
