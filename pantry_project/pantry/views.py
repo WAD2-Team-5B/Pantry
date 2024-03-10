@@ -8,6 +8,10 @@ from django.http import HttpResponse
 from django.db import IntegrityError
 from pantry.models import UserProfile
 from pantry.models import Recipe
+from pantry.models import Cuisine
+
+import os
+from pantry_project.settings import MEDIA_DIR
 
 # TEMPLATE VIEWS
 
@@ -37,6 +41,8 @@ def about(request):
 
 def recipes(request):
 
+    cuisines = Cuisine.objects.all().values_list("type", flat=True)
+
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
     recipes = [
         {
@@ -51,18 +57,6 @@ def recipes(request):
             "cook": "0:30",
         }
     ] * 20
-    cuisines = [
-        "Italian",
-        "Mexican",
-        "Indian",
-        "Chinese",
-        "Japanese",
-        "Thai",
-        "French",
-        "Greek",
-        "Spanish",
-        "American",
-    ]
     categories = [
         "Vegan",
         "Vegetarian",
@@ -120,6 +114,13 @@ def signup(request):
 
             if user_profile:
                 auth.login(request, user)
+
+                # create their media folder using their id
+                dir_name = "user-id-" + str(user.pk)
+                os.mkdir(os.path.join(MEDIA_DIR, dir_name))
+                os.mkdir(os.path.join(MEDIA_DIR, dir_name, "profile"))
+                os.mkdir(os.path.join(MEDIA_DIR, dir_name, "recipes"))
+
                 return redirect(reverse("pantry:index"))
 
         # either the User or UserProfile have failed to be created
@@ -217,19 +218,27 @@ def recipe(request):
 @login_required
 def create_a_recipe(request):
 
+    if request.method == "POST":
+
+        # create their media recipe directory
+        super_dir_name = "user-id-" + str(request.user.id)
+        recipe_id = len(Recipe.objects.filter(user=request.user)) + 1
+        dir_name = "recipe-id-" + str(recipe_id)
+        print(recipe_id)
+        os.mkdir(os.path.join(MEDIA_DIR, super_dir_name, "recipes", dir_name))
+
+        # get our cuisine instance
+        cuisine = Cuisine.objects.get(type=request.POST.get("cuisine"))
+
+        # upload the image
+        instance = Recipe.objects.create(user=request.user, cuisine=cuisine)
+        image = request.FILES.get("image")
+        instance.image = image
+        instance.save()
+
+    cuisines = Cuisine.objects.all().values_list("type", flat=True)
+
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    cuisines = [
-        "Italian",
-        "Mexican",
-        "Indian",
-        "Chinese",
-        "Japanese",
-        "Thai",
-        "French",
-        "Greek",
-        "Spanish",
-        "American",
-    ]
     categories = [
         "Vegan",
         "Vegetarian",
