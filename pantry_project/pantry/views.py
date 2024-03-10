@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
 from django.db import IntegrityError
+from pantry.forms import UserForm, UserProfileForm
 from pantry.models import Review, UserProfile, Recipe, SavedRecipes
 from django.db.models import Q
 
