@@ -18,8 +18,8 @@ from django.db.models import Q
 def index(request):
 
     # UNCOMMENT ONCE DATABASE IS SET UP
-    highest_rated_recipes = Recipe.objects.order_by("-rating","-pub_date")[:10].values("name", "image", "link")
-    newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values("name", "image", "link")
+    highest_rated_recipes = Recipe.objects.order_by("-rating","-pub_date")[:10].values("title", "image", "link")
+    newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values("title", "image", "link")
 
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
     # highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10

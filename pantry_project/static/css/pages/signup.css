@@ -27,21 +27,6 @@ h4:first-of-type {
   margin-top: 0;
 }
 
-label{
-  margin-top: 1rem;
-}
-
-label:first-of-type {
-  margin-top: 0;
-}
-
-label{
-  display: block;
-  margin-left: 0;
-  margin-right: 0;
-  font-weight: bold;
-}
-
 /* TEXT INPUT */
 
 input {
