@@ -18,7 +18,7 @@
 <div class="super-container">
   <!-- BIO -->
   <div class="bio">
-    <img src="{{MEDIA_URL}}{{ image }}" /> 
+    <img src="{{MEDIA_URL}}{{ image }}" />
     <p>{{ user_bio }}</p>
   </div>
 
@@ -38,22 +38,31 @@
     <!-- LINKS -->
     <ul class="links">
       {% if own_profile %}
-      <li><a href="{% url 'pantry:edit-profile' %}">Edit Profile</a></li>
+      <li>
+        <a href="{% url 'pantry:edit-profile' user.id %}">Edit Profile</a>
+      </li>
       <li><a href="{% url 'pantry:create-a-recipe' %}">Create A Recipe</a></li>
       <li>
-        <a href="{% url 'pantry:user-recipes' %}">My Recipes</a>
+        <a href="{% url 'pantry:user-recipes' user.id %}">My Recipes</a>
       </li>
-      <li><a href="{% url 'pantry:user-reviews' %}">My Reviews</a></li>
-      <li><a href="{% url 'pantry:saved-recipes' %}">Saved Recipes</a></li>
+      <li><a href="{% url 'pantry:user-reviews' user.id %}">My Reviews</a></li>
+      <li>
+        <a href="{% url 'pantry:saved-recipes' user.id %}">Saved Recipes</a>
+      </li>
       {% else %}
+      <!-- TODO - change from user.id to the other users id since user.id will be our own id -->
       <li>
-        <a href="{% url 'pantry:user-recipes' %}">{{ username }} Recipes</a>
+        <a href="{% url 'pantry:user-recipes' user.id %}"
+          >{{ username }} Recipes</a
+        >
       </li>
       <li>
-        <a href="{% url 'pantry:user-reviews' %}">{{ username }} Reviews</a>
+        <a href="{% url 'pantry:user-reviews' user.id %}"
+          >{{ username }} Reviews</a
+        >
       </li>
       <li>
-        <a href="{% url 'pantry:saved-recipes' %}"
+        <a href="{% url 'pantry:saved-recipes' user.id %}"
           >{{ username }}'s Saved Recipes</a
         >
       </li>
