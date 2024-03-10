@@ -233,6 +233,7 @@ def create_a_recipe(request):
 def user_profile(request, user_id):
 
     user = request.user
+    
     other_user = User.objects.get(id=user_id)
 
     own_profile = own_profile(user, other_user)
