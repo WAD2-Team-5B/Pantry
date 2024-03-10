@@ -25,7 +25,7 @@ class Recipe(models.Model):
     categories = models.ManyToManyField(Category)
     link = models.URLField()
     title = models.CharField(max_length=200)
-    image = models.ImageField(upload_to=user.id+"/profile/"self.id+"/", null=True)
+    image = models.ImageField(upload_to="")
     desc = models.CharField(max_length=500)
     ingredients = models.CharField(max_length=2000)
     steps = models.CharField(max_length=10_000)
