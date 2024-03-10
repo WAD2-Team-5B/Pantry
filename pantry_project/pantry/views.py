@@ -207,22 +207,16 @@ def create_a_recipe(request):
     return render(request, "pantry/create-a-recipe.html", context=context_dict)
 
 
-def user_profile(request):
-
-    # TODO - CHECK IF OUR USER ID MATCHES THE USER ID OF USER'S PROFILE WE ARE VISITNG.
-    # IF IT DOES, THEN IT'S OUR OWN PROFILE
-    # username = "JOHN123"
+def user_profile(request, user_id):
     
-
-    if request.user.is_authenticated:
-        username = request.user.username
-        user_profile = UserProfile.objects.get(user=request.user)
-        image = user_profile.image
-        bio = user_profile.bio
-        context_dict = {"username": username,"image": image,"user_bio": bio * 200,
-        "own_profile": True,}
-    else:
-         context_dict = {"username":None,"user_image":None,"user_bio":None,"own_profile": False,}
+    user = request.user
+    other_user = User.objects.get(id=user_id)
+    
+    own_profile = own_profile(user, other_user)
+    
+    other_user_profile = UserProfile.objects.get(user=other_user)
+    
+    context_dict = {"user":other_user,"user_profile":other_user_profile,"own_profile": own_profile}
     
 
     return render(request, "pantry/user-profile.html", context=context_dict)
@@ -281,4 +275,4 @@ def saved_recipes(request, user_id):
 
 def user_reviews(request, user_id):
 
-    return render(request, "pantry/user-data.html", context=context_dict)
+    return render(request, "pantry/user-data.html", context=get_user_data_context_dict(request,user_id, "Reviewed Recipe", Review))
