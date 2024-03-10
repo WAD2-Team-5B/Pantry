@@ -10,6 +10,7 @@ from pantry.models import UserProfile
 from pantry.models import Recipe
 from django.http import HttpResponseNotFound
 from pantry.forms import UserForm, UserProfileForm
+from django.db.models import Q
 
 # TEMPLATE VIEWS
 
@@ -17,12 +18,8 @@ from pantry.forms import UserForm, UserProfileForm
 def index(request):
 
     # UNCOMMENT ONCE DATABASE IS SET UP
-    highest_rated_recipes = Recipe.objects.order_by("-rating", "-date_pub")[:10].values(
-        "title", "image", "link"
-    )
-    newest_recipes = Recipe.objects.order_by("-date_pub")[:10].values(
-        "title", "image", "link"
-    )
+    highest_rated_recipes = Recipe.objects.order_by("-rating","-pub_date")[:10].values("name", "image", "link")
+    newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values("name", "image", "link")
 
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
     # highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
@@ -43,20 +40,43 @@ def about(request):
 
 def recipes(request):
 
+    # what will the form of the request be?
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    recipes = [
-        {
-            "name": "Spag Bol",
-            "link": "",
-            "image": "",
-            "rating": 4.67,
-            "saves": 34,
-            "difficulty": "beginner",
-            "cuisine": "Italian",
-            "prep": "1:30",
-            "cook": "0:30",
-        }
-    ] * 20
+    
+    # assume that request method = post? - what of they have jumped to find recipes page
+    
+    recipes = [{}]
+    
+    if request.method == "POST":
+        
+        difficulties = request.POST.get("selected_difficulty") 
+        cuisines = request.POST.get("selected_cuisines")
+        categories = request.POST.get("selected_categories")
+        sort = request.POST.get("selected_sort")
+       
+        difficulty_query =  Q()
+        # reviews is the only different one
+        for difficulty in difficulties:
+            difficulty_query |= Q(difficulty=difficulty)
+            
+        cuisine_query = Q()
+        
+        for cuisine in cuisines:
+            cuisine_query |= Q(cuisine=cuisine)
+            
+        category_query = Q()
+        
+        for category in categories:
+            categories |= Q(category=category)
+            
+        recipes = Recipe.objects.filter(difficulty_query,cuisine_query,category_query)
+        if sort != "":
+            recipes = recipes.order_by("-"+sort)
+        else:
+            recipes = recipes.order_by("-pub_date")
+            
+        recipes = recipes.values("title","link","image","rating","saves","difficulty","cuisine","prep","cook")
+            
     cuisines = [
         "Italian",
         "Mexican",
