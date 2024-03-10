@@ -6,12 +6,9 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
 from django.db import IntegrityError
-from pantry.models import UserProfile
-from pantry.models import Recipe
-from django.http import HttpResponseNotFound
+from pantry.models import Review, UserProfile, Recipe, SavedRecipes, Cuisine
 from pantry.forms import UserForm, UserProfileForm
 from django.db.models import Q
-from pantry.models import Cuisine
 
 import os
 from pantry_project.settings import MEDIA_DIR
@@ -22,20 +19,16 @@ from pantry_project.settings import MEDIA_DIR
 def index(request):
 
     # UNCOMMENT ONCE DATABASE IS SET UP
-    highest_rated_recipes = Recipe.objects.order_by("-rating", "-pub_date")[:10].values(
-        "title", "image", "link"
-    )
-    newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values(
-        "title", "image", "link"
-    )
+    highest_rated_recipes = Recipe.objects.order_by("-rating", "-pub_date")[:10]
+    newest_recipes = Recipe.objects.order_by("-pub_date")[:10]
 
     # TESTING PURPOSES UNTIL DATABASE IS SET UP
     # highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
     # newest_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
 
     context_dict = {
-        "highest_rated_recipes": list(highest_rated_recipes),
-        "newest_recipes": list(newest_recipes),
+        "highest_rated_recipes": highest_rated_recipes,
+        "newest_recipes": newest_recipes,
         "num_highest_rated": len(highest_rated_recipes),
         "num_newest": len(newest_recipes),
     }
@@ -184,59 +177,15 @@ def logout(request):
     return redirect(reverse("pantry:index"))
 
 
-def recipe(request):
+def recipe(request, user_id, recipe_id):
 
-    # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    description = (("#" * 100) + "\n") * 10
-    steps = [
-        "#" * 150,
-    ] * 10
-    categories = ["Vegan", "Vegetarian", "Pescatarian"]
-    ingredients = [
-        "Milk",
-        "Eggs",
-        "Flour",
-        "Sugar",
-        "Butter",
-        "Salt",
-        "Pepper",
-        "Tomatoes",
-        "Beef",
-        "Onions",
-        "Garlic",
-        "Pasta",
-    ]
-    reviews = [
-        {
-            "username": "GreatCook123",
-            "likes": 17,
-            "date_pub": "2023-10-21",
-            "review": "#" * 150,
-        }
-    ] * 5
+    recipe = Recipe.objects.get(id=recipe_id)
+    user = User.objects.get(id=user_id)
+    reviews = Review.objects.filter(recipe=recipe)
 
-    # TESTING PURPOSES UNTIL DATABASE IS SET UP
     context_dict = {
-        # header
-        "username": "John12345",
-        "user_id": "",
-        "name": "Spag Bol",
-        "date_pub": "2021-09-21",
-        # description
-        "image": "",
-        "description": description,
-        # sub info
-        "rating": 4.67,
-        "saves": 34,
-        "difficulty": "beginner",
-        "cuisine": "Italian",
-        "prep": "1:30",
-        "cook": "0:30",
-        # main info
-        "steps": steps,
-        "categories": categories,
-        "ingredients": ingredients,
-        # reviews
+        "user": user,
+        "recipe": recipe,
         "reviews": reviews,
     }
 
@@ -283,102 +232,95 @@ def create_a_recipe(request):
 
 def user_profile(request, user_id):
 
-    # TODO - CHECK IF OUR USER ID MATCHES THE USER ID OF USER'S PROFILE WE ARE VISITNG.
-    # IF IT DOES, THEN IT'S OUR OWN PROFILE
-    # username = "JOHN123"
+    user = request.user
+    other_user = User.objects.get(id=user_id)
 
-    own_profile = False
-    if request.user.is_authenticated:
-        if user_id == request.user.id:
-            own_profile = True
+    own_profile = own_profile(user, other_user)
 
-    profile_user = User.objects.get(id=user_id)
+    other_user_profile = UserProfile.objects.get(user=other_user)
 
-    if not profile_user:
-        return HttpResponseNotFound("Profile does not exist.")
-
-    username = profile_user.username
-    user_profile = UserProfile.objects.get(user=profile_user)
-    image = user_profile.image
-    bio = user_profile.bio
     context_dict = {
-        "username": username,
-        "image": image,
-        "user_bio": bio,
+        "user": other_user,
+        "user_profile": other_user_profile,
         "own_profile": own_profile,
     }
 
     return render(request, "pantry/user-profile.html", context=context_dict)
 
 
-def user_recipes(request):
-
-    # TODO - CHANGE TO EITHER 'My Recipes' OR 'JOHN123's Recipes'
-    # BASED ON IF COMING FROM OUR OWN PROFILE OR ANOTHER USER'S
-    page_name = "My Recipes"
-
-    # TODO - CHANGE TO REAL DATA FROM DB
-    recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 20
-
-    context_dict = {
-        "page_name": page_name,
-        "user_data": recipes,
-        # needed for knowing if we are visiting our OWN profile or another users
-        "own_profile": True,
-    }
-
-    return render(request, "pantry/user-data.html", context=context_dict)
+# helper function!
 
 
-def saved_recipes(request):
+def own_profile(user, other_user):
+    if user.is_authenticated and user.id == other_user.id:
+        own_profile = True
+    else:
+        own_profile = False
 
-    # TODO - CHANGE TO EITHER 'My Recipes' OR 'JOHN123's Recipes'
-    # BASED ON IF COMING FROM OUR OWN PROFILE OR ANOTHER USER'S
-    page_name = "My Saved Recipes"
-
-    # TODO - CHANGE TO REAL DATA FROM DB
-    recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 20
-
-    context_dict = {
-        "page_name": page_name,
-        "user_data": recipes,
-        # needed for knowing if we are visiting our OWN profile or another users
-        "own_profile": True,
-    }
-
-    return render(request, "pantry/user-data.html", context=context_dict)
+    return own_profile
 
 
-def user_reviews(request):
+def recipe_name(user, other_user, recipe_string):
 
-    # TODO - CHANGE TO EITHER 'My Recipes' OR 'JOHN123's Recipes'
-    # BASED ON IF COMING FROM OUR OWN PROFILE OR ANOTHER USER'S
-    page_name = "My Saved Recipes"
+    own_profile = own_profile(user, other_user)
 
-    # TODO - CHANGE TO REAL DATA FROM DB
-    reviews = [{"name": "Spag Bol", "link": "", "review": "#" * 200}] * 20
+    if own_profile:
+        page_name = "My " + recipe_string + "s"
+    else:
+        page_name = other_user.username + " " + recipe_string + "'s"
+
+    return page_name, own_profile
+
+
+# another helper function
+
+
+def get_user_data_context_dict(request, user_id, recipe_string, model):
+
+    user = request.user
+    other_user = User.objects.get(id=user_id)
+
+    page_name, own_profile = own_profile(user, other_user, recipe_string)
+
+    user_data = model.objects.filter(user=other_user)
 
     context_dict = {
         "page_name": page_name,
-        "user_data": reviews,
+        "user_data": user_data,
         # needed for knowing if we are visiting our OWN profile or another users
-        "own_profile": True,
-        # needed since reusing templates
-        "is_reviews_page": True,
+        "own_profile": own_profile,
     }
 
-    return render(request, "pantry/user-data.html", context=context_dict)
+    if model == Review:
+        context_dict["is_reviews_page"] = True
+
+    return context_dict
 
 
-def edit_profile(request):
+def user_recipes(request, user_id):
 
-    username = request.user.username
+    return render(
+        request,
+        "pantry/user-data.html",
+        context=get_user_data_context_dict(request, user_id, "Recipe", Recipe),
+    )
 
-    # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    context_dict = {
-        "username": username,
-        "user_image": "",
-        "user_bio": "#" * 200,
-    }
 
-    return render(request, "pantry/edit-profile.html", context=context_dict)
+def saved_recipes(request, user_id):
+
+    return render(
+        request,
+        "pantry/user-data.html",
+        context=get_user_data_context_dict(
+            request, user_id, "Saved Recipe", SavedRecipes
+        ),
+    )
+
+
+def user_reviews(request, user_id):
+
+    return render(
+        request,
+        "pantry/user-data.html",
+        context=get_user_data_context_dict(request, user_id, "Reviewed Recipe", Review),
+    )
