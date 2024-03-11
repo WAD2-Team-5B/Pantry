@@ -276,6 +276,6 @@ def user_reviews(request, user_id):
 
 
 @login_required
-def edit_profile(request, user_id):
+def edit_profile(request):
 
     return render(request, "pantry/edit-profile.html")

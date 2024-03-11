@@ -17,5 +17,5 @@ urlpatterns = [
     path("<int:user_id>/user-recipes/", views.user_recipes, name="user-recipes"),
     path("<int:user_id>/saved-recipes/", views.saved_recipes, name="saved-recipes"),
     path("<int:user_id>/user-reviews/", views.user_reviews, name="user-reviews"),
-    path("<int:user_id>/edit-profile/", views.edit_profile, name="edit-profile"),
+    path("edit-profile/", views.edit_profile, name="edit-profile"),
 ]
