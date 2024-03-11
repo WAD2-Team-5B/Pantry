@@ -68,6 +68,7 @@ class Review(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     likes = models.IntegerField(default=0)
     date_pub = models.DateTimeField(auto_now_add=True)
+    review = models.CharField(max_length=500)
 
     def save(self, *args, **kwargs):
 

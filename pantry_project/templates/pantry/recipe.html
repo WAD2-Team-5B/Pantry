@@ -23,10 +23,12 @@ new view to handle -->
 <!-- RECIPE HEADER -->
 <header class="recipe-header">
   <div class="left-aside">
-    <a class="user" href="">{{ username }}</a>
-    <p>{{ pub_date }}</p>
+    <a class="user" href="{% url 'pantry:user-profile' recipe.user.id %}"
+      >{{ recipe.user.username }}</a
+    >
+    <p>{{ recipe.pub_date }}</p>
   </div>
-  <h3>{{ name }}</h3>
+  <h3>{{ recipe.title }}</h3>
   <div class="right-aside">
     {% if user.is_authenticated %}
     <div id="stars"></div>
@@ -38,21 +40,21 @@ new view to handle -->
 <!-- RECIPE INFO -->
 <div class="recipe-info">
   <div class="description">
-    <img src="{{ image }}" />
-    <p>{{ description }}</p>
+    <img src="{{ MEDIA_URL }}{{ recipe.image }}" />
+    <p>{{ recipe.desc }}</p>
   </div>
 
   <div class="info">
     <ul>
       <li>
         <img src="{% static 'images/star.svg' %}" />
-        {{ rating }}
+        {{ recipe.rating }}
       </li>
-      <li>{{ saves }} saves</li>
-      <li>{{ difficulty }}</li>
-      <li>{{ cuisine }}</li>
-      <li>Prep - {{ prep }}h</li>
-      <li>Cook - {{ cook }}h</li>
+      <li>{{ recipe.saves }} saves</li>
+      <li>{{ recipe.difficulty }}</li>
+      <li>{{ recipe.cuisine }}</li>
+      <li>Prep - {{ recipe.prep }}h</li>
+      <li>Cook - {{ recipe.cook }}h</li>
     </ul>
   </div>
 </div>
@@ -80,8 +82,8 @@ new view to handle -->
   <div class="categories">
     <h5>Categories</h5>
     <ul>
-      {% for category in categories %}
-      <li>{{ category }}</li>
+      {% for category in recipe.categories.all %}
+      <li>{{ category.type }}</li>
       {% endfor %}
     </ul>
   </div>
@@ -97,14 +99,14 @@ new view to handle -->
     <button id="user-review-submit">post</button>
   </div>
 </div>
-{% endif %} 
-
-{% for review in reviews %}
+{% endif %} {% for review in reviews %}
 <div class="review">
   <div class="review-aside">
     <div>
-      <a class="user" href="">{{ review.user.user }}</a>
-      <p>{{ review.pub_date }}</p>
+      <a class="user" href="{% url 'pantry:user-profile' review.user.id %}"
+        >{{ review.user.username }}</a
+      >
+      <p>{{ review.date_pub }}</p>
     </div>
 
     <div class="review-rating">
@@ -118,7 +120,7 @@ new view to handle -->
       {% endif %}
       <p class="review-likes">{{ review.likes }}</p>
     </div>
+    <p class="review-text">{{ review.review }}</p>
   </div>
-  <p class="review-text">{{ review.review }}</p>
+  {% endfor %} {% endblock %}
 </div>
-{% endfor %} {% endblock %}
