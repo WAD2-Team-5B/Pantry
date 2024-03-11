@@ -238,8 +238,8 @@ def user_profile(request, user_id):
     other_user_profile = UserProfile.objects.get(user=other_user)
 
     context_dict = {
-        "user": other_user,
-        "user_profile": other_user_profile,
+        "profileuser": other_user,
+        "profileuser_profile": other_user_profile,
         "own_profile": own_profile,
     }
 
