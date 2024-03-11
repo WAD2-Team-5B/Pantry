@@ -22,7 +22,7 @@
   id="edit-profile-form"
   method="post"
   enctype="multipart/form-data"
-  action="{% url 'pantry:edit-profile' %}"
+  action="{% url 'pantry:edit-profile' user.id %}"
 >
   {% csrf_token %}
   <div class="container">
