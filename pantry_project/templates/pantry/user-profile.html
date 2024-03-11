@@ -19,7 +19,7 @@
   <!-- BIO -->
   <div class="bio">
     <img src="{{ MEDIA_URL }}{{ user_profile.image }}" />
-    <p>{{ user_bio }}</p>
+    <p>{{ user_profile.bio }}</p>
   </div>
 
   <!-- TOOLS -->
@@ -39,7 +39,7 @@
     <ul class="links">
       {% if own_profile %}
       <li>
-        <a href="{% url 'pantry:edit-profile' user.id %}">Edit Profile</a>
+        <a href="{% url 'pantry:edit-profile' %}">Edit Profile</a>
       </li>
       <li><a href="{% url 'pantry:create-a-recipe' %}">Create A Recipe</a></li>
       <li>

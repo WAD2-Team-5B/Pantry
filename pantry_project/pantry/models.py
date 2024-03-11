@@ -33,7 +33,6 @@ class Recipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category)
-    link = models.URLField()
     title = models.CharField(max_length=200)
     image = models.ImageField(upload_to=recipe_upload_path)
     desc = models.CharField(max_length=500)
@@ -84,8 +83,15 @@ class Review(models.Model):
 
 
 class UserProfile(models.Model):
+
+    # helper
+    def userprofile_upload_path(self, filename):
+        # return correct media folder using their user ID and recipe ID
+        dir_name = "user-id-" + str(self.user.pk)
+        return os.path.join(dir_name, "profile", filename)
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="profile_images", blank=True)
+    image = models.ImageField(upload_to=userprofile_upload_path, blank=True)
     bio = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
