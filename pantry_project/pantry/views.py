@@ -46,7 +46,7 @@ def recipes(request):
     # assume that request method = post? - what of they have jumped to find recipes page
     # TODO - if redirect then user is coming from the index page and we need to display search query results
 
-    recipes = [{}]
+    recipes = []
 
     if request.method == "POST":
 
@@ -173,14 +173,12 @@ def logout(request):
 def recipe(request, user_id, recipe_id):
 
     recipe = Recipe.objects.get(id=recipe_id)
-    user = User.objects.get(id=user_id)
     reviews = Review.objects.filter(recipe=recipe)
 
     # additional
     ingredients = recipe.ingredients.split(SPACER)
 
     context_dict = {
-        "user": user,
         "recipe": recipe,
         "reviews": reviews,
         "ingredients": ingredients,
