@@ -33,12 +33,12 @@
 <ul id="data-list">
   {% for data in user_data %}
   <li>
-    <a class="data-card" href="{{ data.link }}">
-      <h5>{{ data.name }}</h5>
+    <a class="data-card" href="{% url 'pantry:recipe' data.user.id data.id %}">
+      <h5>{{ data.title }}</h5>
       {% if is_reviews_page %}
       <p>{{ data.review }}</p>
       {% else %}
-      <img src="{{ data.image }}" />
+      <img src="{{ MEDIA_URL }}{{ data.image }}" />
       {% endif %}
     </a>
 
