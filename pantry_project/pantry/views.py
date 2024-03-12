@@ -280,10 +280,35 @@ def user_reviews(request, user_id):
 @login_required
 def edit_profile(request):
 
+    userprofile = UserProfile.objects.get(user=request.user)
+
     # user submitting request
     if request.method == "POST":
-        pass
+        changed_username = request.POST.get("changed_username")
+        changed_password = request.POST.get("changed_password")
+        changed_image = request.POST.get("changed_image")
+        changed_bio = request.POST.get("changed_bio")
 
-    context_dict = {"userprofile": UserProfile.objects.get(user=request.user)}
+        # check if username is actually changed
+        if request.user.username != changed_username:
+            request.user.username = changed_username
+            request.user.save()
+            print(f"changed username to {request.user.username}")
+
+        # check if password is actually changed
+        if changed_password != "":
+            request.user.set_password(changed_password)
+            request.user.save()
+            print("changed password")
+
+        # check if image was changed
+
+        # check if bio was changed
+        if userprofile.bio != changed_bio:
+            userprofile.bio = changed_bio
+            userprofile.save()
+            print("changed bio")
+
+    context_dict = {"userprofile": userprofile}
 
     return render(request, "pantry/edit-profile.html", context=context_dict)
