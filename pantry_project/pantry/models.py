@@ -25,6 +25,8 @@ class Recipe(models.Model):
 
     # helper
     def recipe_upload_path(self, filename):
+        # get base filename
+        filename = os.path.basename(filename)
         # return correct media folder using their user ID and recipe ID
         dir_name = "user-id-" + str(self.user.pk)
         recipe_id = "recipe-id-" + str(self.pk)
@@ -86,6 +88,8 @@ class UserProfile(models.Model):
 
     # helper
     def userprofile_upload_path(self, filename):
+        # get base filename
+        filename = os.path.basename(filename)
         # return correct media folder using their user ID and recipe ID
         dir_name = "user-id-" + str(self.user.pk)
         return os.path.join(dir_name, "profile", filename)
