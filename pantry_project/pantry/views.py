@@ -9,8 +9,8 @@ from django.db import IntegrityError
 from django.db.models import Q
 from pantry_project.settings import MEDIA_DIR
 
-from pantry.models import Review, UserProfile, Recipe, SavedRecipes, Cuisine, Category
-from pantry.forms import UserForm, UserProfileForm
+from pantry.models import *
+from pantry.forms import *
 
 from pantry.helpers import *
 
@@ -280,4 +280,10 @@ def user_reviews(request, user_id):
 @login_required
 def edit_profile(request):
 
-    return render(request, "pantry/edit-profile.html")
+    # user submitting request
+    if request.method == "POST":
+        pass
+
+    context_dict = {"userprofile": UserProfile.objects.get(user=request.user)}
+
+    return render(request, "pantry/edit-profile.html", context=context_dict)
