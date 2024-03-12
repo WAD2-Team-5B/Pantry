@@ -16,6 +16,8 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 from pantry import views
 
@@ -24,4 +26,4 @@ urlpatterns = [
     # any URL that starts with "pantry/" will be handled by the pantry app
     path("pantry/", include("pantry.urls")),
     path("admin/", admin.site.urls),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

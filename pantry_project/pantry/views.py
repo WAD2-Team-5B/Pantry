@@ -6,25 +6,33 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
 from django.db import IntegrityError
-from pantry.models import UserProfile
-from pantry.models import Recipe
+from django.db.models import Q
+from pantry_project.settings import MEDIA_DIR
+from django.utils.decorators import method_decorator
+from django.views import View
+
+from pantry.models import Review, UserProfile, Recipe, SavedRecipes, Cuisine, Category
+from pantry.forms import UserForm, UserProfileForm
+
+from pantry.helpers import *
+
+import os
 
 # TEMPLATE VIEWS
 
 
 def index(request):
 
-    # UNCOMMENT ONCE DATABASE IS SET UP
-    # newest_recipes = Recipe.objects.order_by("-rating")[:10].values("name", "photo")
-    # newest_recipes = Recipe.objects.order_by("-pub_date")[:10].values("name", "photo")
+    # TODO - if request = post, then they are have searched so need the redirect to the recipes page
+    # need to somehow send in the search_query with the redirect
 
-    # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    highest_rated_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
-    newest_recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 10
+    # UNCOMMENT ONCE DATABASE IS SET UP
+    highest_rated_recipes = Recipe.objects.order_by("-rating", "-pub_date")[:10]
+    newest_recipes = Recipe.objects.order_by("-pub_date")[:10]
 
     context_dict = {
-        "highest_rated_recipes": list(highest_rated_recipes),
-        "newest_recipes": list(newest_recipes),
+        "highest_rated_recipes": highest_rated_recipes,
+        "newest_recipes": newest_recipes,
         "num_highest_rated": len(highest_rated_recipes),
         "num_newest": len(newest_recipes),
     }
@@ -37,42 +45,53 @@ def about(request):
 
 def recipes(request):
 
-    # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    recipes = [
-        {
-            "name": "Spag Bol",
-            "link": "",
-            "image": "",
-            "rating": 4.67,
-            "saves": 34,
-            "difficulty": "beginner",
-            "cuisine": "Italian",
-            "prep": "1:30",
-            "cook": "0:30",
-        }
-    ] * 20
-    cuisines = [
-        "Italian",
-        "Mexican",
-        "Indian",
-        "Chinese",
-        "Japanese",
-        "Thai",
-        "French",
-        "Greek",
-        "Spanish",
-        "American",
-    ]
-    categories = [
-        "Vegan",
-        "Vegetarian",
-        "Pescatarian",
-        "Gluten-Free",
-        "Dairy-Free",
-        "Nut-Free",
-        "Soy-Free",
-        "Egg-Free",
-    ]
+    # assume that request method = post? - what of they have jumped to find recipes page
+    # TODO - if redirect then user is coming from the index page and we need to display search query results
+
+    recipes = [{}]
+
+    if request.method == "POST":
+
+        difficulties = request.POST.get("selected_difficulty")
+        cuisines = request.POST.get("selected_cuisines")
+        categories = request.POST.get("selected_categories")
+        sort = request.POST.get("selected_sort")
+
+        difficulty_query = Q()
+        # reviews is the only different one
+        for difficulty in difficulties:
+            difficulty_query |= Q(difficulty=difficulty)
+
+        cuisine_query = Q()
+
+        for cuisine in cuisines:
+            cuisine_query |= Q(cuisine=cuisine)
+
+        category_query = Q()
+
+        for category in categories:
+            categories |= Q(category=category)
+
+        recipes = Recipe.objects.filter(difficulty_query, cuisine_query, category_query)
+        if sort != "":
+            recipes = recipes.order_by("-" + sort)
+        else:
+            recipes = recipes.order_by("-pub_date")
+
+        recipes = recipes.values(
+            "title",
+            "link",
+            "image",
+            "rating",
+            "saves",
+            "difficulty",
+            "cuisine",
+            "prep",
+            "cook",
+        )
+
+    cuisines = Cuisine.objects.all().values_list("type", flat=True)
+    categories = Category.objects.all().values_list("type", flat=True)
 
     context_dict = {
         "recipes": recipes,
@@ -83,57 +102,60 @@ def recipes(request):
 
 
 def signup(request):
-    PASSWORD_MIN_LENGTH = 6
-    USERNAME_MIN_LENGTH = 1
 
-    context_dict = {"success": True, "error": ""}
     if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
 
-        if len(username) < USERNAME_MIN_LENGTH:
-            context_dict["success"] = False
-            context_dict["error"] = (
-                f"Username must be at least {USERNAME_MIN_LENGTH} characters long!"
+        user_form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
+
+            profile = profile_form.save(commit=False)
+            profile.user = user
+
+            # TODO - i dont think we are sending images in the signup form?
+
+            if "image" in request.FILES:
+                profile.image = request.FILES["image"]
+
+            profile.save()
+            auth.login(request, user)
+
+            # # create their media folder using their id
+            # dir_name = "user-id-" + str(user.pk)
+            # os.mkdir(os.path.join(MEDIA_DIR, dir_name))
+            # os.mkdir(os.path.join(MEDIA_DIR, dir_name, "profile"))
+            # os.mkdir(os.path.join(MEDIA_DIR, dir_name, "recipes"))
+
+            return redirect(reverse("pantry:index"))
+
+        else:
+            return render(
+                request,
+                "pantry/signup.html",
+                {"user_form": user_form, "profile_form": profile_form},
             )
-            return render(request, "pantry/signup.html", context_dict)
-
-        if len(password) < PASSWORD_MIN_LENGTH:
-            context_dict["success"] = False
-            context_dict["error"] = (
-                f"Password must be at least {PASSWORD_MIN_LENGTH} characters long!"
-            )
-            return render(request, "pantry/signup.html", context_dict)
-
-        try:
-            user = User.objects.create_user(username=username, password=password)
-
-        except IntegrityError:  # the username already exists
-            context_dict["success"] = False
-            context_dict["error"] = f"Username '{username}' already exists"
-            return render(request, "pantry/signup.html", context_dict)
-
-        if user:
-
-            # if django user object created, a UserProfile can be created with additional fields required by pantry
-            user_profile = UserProfile.objects.create(user=user)
-
-            if user_profile:
-                auth.login(request, user)
-                return redirect(reverse("pantry:index"))
-
-        # either the User or UserProfile have failed to be created
-        context_dict["success"] = False
-        context_dict["error"] = "Unknown error"
-        return render(request, "pantry/signup.html", context_dict)
 
     else:
-        return render(request, "pantry/signup.html", context_dict)
+        user_form = UserForm()
+        profile_form = UserProfileForm()
+
+    return render(
+        request,
+        "pantry/signup.html",
+        {"user_form": user_form, "profile_form": profile_form},
+    )
 
 
 def login(request):
+
     context_dict = {"success": True}
+
     if request.method == "POST":
+
         username = request.POST.get("username")
         password = request.POST.get("password")
 
@@ -145,6 +167,7 @@ def login(request):
         else:
             context_dict["success"] = False
             return render(request, "pantry/login.html", context=context_dict)
+
     else:
         return render(request, "pantry/login.html", context=context_dict)
 
@@ -155,59 +178,15 @@ def logout(request):
     return redirect(reverse("pantry:index"))
 
 
-def recipe(request):
+def recipe(request, user_id, recipe_id):
 
-    # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    description = (("#" * 100) + "\n") * 10
-    steps = [
-        "#" * 150,
-    ] * 10
-    categories = ["Vegan", "Vegetarian", "Pescatarian"]
-    ingredients = [
-        "Milk",
-        "Eggs",
-        "Flour",
-        "Sugar",
-        "Butter",
-        "Salt",
-        "Pepper",
-        "Tomatoes",
-        "Beef",
-        "Onions",
-        "Garlic",
-        "Pasta",
-    ]
-    reviews = [
-        {
-            "username": "GreatCook123",
-            "likes": 17,
-            "date_pub": "2023-10-21",
-            "review": "#" * 150,
-        }
-    ] * 5
+    recipe = Recipe.objects.get(id=recipe_id)
+    user = User.objects.get(id=user_id)
+    reviews = Review.objects.filter(recipe=recipe)
 
-    # TESTING PURPOSES UNTIL DATABASE IS SET UP
     context_dict = {
-        # header
-        "username": "John12345",
-        "user_id": "",
-        "name": "Spag Bol",
-        "date_pub": "2021-09-21",
-        # description
-        "image": "",
-        "description": description,
-        # sub info
-        "rating": 4.67,
-        "saves": 34,
-        "difficulty": "beginner",
-        "cuisine": "Italian",
-        "prep": "1:30",
-        "cook": "0:30",
-        # main info
-        "steps": steps,
-        "categories": categories,
-        "ingredients": ingredients,
-        # reviews
+        "user": user,
+        "recipe": recipe,
         "reviews": reviews,
     }
 
@@ -217,29 +196,21 @@ def recipe(request):
 @login_required
 def create_a_recipe(request):
 
-    # TESTING PURPOSES UNTIL DATABASE IS SET UP
-    cuisines = [
-        "Italian",
-        "Mexican",
-        "Indian",
-        "Chinese",
-        "Japanese",
-        "Thai",
-        "French",
-        "Greek",
-        "Spanish",
-        "American",
-    ]
-    categories = [
-        "Vegan",
-        "Vegetarian",
-        "Pescatarian",
-        "Gluten-Free",
-        "Dairy-Free",
-        "Nut-Free",
-        "Soy-Free",
-        "Egg-Free",
-    ]
+    if request.method == "POST":
+
+        # get our cuisine instance
+        cuisine = Cuisine.objects.get(type=request.POST.get("cuisine"))
+
+        # create the recipe instance
+        instance = Recipe.objects.create(user=request.user, cuisine=cuisine)
+
+        # upload the image
+        image = request.FILES.get("image")
+        instance.image = image
+        instance.save()
+
+    cuisines = Cuisine.objects.all().values_list("type", flat=True)
+    categories = Category.objects.all().values_list("type", flat=True)
 
     context_dict = {
         "cuisines": cuisines,
@@ -249,104 +220,88 @@ def create_a_recipe(request):
     return render(request, "pantry/create-a-recipe.html", context=context_dict)
 
 
-def user_profile(request):
+def user_profile(request, user_id):
 
-    # TODO - CHECK IF OUR USER ID MATCHES THE USER ID OF USER'S PROFILE WE ARE VISITNG.
-    # IF IT DOES, THEN IT'S OUR OWN PROFILE
-    username = "JOHN123"
+    user = request.user
+    other_user = User.objects.get(id=user_id)
+    own_profile = is_own_profile(user, other_user)
+    other_user_profile = UserProfile.objects.get(user=other_user)
 
-    if request.user.is_authenticated:
-        username = request.user.username
-
-    # TESTING PURPOSES UNTIL DATABASE IS SET UP
     context_dict = {
-        "username": username,
-        "user_image": "",
-        "user_bio": "#" * 200,
-        # needed for knowing if we are visiting our OWN profile or another users
-        "own_profile": True,
+        "user": other_user,
+        "user_profile": other_user_profile,
+        "own_profile": own_profile,
     }
 
     return render(request, "pantry/user-profile.html", context=context_dict)
 
 
-def user_recipes(request):
+def user_recipes(request, user_id):
 
-    # TODO - CHANGE TO EITHER 'My Recipes' OR 'JOHN123's Recipes'
-    # BASED ON IF COMING FROM OUR OWN PROFILE OR ANOTHER USER'S
-    page_name = "My Recipes"
-
-    # TODO - CHANGE TO REAL DATA FROM DB
-    recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 20
-
-    context_dict = {
-        "page_name": page_name,
-        "user_data": recipes,
-        # needed for knowing if we are visiting our OWN profile or another users
-        "own_profile": True,
-    }
-
-    return render(request, "pantry/user-data.html", context=context_dict)
+    return render(
+        request,
+        "pantry/user-data.html",
+        context=get_user_data_context_dict(request, user_id, "Recipe", Recipe),
+    )
 
 
-def saved_recipes(request):
+def saved_recipes(request, user_id):
 
-    # TODO - CHANGE TO EITHER 'My Recipes' OR 'JOHN123's Recipes'
-    # BASED ON IF COMING FROM OUR OWN PROFILE OR ANOTHER USER'S
-    page_name = "My Saved Recipes"
-
-    # TODO - CHANGE TO REAL DATA FROM DB
-    recipes = [{"name": "Spag Bol", "link": "", "image": ""}] * 20
-
-    context_dict = {
-        "page_name": page_name,
-        "user_data": recipes,
-        # needed for knowing if we are visiting our OWN profile or another users
-        "own_profile": True,
-    }
-
-    return render(request, "pantry/user-data.html", context=context_dict)
+    return render(
+        request,
+        "pantry/user-data.html",
+        context=get_user_data_context_dict(
+            request, user_id, "Saved Recipe", SavedRecipes
+        ),
+    )
 
 
-def user_reviews(request):
+def user_reviews(request, user_id):
 
-    # TODO - CHANGE TO EITHER 'My Recipes' OR 'JOHN123's Recipes'
-    # BASED ON IF COMING FROM OUR OWN PROFILE OR ANOTHER USER'S
-    page_name = "My Saved Recipes"
-
-    # TODO - CHANGE TO REAL DATA FROM DB
-    reviews = [{"name": "Spag Bol", "link": "", "review": "#" * 200}] * 20
-
-    context_dict = {
-        "page_name": page_name,
-        "user_data": reviews,
-        # needed for knowing if we are visiting our OWN profile or another users
-        "own_profile": True,
-        # needed since reusing templates
-        "is_reviews_page": True,
-    }
-
-    return render(request, "pantry/user-data.html", context=context_dict)
+    return render(
+        request,
+        "pantry/user-data.html",
+        context=get_user_data_context_dict(request, user_id, "Reviewed Recipe", Review),
+    )
 
 
+@login_required
+def edit_profile(request, user_id):
 
-def get_recipe_list(max_results=0, starts_with=''):
-    recipe_list = []
-    if starts_with:
-        recipe_list = Recipe.objects.filter(title__istartswith=starts_with)
-
-        if max_results > 0:
-            if len(recipe_list) > max_results:
-                recipe_list = recipe_list[:max_results]
-    return recipe_list
+    return render(request, "pantry/edit-profile.html")
 
 
-def show_search_results(request):
-    recipe_list = []
-    starts_with = ''
+class SaveRecipeView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        recipe_id = request.GET['recipe_id']
 
-    if request.method == 'GET':
-        starts_with = request.GET['search']
-        recipe_list = get_recipe_list(8, starts_with)
+        try:
+            recipe = Recipe.objects.get(id=int(recipe_id))
+        except Recipe.DoesNotExist:
+            return HttpResponse(-1)
+        except ValueError:
+            return HttpResponse(-1)
+        
+        recipe.saves = recipe.save + 1
+        recipe.save()
 
-    return render(request, 'pantry/recipe.html', {'recipes': recipe_list })
+        return HttpResponse(recipe.saves)
+    
+
+class LikeReviewView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        reveiw_id = request.GET['review_id']
+
+        try:
+            review = Review.objects.get(id=int(reveiw_id))
+        except Review.DoesNotExist:
+            return HttpResponse(-1)
+        except ValueError:
+            return HttpResponse(-1)
+        
+        review.likes = review.likes + 1
+        review.save()
+
+        return HttpResponse(review.likes)

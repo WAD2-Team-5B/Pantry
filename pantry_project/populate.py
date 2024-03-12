@@ -150,11 +150,11 @@ def create_recipes():
             desc=recipe_data["desc"],
             ingredients=recipe_data["ingredients"],
             steps=recipe_data["steps"],
-            prep_time=recipe_data["prep_time"],
-            cook_time=recipe_data["cook_time"],
+            prep=recipe_data["prep_time"],
+            cook=recipe_data["cook_time"],
             difficulty=recipe_data["difficulty"],
-            no_of_saves=recipe_data["no_of_saves"],
-            date_pub=recipe_data["date_pub"]
+            saves=recipe_data["no_of_saves"],
+            pub_date=recipe_data["date_pub"]
         )
 
 

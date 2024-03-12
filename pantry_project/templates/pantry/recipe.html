@@ -1,5 +1,10 @@
 {% extends 'pantry/base/base.html' %} {% load staticfiles %}
 
+<!-- where to update bookmark selection/deselection? like/unlike?
+new view to handle -->
+<!-- how to grab the recipe id? -->
+<!-- click on a link that takes you to recipe view -->
+
 <!-- CSS -->
 {% block css_block %}
 <link rel="stylesheet" href="{% static 'css/pages/recipe.css' %}" />
@@ -19,7 +24,7 @@
 <header class="recipe-header">
   <div class="left-aside">
     <a class="user" href="">{{ username }}</a>
-    <p>{{ date_pub }}</p>
+    <p>{{ pub_date }}</p>
   </div>
   <h3>{{ name }}</h3>
   <div class="right-aside">
@@ -98,8 +103,8 @@
 <div class="review">
   <div class="review-aside">
     <div>
-      <a class="user" href="">{{ review.username }}</a>
-      <p>{{ review.date_pub }}</p>
+      <a class="user" href="">{{ review.user.user }}</a>
+      <p>{{ review.pub_date }}</p>
     </div>
 
     <div class="review-rating">

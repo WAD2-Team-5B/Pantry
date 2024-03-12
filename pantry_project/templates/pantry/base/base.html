@@ -60,7 +60,7 @@
 
       <div class="user">
         {% if user.is_authenticated %}
-        <a href="{% url 'pantry:user-profile' %}">
+        <a href="{% url 'pantry:user-profile' user.id %}">
           <img src="{% static 'images/navbar-profile.svg' %}" />
           {{ user.username }}
           <!--Profile-->
