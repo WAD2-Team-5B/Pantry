@@ -15,15 +15,19 @@
 
 <!-- CONTENT -->
 {% block main_block %}
+<!-- HEADER -->
 <h3>Sign Up</h3>
+
 <form
   role="form"
   id="signup-form"
   method="post"
   action="{% url 'pantry:signup' %}"
   enctype="multipart/form-data">
+  
   {% csrf_token %} 
   
+  <!-- FIELDS -->
   <h4>Username</h4>
   {{user_form.username}}
   <h4>Password</h4>
@@ -34,6 +38,7 @@
 
   <input id="submit" type="submit" value="Sign Up" />
 
+  <!-- ERROR MESSAGE -->
   {% if user_form.errors %}
     {% for field in user_form %} 
       {% for error in field.errors %}
@@ -43,5 +48,6 @@
   {% else %}
     <h5 id="error-message"></h5>
   {% endif %}
+
 </form>
 {% endblock %}

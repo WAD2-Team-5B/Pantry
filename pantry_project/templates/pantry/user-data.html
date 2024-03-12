@@ -15,8 +15,10 @@
 
 <!-- CONTENT -->
 {% block main_block %}
+<!-- HEADER -->
 <h3>{{ page_name }}</h3>
 
+<!-- SORT BUTTONS -->
 {% if own_profile %}
 <div class="container">
   <div class="container-sort-by">
@@ -34,19 +36,26 @@
   {% for data in user_data %}
   <li>
     <a class="data-card" href="{% url 'pantry:recipe' data.user.id data.id %}">
-      <h5>{{ data.title }}</h5>
       {% if is_reviews_page %}
+
+      <!-- reviews page 'data' will be given as Review Model -->
+      <h5>{{ data.recipe.title }}</h5>
       <p>{{ data.review }}</p>
+
       {% else %}
+
+      <!-- user/saved recipe page 'data' will both be given as Recipe Model -->
+      <h5>{{ data.title }}</h5>
       <img src="{{ MEDIA_URL }}{{ data.image }}" />
+
       {% endif %}
     </a>
 
+    <!-- REMOVE BUTTON -->
     {% if own_profile %}
     <button class="btn-remove">remove</button>
     {% endif %}
   </li>
   {% endfor %}
 </ul>
-
 {% endblock %}
