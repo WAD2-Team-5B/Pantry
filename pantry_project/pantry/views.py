@@ -286,7 +286,7 @@ def edit_profile(request):
     if request.method == "POST":
         changed_username = request.POST.get("changed_username")
         changed_password = request.POST.get("changed_password")
-        changed_image = request.POST.get("changed_image")
+        changed_image = request.FILES.get("changed_image", False)
         changed_bio = request.POST.get("changed_bio")
 
         # check if username is actually changed
@@ -302,6 +302,10 @@ def edit_profile(request):
             print("changed password")
 
         # check if image was changed
+        if changed_image:
+            userprofile.image = changed_image
+            userprofile.save()
+            print("changed image")
 
         # check if bio was changed
         if userprofile.bio != changed_bio:
