@@ -176,8 +176,11 @@ form.addEventListener("submit", (e) => {
     { input: document.getElementById("ingredients"), value: ingredients },
     { input: document.getElementById("difficulty"), value: difficulty },
     { input: document.getElementById("steps"), value: steps },
-    { input: document.getElementById("cuisines"), value: cuisine },
+    { input: document.getElementById("cuisine"), value: cuisine },
     { input: document.getElementById("categories"), value: categories },
   ];
+
+  console.log(hiddenInputs);
+
   Form.assignHiddenInputs(hiddenInputs);
 });

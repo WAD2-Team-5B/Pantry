@@ -8,15 +8,13 @@ from django.http import HttpResponse
 from django.db import IntegrityError
 from django.db.models import Q
 from pantry_project.settings import MEDIA_DIR
-from django.utils.decorators import method_decorator
-from django.views import View
 
 from pantry.models import Review, UserProfile, Recipe, SavedRecipes, Cuisine, Category
 from pantry.forms import UserForm, UserProfileForm
 
 from pantry.helpers import *
 
-import os
+SPACER = "<SPACER>"
 
 # TEMPLATE VIEWS
 
@@ -48,7 +46,7 @@ def recipes(request):
     # assume that request method = post? - what of they have jumped to find recipes page
     # TODO - if redirect then user is coming from the index page and we need to display search query results
 
-    recipes = [{}]
+    recipes = []
 
     if request.method == "POST":
 
@@ -124,12 +122,6 @@ def signup(request):
             profile.save()
             auth.login(request, user)
 
-            # # create their media folder using their id
-            # dir_name = "user-id-" + str(user.pk)
-            # os.mkdir(os.path.join(MEDIA_DIR, dir_name))
-            # os.mkdir(os.path.join(MEDIA_DIR, dir_name, "profile"))
-            # os.mkdir(os.path.join(MEDIA_DIR, dir_name, "recipes"))
-
             return redirect(reverse("pantry:index"))
 
         else:
@@ -181,13 +173,16 @@ def logout(request):
 def recipe(request, user_id, recipe_id):
 
     recipe = Recipe.objects.get(id=recipe_id)
-    user = User.objects.get(id=user_id)
     reviews = Review.objects.filter(recipe=recipe)
 
+    # additional
+    ingredients = recipe.ingredients.split(SPACER)
+
     context_dict = {
-        "user": user,
         "recipe": recipe,
         "reviews": reviews,
+        "ingredients": ingredients,
+        "steps": recipe.steps.split(SPACER),
     }
 
     return render(request, "pantry/recipe.html", context=context_dict)
@@ -196,26 +191,41 @@ def recipe(request, user_id, recipe_id):
 @login_required
 def create_a_recipe(request):
 
+    # user is submitting the form
     if request.method == "POST":
 
         # get our cuisine instance
-        cuisine = Cuisine.objects.get(type=request.POST.get("cuisine"))
+        user_cuisine = Cuisine.objects.get(type=request.POST.get("cuisine"))
 
-        # create the recipe instance
-        instance = Recipe.objects.create(user=request.user, cuisine=cuisine)
+        # get our categories strings
+        category_strings = request.POST.get("categories").split(SPACER)
+        print(category_strings)
 
-        # upload the image
-        image = request.FILES.get("image")
-        instance.image = image
-        instance.save()
+        recipe = Recipe.objects.create(
+            user=request.user,
+            cuisine=user_cuisine,
+            title=request.POST.get("name"),
+            desc=request.POST.get("description"),
+            ingredients=request.POST.get("ingredients"),
+            steps=request.POST.get("steps"),
+            prep=request.POST.get("prep"),
+            cook=request.POST.get("cook"),
+            difficulty=request.POST.get("difficulty"),
+        )
+
+        # add our category instances
+        recipe.categories.set(Category.objects.filter(type__in=category_strings))
+
+        # save first so generate a recipe id
+        recipe.save()
+
+        recipe.image = request.FILES.get("image")
+        recipe.save()
 
     cuisines = Cuisine.objects.all().values_list("type", flat=True)
     categories = Category.objects.all().values_list("type", flat=True)
 
-    context_dict = {
-        "cuisines": cuisines,
-        "categories": categories,
-    }
+    context_dict = {"cuisines": cuisines, "categories": categories}
 
     return render(request, "pantry/create-a-recipe.html", context=context_dict)
 
@@ -228,8 +238,8 @@ def user_profile(request, user_id):
     other_user_profile = UserProfile.objects.get(user=other_user)
 
     context_dict = {
-        "user": other_user,
-        "user_profile": other_user_profile,
+        "profileuser": other_user,
+        "profileuser_profile": other_user_profile,
         "own_profile": own_profile,
     }
 
@@ -266,42 +276,6 @@ def user_reviews(request, user_id):
 
 
 @login_required
-def edit_profile(request, user_id):
+def edit_profile(request):
 
     return render(request, "pantry/edit-profile.html")
-
-
-class SaveRecipeView(View):
-    @method_decorator(login_required)
-    def get(self, request):
-        recipe_id = request.GET['recipe_id']
-
-        try:
-            recipe = Recipe.objects.get(id=int(recipe_id))
-        except Recipe.DoesNotExist:
-            return HttpResponse(-1)
-        except ValueError:
-            return HttpResponse(-1)
-        
-        recipe.saves = recipe.save + 1
-        recipe.save()
-
-        return HttpResponse(recipe.saves)
-    
-
-class LikeReviewView(View):
-    @method_decorator(login_required)
-    def get(self, request):
-        reveiw_id = request.GET['review_id']
-
-        try:
-            review = Review.objects.get(id=int(reveiw_id))
-        except Review.DoesNotExist:
-            return HttpResponse(-1)
-        except ValueError:
-            return HttpResponse(-1)
-        
-        review.likes = review.likes + 1
-        review.save()
-
-        return HttpResponse(review.likes)

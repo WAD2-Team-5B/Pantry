@@ -19,10 +19,10 @@ function updateStars(index) {
 
   for (let i = 0; i < STARS_AMOUNT; i++) {
     if (i < index) {
-      stars[i].style.backgroundImage = "url(../../static/images/star.svg)";
+      stars[i].style.backgroundImage = "url(../../../static/images/star.svg)";
     } else {
       stars[i].style.backgroundImage =
-        "url(../../static/images/star-empty.svg)";
+        "url(../../../static/images/star-empty.svg)";
     }
   }
 }
@@ -34,13 +34,13 @@ function updateBookmark() {
   if (bookmarked) {
     bookmarked = false;
     bookmark.style.backgroundImage =
-      "url(../../static/images/bookmark-empty.svg)";
+      "url(../../../static/images/bookmark-empty.svg)";
     return;
   }
 
   // user selecting bookmark
   bookmarked = true;
-  bookmark.style.backgroundImage = "url(../../static/images/bookmark.svg)";
+  bookmark.style.backgroundImage = "url(../../../static/images/bookmark.svg)";
 }
 
 function updateReviewLike(likeButtons, index) {
@@ -49,7 +49,7 @@ function updateReviewLike(likeButtons, index) {
   // user deselecting like
   if (likedReviews.includes(index)) {
     likeButtons[index].style.backgroundImage =
-      "url(../../static/images/heart-empty.svg)";
+      "url(../../../static/images/heart-empty.svg)";
     likeTexts[index].innerText = parseInt(likeTexts[index].innerText) - 1;
     likedReviews.splice(likedReviews.indexOf(index), 1);
     return;
@@ -57,7 +57,7 @@ function updateReviewLike(likeButtons, index) {
 
   // user is selecting like
   likeButtons[index].style.backgroundImage =
-    "url(../../static/images/heart.svg)";
+    "url(../../../static/images/heart.svg)";
   likeTexts[index].innerText = parseInt(likeTexts[index].innerText) + 1;
   likedReviews.push(index);
 }
@@ -74,7 +74,7 @@ if (stars) {
     let star = document.createElement("button");
 
     star.id = "star-" + (i + 1);
-    star.style.backgroundImage = "url(../../static/images/star-empty.svg)";
+    star.style.backgroundImage = "url(../../../static/images/star-empty.svg)";
     star.className = "star";
 
     star.onclick = () => {
@@ -90,7 +90,7 @@ let bookmark = document.getElementById("bookmark");
 // if null then user not logged in
 if (bookmark) {
   bookmark.style.backgroundImage =
-    "url(../../static/images/bookmark-empty.svg)";
+    "url(../../../static/images/bookmark-empty.svg)";
   bookmark.onclick = () => {
     updateBookmark();
   };
@@ -100,7 +100,7 @@ if (bookmark) {
 let likeButtons = document.getElementsByClassName("review-heart");
 for (let i = 0; i < likeButtons.length; i++) {
   likeButtons[i].style.backgroundImage =
-    "url(../../static/images/heart-empty.svg)";
+    "url(../../../static/images/heart-empty.svg)";
 
   likeButtons[i].onclick = () => {
     updateReviewLike(likeButtons, i);
