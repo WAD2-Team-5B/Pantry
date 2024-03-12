@@ -175,6 +175,8 @@ def recipe(request, user_id, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id)
     reviews = Review.objects.filter(recipe=recipe)
 
+    print(recipe.rating)
+
     # additional
     ingredients = recipe.ingredients.split(SPACER)
 
