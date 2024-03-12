@@ -22,7 +22,7 @@
   id="edit-profile-form"
   method="post"
   enctype="multipart/form-data"
-  action="{% url 'pantry:edit-profile' user.id %}"
+  action="{% url 'pantry:edit-profile' %}"
 >
   {% csrf_token %}
   <div class="container">
@@ -34,7 +34,7 @@
         id="username"
         class="input-text-small"
         name="changed_username"
-        value="{{ username }}"
+        value="{{ user.username }}"
       />
       <h4>Change Password</h4>
       <input
@@ -42,7 +42,6 @@
         id="password"
         class="input-text-small"
         name="changed_password"
-        value=""
       />
     </div>
 
@@ -50,13 +49,16 @@
     <div class="subcontainer-right">
       <h4>Change Profile Image</h4>
       <input type="file" id="profile-image" name="changed_image" />
-      <img id="profile-image-preview" src="{{ user_image }}" />
+      <img
+        id="profile-image-preview"
+        src="{{ MEDIA_URL }}{{ userprofile.image }}"
+      />
     </div>
   </div>
 
   <!-- BIO -->
   <h4>Change Bio</h4>
-  <textarea id="profile-bio" name="changed_bio">{{ user_bio }}</textarea>
+  <textarea id="profile-bio" name="changed_bio">{{ userprofile.bio }}</textarea>
 
   <h5 id="error-message"></h5>
 

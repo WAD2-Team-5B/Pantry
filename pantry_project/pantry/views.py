@@ -8,9 +8,11 @@ from django.http import HttpResponse
 from django.db import IntegrityError
 from django.db.models import Q
 from pantry_project.settings import MEDIA_DIR
+from django.utils.decorators import method_decorator
+from django.views import View
 
-from pantry.models import Review, UserProfile, Recipe, SavedRecipes, Cuisine, Category
-from pantry.forms import UserForm, UserProfileForm
+from pantry.models import *
+from pantry.forms import *
 
 from pantry.helpers import *
 
@@ -175,6 +177,8 @@ def recipe(request, user_id, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id)
     reviews = Review.objects.filter(recipe=recipe)
 
+    print(recipe.rating)
+
     # additional
     ingredients = recipe.ingredients.split(SPACER)
 
@@ -278,4 +282,75 @@ def user_reviews(request, user_id):
 @login_required
 def edit_profile(request):
 
-    return render(request, "pantry/edit-profile.html")
+    userprofile = UserProfile.objects.get(user=request.user)
+
+    # user submitting request
+    if request.method == "POST":
+        changed_username = request.POST.get("changed_username")
+        changed_password = request.POST.get("changed_password")
+        changed_image = request.FILES.get("changed_image", False)
+        changed_bio = request.POST.get("changed_bio")
+
+        # check if username is actually changed
+        if request.user.username != changed_username:
+            request.user.username = changed_username
+            request.user.save()
+            print(f"changed username to {request.user.username}")
+
+        # check if password is actually changed
+        if changed_password != "":
+            request.user.set_password(changed_password)
+            request.user.save()
+            print("changed password")
+
+        # check if image was changed
+        if changed_image:
+            userprofile.image = changed_image
+            userprofile.save()
+            print("changed image")
+
+        # check if bio was changed
+        if userprofile.bio != changed_bio:
+            userprofile.bio = changed_bio
+            userprofile.save()
+            print("changed bio")
+
+    context_dict = {"userprofile": userprofile}
+
+    return render(request, "pantry/edit-profile.html", context=context_dict)
+
+
+class SaveRecipeView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        recipe_id = request.GET['recipe_id']
+
+        try:
+            recipe = Recipe.objects.get(id=int(recipe_id))
+        except Recipe.DoesNotExist:
+            return HttpResponse(-1)
+        except ValueError:
+            return HttpResponse(-1)
+        
+        recipe.saves = recipe.save + 1
+        recipe.save()
+
+        return HttpResponse(recipe.saves)
+    
+
+class LikeReviewView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        reveiw_id = request.GET['review_id']
+
+        try:
+            review = Review.objects.get(id=int(reveiw_id))
+        except Review.DoesNotExist:
+            return HttpResponse(-1)
+        except ValueError:
+            return HttpResponse(-1)
+        
+        review.likes = review.likes + 1
+        review.save()
+
+        return HttpResponse(review.likes)

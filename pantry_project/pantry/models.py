@@ -25,6 +25,8 @@ class Recipe(models.Model):
 
     # helper
     def recipe_upload_path(self, filename):
+        # get base filename
+        filename = os.path.basename(filename)
         # return correct media folder using their user ID and recipe ID
         dir_name = "user-id-" + str(self.user.pk)
         recipe_id = "recipe-id-" + str(self.pk)
@@ -65,9 +67,9 @@ class Recipe(models.Model):
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    likes = models.IntegerField(default=0)
-    date_pub = models.DateTimeField(auto_now_add=True)
     review = models.CharField(max_length=500)
+    likes = models.IntegerField(default=0)
+    pub_date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
 
@@ -86,6 +88,8 @@ class UserProfile(models.Model):
 
     # helper
     def userprofile_upload_path(self, filename):
+        # get base filename
+        filename = os.path.basename(filename)
         # return correct media folder using their user ID and recipe ID
         dir_name = "user-id-" + str(self.user.pk)
         return os.path.join(dir_name, "profile", filename)

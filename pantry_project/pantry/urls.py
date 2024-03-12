@@ -18,4 +18,6 @@ urlpatterns = [
     path("<int:user_id>/saved-recipes/", views.saved_recipes, name="saved-recipes"),
     path("<int:user_id>/user-reviews/", views.user_reviews, name="user-reviews"),
     path("edit-profile/", views.edit_profile, name="edit-profile"),
+    path("save_recipe/", views.SaveRecipeView.as_view(), name="save_recipe"),
+    path("like_review/", views.LikeReviewView.as_view(), name="like_recipe"),
 ]
