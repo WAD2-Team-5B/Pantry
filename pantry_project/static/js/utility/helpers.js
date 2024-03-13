@@ -10,7 +10,8 @@ export function initButtons(
   btns,
   selected,
   cssActiveClass,
-  multiSelect = false
+  multiSelect,
+  jqueryFunction = {}
 ) {
   for (let i = 0; i < btns.length; i++) {
     let btn = btns[i];
@@ -21,6 +22,7 @@ export function initButtons(
       if (selected.includes(value)) {
         btn.classList.remove(cssActiveClass);
         selected.splice(selected.indexOf(value), 1);
+        jqueryFunction();
         return false;
       }
 
@@ -34,6 +36,7 @@ export function initButtons(
       }
       btn.classList.add(cssActiveClass);
       selected.push(value);
+      jqueryFunction();
       return false;
     };
   }

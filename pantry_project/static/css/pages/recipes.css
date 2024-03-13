@@ -236,6 +236,7 @@ h5 {
   height: 100%;
 
   margin-top: 1rem;
+  padding: 0.5rem;
 
   border-radius: 0.5rem;
   border: 0.1rem solid var(--color-1);

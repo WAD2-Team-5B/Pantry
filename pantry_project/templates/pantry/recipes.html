@@ -7,6 +7,8 @@
 
 <!-- JS -->
 {% block js_block %}
+<!-- IMPORT JQUERY -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script type="module" src="{% static 'js/pages/recipes.js' %}"></script>
 {% endblock %}
 
@@ -18,15 +20,7 @@
 <!-- HEADER -->
 <h3>Find Recipes</h3>
 
-<form
-  role="form"
-  id="search-form"
-  method="post"
-  action="{% url 'pantry:recipes' %}"
->
-
-  {% csrf_token %}
-
+<div id="search-form">
   <!-- LEFT COLUMN -->
   <div class="left-container">
     <!-- CREATE-A-RECIPE LINK -->
@@ -92,32 +86,7 @@
     </div>
 
     <!-- SEARCH RESULTS -->
-    <div id="search-results">
-      {% for recipe in recipes %}
-      <a class="recipe" href="{{ recipe.link }}">
-        <img class="recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" />
-        <ul>
-          <li>{{ recipe.title }}</li>
-          <li>
-            <img src="{% static 'images/star.svg' %}" />
-            {{ recipe.rating }}
-          </li>
-          <li>{{ recipe.saves }} saves</li>
-          <li>{{ recipe.difficulty }}</li>
-          <li>{{ recipe.cuisine }}</li>
-          <li>Prep - {{ recipe.prep }}h</li>
-          <li>Cook - {{ recipe.cook }}h</li>
-        </ul>
-      </a>
-      {% endfor %}
-    </div>
+    <div id="search-results"></div>
   </div>
-
-  <!-- HIDDEN SUBMISSIONS -->
-  <input type="hidden" id="difficulty" name="selected_difficulty" />
-  <input type="hidden" id="cuisines" name="selected_cuisines" />
-  <input type="hidden" id="categories" name="selected_categories" />
-  <input type="hidden" id="sort" name="selected_sort" />
-</form>
-
+</div>
 {% endblock %}

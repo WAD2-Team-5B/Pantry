@@ -1,4 +1,4 @@
-const SPACER = "<SPACER>";
+export const SPACER = "<SPACER>";
 
 export class Form {
   /**

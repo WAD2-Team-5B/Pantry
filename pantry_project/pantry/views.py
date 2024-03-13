@@ -13,7 +13,6 @@ from django.views import View
 
 from pantry.models import *
 from pantry.forms import *
-
 from pantry.helpers import *
 
 SPACER = "<SPACER>"
@@ -36,6 +35,7 @@ def index(request):
         "num_highest_rated": len(highest_rated_recipes),
         "num_newest": len(newest_recipes),
     }
+
     return render(request, "pantry/index.html", context=context_dict)
 
 
@@ -45,59 +45,58 @@ def about(request):
 
 def recipes(request):
 
-    # assume that request method = post? - what of they have jumped to find recipes page
     # TODO - if redirect then user is coming from the index page and we need to display search query results
 
-    recipes = []
+    # user is searching and not page refresh
+    if request.GET.get("request", False):
 
-    if request.method == "POST":
-
-        difficulties = request.POST.get("selected_difficulty")
-        cuisines = request.POST.get("selected_cuisines")
-        categories = request.POST.get("selected_categories")
-        sort = request.POST.get("selected_sort")
+        # TODO - search query
+        search_query = request.GET.get("search_query")
+        difficulties = request.GET.get("selected_difficulty").split(SPACER)
+        cuisines = request.GET.get("selected_cuisines").split(SPACER)
+        categories = request.GET.get("selected_categories").split(SPACER)
+        sort = request.GET.get("selected_sort").split(SPACER)[0]
 
         difficulty_query = Q()
-        # reviews is the only different one
+
         for difficulty in difficulties:
-            difficulty_query |= Q(difficulty=difficulty)
+            if difficulty:
+                difficulty_query |= Q(difficulty=difficulty)
 
         cuisine_query = Q()
 
         for cuisine in cuisines:
-            cuisine_query |= Q(cuisine=cuisine)
+            if cuisine:
+                cuisine_query |= Q(cuisine=Cuisine.objects.get(type=cuisine))
 
         category_query = Q()
 
         for category in categories:
-            categories |= Q(category=category)
+            if category:
+                category_query |= Q(category=Category.objects.get(type=category))
 
         recipes = Recipe.objects.filter(difficulty_query, cuisine_query, category_query)
+
+        # TODO - sort by rating, saves, pub_date
         if sort != "":
             recipes = recipes.order_by("-" + sort)
         else:
             recipes = recipes.order_by("-pub_date")
 
-        recipes = recipes.values(
-            "title",
-            "link",
-            "image",
-            "rating",
-            "saves",
-            "difficulty",
-            "cuisine",
-            "prep",
-            "cook",
-        )
+        context_dict = {
+            "recipes": recipes,
+        }
+
+        return render(request, "pantry/recipe-response.html", context=context_dict)
 
     cuisines = Cuisine.objects.all().values_list("type", flat=True)
     categories = Category.objects.all().values_list("type", flat=True)
 
     context_dict = {
-        "recipes": recipes,
         "cuisines": cuisines,
         "categories": categories,
     }
+
     return render(request, "pantry/recipes.html", context=context_dict)
 
 
@@ -323,7 +322,7 @@ def edit_profile(request):
 class SaveRecipeView(View):
     @method_decorator(login_required)
     def get(self, request):
-        recipe_id = request.GET['recipe_id']
+        recipe_id = request.GET["recipe_id"]
 
         try:
             recipe = Recipe.objects.get(id=int(recipe_id))
@@ -331,17 +330,17 @@ class SaveRecipeView(View):
             return HttpResponse(-1)
         except ValueError:
             return HttpResponse(-1)
-        
+
         recipe.saves = recipe.save + 1
         recipe.save()
 
         return HttpResponse(recipe.saves)
-    
+
 
 class LikeReviewView(View):
     @method_decorator(login_required)
     def get(self, request):
-        reveiw_id = request.GET['review_id']
+        reveiw_id = request.GET["review_id"]
 
         try:
             review = Review.objects.get(id=int(reveiw_id))
@@ -349,7 +348,7 @@ class LikeReviewView(View):
             return HttpResponse(-1)
         except ValueError:
             return HttpResponse(-1)
-        
+
         review.likes = review.likes + 1
         review.save()
 
