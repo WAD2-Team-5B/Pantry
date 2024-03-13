@@ -104,22 +104,21 @@ def recipes(request):
 
         return render(request, "pantry/recipe-response.html", context=context_dict)
 
-    recipes = []
+    cuisines = Cuisine.objects.all().values_list("type", flat=True)
+    categories = Category.objects.all().values_list("type", flat=True)
+
+    context_dict = {
+        "cuisines": cuisines,
+        "categories": categories,
+    }
 
     # user redirected from index page using search bar
     search_query = request.GET.get("search_query", False)
     if search_query:
         search_query_query = Q(title__startswith=search_query)
         recipes = Recipe.objects.filter(search_query_query)
-
-    cuisines = Cuisine.objects.all().values_list("type", flat=True)
-    categories = Category.objects.all().values_list("type", flat=True)
-
-    context_dict = {
-        "recipes": recipes,
-        "cuisines": cuisines,
-        "categories": categories,
-    }
+        context_dict["recipes"] = recipes
+        context_dict["search_query"] = search_query
 
     return render(request, "pantry/recipes.html", context=context_dict)
 
