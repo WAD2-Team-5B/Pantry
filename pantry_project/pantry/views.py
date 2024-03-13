@@ -73,9 +73,11 @@ def recipes(request):
 
         for category in categories:
             if category:
-                category_query |= Q(category=Category.objects.get(type=category))
+                category_query |= Q(categories=Category.objects.get(type=category))
 
-        recipes = Recipe.objects.filter(difficulty_query, cuisine_query, category_query)
+        recipes = Recipe.objects.filter(
+            difficulty_query & cuisine_query & category_query
+        )
 
         # TODO - sort by rating, saves, pub_date
         if sort != "":
