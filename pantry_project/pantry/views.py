@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
 from django.db import IntegrityError
-from django.db.models import Q
+from django.db.models import Q, Count
 from pantry_project.settings import MEDIA_DIR
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -84,9 +84,16 @@ def recipes(request):
             search_query_query & difficulty_query & cuisine_query & category_query
         )
 
-        # TODO - sort by rating, saves, pub_date
-        if sort != "":
-            recipes = recipes.order_by("-" + sort)
+        if sort == "rating":
+            recipes = recipes.order_by("-rating")
+        elif sort == "reviews":
+            recipes = recipes.order_by("-reviews")
+        elif sort == "saves":
+            # Count() will count number of review objects
+            # we create our own pseudo field for number of review objects and order by this field
+            recipes = recipes.annotate(num_reviews=Count("reviews")).order_by(
+                "-num_reviews"
+            )
         else:
             recipes = recipes.order_by("-pub_date")
 
