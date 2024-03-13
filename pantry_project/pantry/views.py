@@ -50,12 +50,17 @@ def recipes(request):
     # user is searching and not page refresh
     if request.GET.get("request", False):
 
-        # TODO - search query
         search_query = request.GET.get("search_query")
         difficulties = request.GET.get("selected_difficulty").split(SPACER)
         cuisines = request.GET.get("selected_cuisines").split(SPACER)
         categories = request.GET.get("selected_categories").split(SPACER)
         sort = request.GET.get("selected_sort").split(SPACER)[0]
+
+        search_query_query = Q()
+
+        # check the user started searching
+        if search_query:
+            search_query_query = Q(title__startswith=search_query)
 
         difficulty_query = Q()
 
@@ -76,7 +81,7 @@ def recipes(request):
                 category_query |= Q(categories=Category.objects.get(type=category))
 
         recipes = Recipe.objects.filter(
-            difficulty_query & cuisine_query & category_query
+            search_query_query & difficulty_query & cuisine_query & category_query
         )
 
         # TODO - sort by rating, saves, pub_date

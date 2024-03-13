@@ -39,3 +39,10 @@ initButtons(cuisineBtns, selectedCuisines, "btn-cuisine-active", true, jquery);
 initButtons(categoryBtns, selectedCategories, "btn-category-active", true, jquery);
 initButtons(difficultyBtns, selectedDifficulty, "btn-difficulty-active", false, jquery);
 initButtons(sortByBtns, selectedSortBy, "btn-sort-by-active", false, jquery);
+
+let searchBar = document.getElementById("search");
+searchBar.oninput = () => {
+  searchQuery = searchBar.value;
+
+  jquery();
+};
