@@ -13,14 +13,19 @@
 
 <!-- CONTENT -->
 {% block main_block %}
+<!-- HEADER -->
 <h3>About Us</h3>
+
 <div class="container">
+
+  <!-- LOGO IMAGE -->
   <div class="logo">
     <img src="{% static 'images/pantry-logo.png' %}" alt="Pantry Logo" />
   </div>
 
-  <!-- ACTUAL TEXT -->
+  <!-- ABOUT TEXT -->
   <div class="text">
+    <!-- 'span' tag used for bold and colour important words/phrases -->
     <p>
       We created <span>Pantry</span> with the goal of connecting cooking
       enthusiasts worldwide.
@@ -37,8 +42,9 @@
     </p>
   </div>
 
-  <!-- OUR TEAM -->
+  <!-- OUR TEAM TEXT -->
   <div class="team">
+    <!-- 'span' tag used for bold and colour important words/phrases -->
     <p>
       This project was made with lots of <span>LOVE</span> from
       <span>WAD2 Team 5B &lt;3</span>
@@ -53,5 +59,6 @@
       that would allow people to <span>share their love for food</span>.
     </p>
   </div>
+
 </div>
 {% endblock %}

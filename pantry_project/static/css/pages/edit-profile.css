@@ -100,6 +100,8 @@ h4:first-of-type {
   border: 0.1rem solid var(--color-1);
   border-radius: 0.5rem;
 
+  font-family: var(--font);
+
   /* users arent allowed to resize */
   resize: none;
   overflow-y: auto;

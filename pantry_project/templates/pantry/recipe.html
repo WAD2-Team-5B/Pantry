@@ -1,10 +1,5 @@
 {% extends 'pantry/base/base.html' %} {% load staticfiles %}
 
-<!-- where to update bookmark selection/deselection? like/unlike?
-new view to handle -->
-<!-- how to grab the recipe id? -->
-<!-- click on a link that takes you to recipe view -->
-
 <!-- CSS -->
 {% block css_block %}
 <link rel="stylesheet" href="{% static 'css/pages/recipe.css' %}" />
@@ -22,28 +17,38 @@ new view to handle -->
 {% block main_block %}
 <!-- RECIPE HEADER -->
 <header class="recipe-header">
+
+  <!-- USERNAME / PUBLISHED DATE -->
   <div class="left-aside">
-    <a class="user" href="{% url 'pantry:user-profile' recipe.user.id %}"
-      >{{ recipe.user.username }}</a
-    >
+    <a class="user" href="{% url 'pantry:user-profile' recipe.user.id %}">
+      {{ recipe.user.username }}
+    </a>
     <p>{{ recipe.pub_date }}</p>
   </div>
+
+  <!-- RECIPE TITLE -->
   <h3>{{ recipe.title }}</h3>
+
+  <!-- STARS / BOOKMARK -->
   <div class="right-aside">
     {% if user.is_authenticated %}
     <div id="stars"></div>
     <button id="bookmark"></button>
     {% endif %}
   </div>
+
 </header>
 
 <!-- RECIPE INFO -->
 <div class="recipe-info">
+
+  <!-- IMAGE / DESCRIPTION -->
   <div class="description">
     <img src="{{ MEDIA_URL }}{{ recipe.image }}" />
     <p>{{ recipe.desc }}</p>
   </div>
 
+  <!-- SUB INFO -->
   <div class="info">
     <ul>
       <li>
@@ -57,10 +62,13 @@ new view to handle -->
       <li>Cook - {{ recipe.cook }}h</li>
     </ul>
   </div>
+
 </div>
 
 <!-- RECIPE FACTS -->
 <div class="recipe-facts">
+
+  <!-- STEPS -->
   <div class="steps">
     <h5>Steps</h5>
     <ul>
@@ -70,6 +78,7 @@ new view to handle -->
     </ul>
   </div>
 
+  <!-- INGREDIENTS -->
   <div class="ingredients">
     <h5>Ingredients</h5>
     <ul>
@@ -79,6 +88,7 @@ new view to handle -->
     </ul>
   </div>
 
+  <!-- CATEGORIES -->
   <div class="categories">
     <h5>Categories</h5>
     <ul>
@@ -87,11 +97,13 @@ new view to handle -->
       {% endfor %}
     </ul>
   </div>
+
 </div>
 
 <!-- REVIEWS -->
 <h3 id="review-header">Reviews</h3>
 
+<!-- POST REVIEW -->
 {% if user.is_authenticated %}
 <div class="user-review">
   <textarea id="review" placeholder="I love this recipe..."></textarea>
@@ -99,16 +111,22 @@ new view to handle -->
     <button id="user-review-submit">post</button>
   </div>
 </div>
-{% endif %} {% for review in reviews %}
+{% endif %} 
+
+<!-- REVIEW LIST -->
+{% for review in reviews %}
 <div class="review">
   <div class="review-aside">
+
+    <!-- USERNAME / PUBLISHED DATE -->
     <div>
-      <a class="user" href="{% url 'pantry:user-profile' review.user.id %}"
-        >{{ review.user.username }}</a
-      >
+      <a class="user" href="{% url 'pantry:user-profile' review.user.id %}">
+        {{ review.user.username }}
+      </a>
       <p>{{ review.pub_date }}</p>
     </div>
 
+    <!-- RATING -->
     <div class="review-rating">
       {% if user.is_authenticated %}
       <button class="review-heart"></button>
@@ -120,7 +138,11 @@ new view to handle -->
       {% endif %}
       <p class="review-likes">{{ review.likes }}</p>
     </div>
+
+    <!-- REVIEW TEXT -->
     <p class="review-text">{{ review.review }}</p>
+
   </div>
-  {% endfor %} {% endblock %}
+  {% endfor %} 
+  {% endblock %}
 </div>
