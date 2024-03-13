@@ -51,16 +51,17 @@ def recipes(request):
     if request.GET.get("request", False):
 
         search_query = request.GET.get("search_query")
+
+        # only display results if user is typing
+        if not search_query:
+            return render(request, "pantry/recipe-response.html")
+
         difficulties = request.GET.get("selected_difficulty").split(SPACER)
         cuisines = request.GET.get("selected_cuisines").split(SPACER)
         categories = request.GET.get("selected_categories").split(SPACER)
         sort = request.GET.get("selected_sort").split(SPACER)[0]
 
-        search_query_query = Q()
-
-        # check the user started searching
-        if search_query:
-            search_query_query = Q(title__startswith=search_query)
+        search_query_query = Q(title__startswith=search_query)
 
         difficulty_query = Q()
 
