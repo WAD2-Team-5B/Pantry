@@ -22,10 +22,12 @@ SPACER = "<SPACER>"
 
 def index(request):
 
-    # TODO - if request = post, then they are have searched so need the redirect to the recipes page
-    # need to somehow send in the search_query with the redirect
+    # user is using search bar
+    if request.method == "POST":
+        search_query = request.POST.get("search_query")
+        # send in url parameters with get request
+        return redirect(reverse("pantry:recipes") + "?search_query=" + search_query)
 
-    # UNCOMMENT ONCE DATABASE IS SET UP
     highest_rated_recipes = Recipe.objects.order_by("-rating", "-pub_date")[:10]
     newest_recipes = Recipe.objects.order_by("-pub_date")[:10]
 
@@ -44,8 +46,6 @@ def about(request):
 
 
 def recipes(request):
-
-    # TODO - if redirect then user is coming from the index page and we need to display search query results
 
     # user is searching and not page refresh
     if request.GET.get("request", False):
@@ -104,10 +104,19 @@ def recipes(request):
 
         return render(request, "pantry/recipe-response.html", context=context_dict)
 
+    recipes = []
+
+    # user redirected from index page using search bar
+    search_query = request.GET.get("search_query", False)
+    if search_query:
+        search_query_query = Q(title__startswith=search_query)
+        recipes = Recipe.objects.filter(search_query_query)
+
     cuisines = Cuisine.objects.all().values_list("type", flat=True)
     categories = Category.objects.all().values_list("type", flat=True)
 
     context_dict = {
+        "recipes": recipes,
         "cuisines": cuisines,
         "categories": categories,
     }
