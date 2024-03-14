@@ -128,13 +128,16 @@ h5 {
 
   margin-inline: 1rem;
   margin-bottom: 1rem;
-  padding: 0.25rem;
+  padding: 0.5rem;
 
   border-radius: 1rem;
   border: 0.1rem solid var(--color-1);
 
   overflow-wrap: break-word;
   overflow-y: auto;
+
+  color: black;
+  font-size: 0.75rem;
 }
 
 .btn-remove {
