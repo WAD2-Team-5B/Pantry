@@ -33,29 +33,34 @@
 
 <!-- MY RECIPES / MY SAVED RECIPES / MY REVIEWS -->
 <ul id="data-list">
+
   {% for data in user_data %}
   <li>
-    <a class="data-card" href="{% url 'pantry:recipe' data.user.id data.id %}">
-      {% if is_reviews_page %}
+    {% if is_reviews_page %}
 
+    <a class="data-card" href="{% url 'pantry:recipe' data.user.id data.recipe.id %}">
       <!-- reviews page 'data' will be given as Review Model -->
       <h5>{{ data.recipe.title }}</h5>
       <p>{{ data.review }}</p>
+    </a>
 
-      {% else %}
+    {% else %}
 
+    <a class="data-card" href="{% url 'pantry:recipe' data.user.id data.id %}">
       <!-- user/saved recipe page 'data' will both be given as Recipe Model -->
       <h5>{{ data.title }}</h5>
       <img src="{{ MEDIA_URL }}{{ data.image }}" />
-
-      {% endif %}
     </a>
+
+    {% endif %}
 
     <!-- REMOVE BUTTON -->
     {% if own_profile %}
     <button class="btn-remove" value="{{ data.id }}">remove</button>
     {% endif %}
+    
   </li>
   {% endfor %}
+
 </ul>
 {% endblock %}
