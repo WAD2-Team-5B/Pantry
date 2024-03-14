@@ -6,6 +6,17 @@ export class PantryAPI {
     });
   }
 
+  static removeUserData(data, btn) {
+    $.get("", data, function (response) {
+      if (response === "success") {
+        btn.parentElement.remove();
+        return true;
+      }
+      alert("error deleting please try again");
+      return false;
+    });
+  }
+
   static bookmark() {}
 
   static like() {}

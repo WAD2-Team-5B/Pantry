@@ -96,8 +96,8 @@ let difficultyBtns = document.getElementsByClassName("btn-difficulty");
 let cuisineBtns = document.getElementsByClassName("btn-cuisine");
 let categoryBtns = document.getElementsByClassName("btn-category");
 
-initButtons(difficultyBtns, difficulty, "btn-difficulty-active");
-initButtons(cuisineBtns, cuisine, "btn-cuisine-active");
+initButtons(difficultyBtns, difficulty, "btn-difficulty-active", false);
+initButtons(cuisineBtns, cuisine, "btn-cuisine-active", false);
 initButtons(categoryBtns, categories, "btn-category-active", true);
 
 let addIngredientBtn = document.getElementById("btn-add-ingredient");

@@ -274,6 +274,21 @@ def user_profile(request, user_id):
 
 def user_recipes(request, user_id):
 
+    # user is searching and not page refresh
+    if request.GET.get("request", False):
+
+        recipe_id = request.GET.get("dataId")
+        recipe = Recipe.objects.get(id=recipe_id)
+        recipe.delete()
+
+        # check that we successfully deleted the object
+        try:
+            Recipe.objects.get(id=recipe_id)
+        except Recipe.DoesNotExist:
+            return HttpResponse("success")
+
+        return HttpResponse("fail")
+
     return render(
         request,
         "pantry/user-data.html",
@@ -282,6 +297,22 @@ def user_recipes(request, user_id):
 
 
 def saved_recipes(request, user_id):
+
+    # user is searching and not page refresh
+    if request.GET.get("request", False):
+
+        recipe_id = request.GET.get("dataId")
+        recipe = Recipe.objects.get(id=recipe_id)
+        saved_recipe = SavedRecipes.objects.get(user=request.user, recipe=recipe)
+        saved_recipe.delete()
+
+        # check that we successfully deleted the object
+        try:
+            SavedRecipes.objects.get(user=request.user, recipe=recipe)
+        except SavedRecipes.DoesNotExist:
+            return HttpResponse("success")
+
+        return HttpResponse("fail")
 
     return render(
         request,
@@ -293,6 +324,21 @@ def saved_recipes(request, user_id):
 
 
 def user_reviews(request, user_id):
+
+    # user is searching and not page refresh
+    if request.GET.get("request", False):
+
+        review_id = request.GET.get("dataId")
+        review = Review.objects.get(id=review_id)
+        review.delete()
+
+        # check that we successfully deleted the object
+        try:
+            Review.objects.get(id=review_id)
+        except Review.DoesNotExist:
+            return HttpResponse("success")
+
+        return HttpResponse("fail")
 
     return render(
         request,

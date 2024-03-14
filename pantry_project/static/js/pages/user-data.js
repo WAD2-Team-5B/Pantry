@@ -1,4 +1,5 @@
 import { initButtons } from "../utility/helpers.js";
+import { PantryAPI } from "../utility/ajax.js";
 
 // ------------------------------
 // GLOBALS
@@ -6,21 +7,30 @@ import { initButtons } from "../utility/helpers.js";
 
 let selectedSortBy = [];
 
+// find what page we are on
+let locationArr = window.location.href.split("/");
+const pageName = locationArr[locationArr.length - 2];
+
 // ------------------------------
 // INIT
 // ------------------------------
 
 let sortByBtns = document.getElementsByClassName("btn-sort-by");
 
-initButtons(sortByBtns, selectedSortBy, "btn-sort-by-active");
+initButtons(sortByBtns, selectedSortBy, "btn-sort-by-active", false);
 
 // delete data
 let btnsRemove = document.getElementsByClassName("btn-remove");
 for (let i = 0; i < btnsRemove.length; i++) {
   let btn = btnsRemove[i];
+  let dataId = btn.value;
+
+  const data = {
+    request: true,
+    dataId: dataId,
+  };
+
   btn.onclick = () => {
-    // TODO - REQUEST TO REMOVE IT FROM DB
-    // IF SUCCESSFULL
-    btn.parentElement.remove();
+    PantryAPI.removeUserData(data, btn);
   };
 }
