@@ -5,6 +5,7 @@ import os
 
 
 class Cuisine(models.Model):
+
     type = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
@@ -12,6 +13,7 @@ class Cuisine(models.Model):
 
 
 class Category(models.Model):
+
     type = models.CharField(max_length=100, unique=True)
 
     class Meta:
@@ -35,6 +37,7 @@ class Recipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category)
+
     title = models.CharField(max_length=200)
     image = models.ImageField(upload_to=recipe_upload_path)
     desc = models.CharField(max_length=500)
@@ -44,7 +47,6 @@ class Recipe(models.Model):
     cook = models.CharField(max_length=4)
     difficulty = models.CharField(max_length=1)
     rating = models.FloatField(default=0)
-    reviews = models.IntegerField(default=0)
     star_count = models.IntegerField(default=0)
     star_submissions = models.IntegerField(default=0)
     saves = models.IntegerField(default=0)
@@ -64,26 +66,6 @@ class Recipe(models.Model):
         return self.title
 
 
-class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    review = models.CharField(max_length=500)
-    likes = models.IntegerField(default=0)
-    pub_date = models.DateTimeField(auto_now_add=True)
-
-    def save(self, *args, **kwargs):
-
-        # call save as usual
-        super().save(*args, **kwargs)
-
-        # Increment reviews_count in the associated Recipe
-        self.recipe.reviews_count = Review.objects.filter(recipe=self.recipe).count()
-        self.recipe.save()
-
-    class Meta:
-        unique_together = ("user", "recipe")
-
-
 class UserProfile(models.Model):
 
     # helper
@@ -95,11 +77,25 @@ class UserProfile(models.Model):
         return os.path.join(dir_name, "profile", filename)
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
     image = models.ImageField(upload_to=userprofile_upload_path, blank=True)
     bio = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
         return self.user.username
+
+
+class Review(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    review = models.CharField(max_length=500)
+    likes = models.IntegerField(default=0)
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "recipe")
 
 
 class SavedRecipes(models.Model):

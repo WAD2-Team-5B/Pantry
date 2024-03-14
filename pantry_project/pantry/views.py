@@ -52,7 +52,7 @@ def recipes(request):
 
         search_query = request.GET.get("search_query")
 
-        # only display results if user is typing
+        # only display results if user has given a search query
         if not search_query:
             return render(request, "pantry/recipe-response.html")
 
@@ -112,9 +112,13 @@ def recipes(request):
         "categories": categories,
     }
 
-    # user redirected from index page using search bar
+    # user was redirected from index page using search bar
     search_query = request.GET.get("search_query", False)
+
+    # only find results if a search was given
+    # (user could of accidentally hit submit from index page)
     if search_query:
+
         search_query_query = Q(title__startswith=search_query)
         recipes = Recipe.objects.filter(search_query_query)
         context_dict["recipes"] = recipes
@@ -125,6 +129,7 @@ def recipes(request):
 
 def signup(request):
 
+    # user is signing up
     if request.method == "POST":
 
         user_form = UserForm(request.POST)
@@ -137,13 +142,8 @@ def signup(request):
 
             profile = profile_form.save(commit=False)
             profile.user = user
-
-            # TODO - i dont think we are sending images in the signup form?
-
-            if "image" in request.FILES:
-                profile.image = request.FILES["image"]
-
             profile.save()
+
             auth.login(request, user)
 
             return redirect(reverse("pantry:index"))
@@ -170,6 +170,7 @@ def login(request):
 
     context_dict = {"success": True}
 
+    # user is logging in
     if request.method == "POST":
 
         username = request.POST.get("username")
@@ -198,8 +199,7 @@ def recipe(request, user_id, recipe_id):
 
     recipe = Recipe.objects.get(id=recipe_id)
     reviews = Review.objects.filter(recipe=recipe)
-
-    # additional
+    # ingredients stored as single string with 'SPACER' delimiter
     ingredients = recipe.ingredients.split(SPACER)
 
     user = request.user
@@ -209,6 +209,7 @@ def recipe(request, user_id, recipe_id):
         "recipe": recipe,
         "reviews": reviews,
         "ingredients": ingredients,
+        # steps stored as single string with 'SPACER' delimiter
         "steps": recipe.steps.split(SPACER),
         "my_profile": is_own_profile(user, other_user),
     }
@@ -219,7 +220,7 @@ def recipe(request, user_id, recipe_id):
 @login_required
 def create_a_recipe(request):
 
-    # user is submitting the form
+    # user is creating a recipe
     if request.method == "POST":
 
         # get our cuisine instance
@@ -227,7 +228,6 @@ def create_a_recipe(request):
 
         # get our categories strings
         category_strings = request.POST.get("categories").split(SPACER)
-        print(category_strings)
 
         recipe = Recipe.objects.create(
             user=request.user,
@@ -244,7 +244,8 @@ def create_a_recipe(request):
         # add our category instances
         recipe.categories.set(Category.objects.filter(type__in=category_strings))
 
-        # save first so generate a recipe id
+        # save first to generate a recipe id
+        # (this is needed for saving image into correct media dir using recipe id)
         recipe.save()
 
         recipe.image = request.FILES.get("image")
@@ -276,7 +277,7 @@ def user_profile(request, user_id):
 
 def user_recipes(request, user_id):
 
-    # user is searching and not page refresh
+    # user is deleting their recipe
     if request.GET.get("request", False):
 
         recipe_id = request.GET.get("dataId")
@@ -300,7 +301,7 @@ def user_recipes(request, user_id):
 
 def saved_recipes(request, user_id):
 
-    # user is searching and not page refresh
+    # user deleting their bookmarked recipe
     if request.GET.get("request", False):
 
         recipe_id = request.GET.get("dataId")
@@ -327,7 +328,7 @@ def saved_recipes(request, user_id):
 
 def user_reviews(request, user_id):
 
-    # user is searching and not page refresh
+    # user is deleting their review
     if request.GET.get("request", False):
 
         review_id = request.GET.get("dataId")
@@ -361,25 +362,23 @@ def edit_profile(request):
         delete_request = request.POST.get("delete-request")
         if delete_request == "true":
             user = User.objects.get(id=request.user.id)
-            # logout user
             auth.logout(request)
-            # delete user
             user.delete()
-            print("USER IS DELETED")
             return redirect(reverse("pantry:index"))
 
+        # edit profile request
         changed_username = request.POST.get("changed_username")
         changed_password = request.POST.get("changed_password")
         changed_image = request.FILES.get("changed_image", False)
         changed_bio = request.POST.get("changed_bio")
 
-        # check if username is actually changed
+        # check if username was changed
         if request.user.username != changed_username:
             request.user.username = changed_username
             request.user.save()
             print(f"changed username to {request.user.username}")
 
-        # check if password is actually changed
+        # check if password was changed
         if changed_password != "":
             request.user.set_password(changed_password)
             request.user.save()
