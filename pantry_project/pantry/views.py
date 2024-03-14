@@ -204,11 +204,15 @@ def recipe(request, user_id, recipe_id):
     # additional
     ingredients = recipe.ingredients.split(SPACER)
 
+    user = request.user
+    other_user = User.objects.get(id=user_id)
+
     context_dict = {
         "recipe": recipe,
         "reviews": reviews,
         "ingredients": ingredients,
         "steps": recipe.steps.split(SPACER),
+        "my_profile": is_own_profile(user, other_user),
     }
 
     return render(request, "pantry/recipe.html", context=context_dict)

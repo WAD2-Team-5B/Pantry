@@ -31,7 +31,7 @@
 
   <!-- STARS / BOOKMARK -->
   <div class="right-aside">
-    {% if user.is_authenticated %}
+    {% if not my_profile and user.is_authenticated %}
     <div id="stars"></div>
     <button id="bookmark"></button>
     {% endif %}
@@ -104,7 +104,7 @@
 <h3 id="review-header">Reviews</h3>
 
 <!-- POST REVIEW -->
-{% if user.is_authenticated %}
+{% if not my_profile and user.is_authenticated %}
 <div class="user-review">
   <textarea id="review" placeholder="I love this recipe..."></textarea>
   <div class="user-review-submit-container">
