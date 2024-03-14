@@ -199,8 +199,6 @@ def recipe(request, user_id, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id)
     reviews = Review.objects.filter(recipe=recipe)
 
-    print(recipe.rating)
-
     # additional
     ingredients = recipe.ingredients.split(SPACER)
 
@@ -358,6 +356,18 @@ def edit_profile(request):
 
     # user submitting request
     if request.method == "POST":
+
+        # delete account request
+        delete_request = request.POST.get("delete-request")
+        if delete_request == "true":
+            user = User.objects.get(id=request.user.id)
+            # logout user
+            auth.logout(request)
+            # delete user
+            user.delete()
+            print("USER IS DELETED")
+            return redirect(reverse("pantry:index"))
+
         changed_username = request.POST.get("changed_username")
         changed_password = request.POST.get("changed_password")
         changed_image = request.FILES.get("changed_image", False)

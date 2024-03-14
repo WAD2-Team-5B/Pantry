@@ -1,8 +1,13 @@
 import { imagePreview } from "../utility/helpers.js";
 import { Form } from "../utility/form.js";
 
+// ------------------------------
+// GLOBALS
+// ------------------------------
+
 const WARNING =
   "WARNING\n\nAre you sure?\nDeleting an account is permanent and cannot be undone!";
+let form = document.getElementById("edit-profile-form");
 
 // ------------------------------
 // INIT
@@ -13,9 +18,11 @@ imagePreview(
   document.getElementById("profile-image-preview")
 );
 
-document.getElementById("btn-delete-account").onclick = () => {
+let deleteAccountBtn = document.getElementById("btn-delete-account");
+deleteAccountBtn.onclick = () => {
   if (confirm(WARNING)) {
-    // TODO - REQUEST TO DELETE ACCOUNT
+    deleteAccountBtn.value = "true";
+    form.submit();
   }
 };
 
@@ -23,7 +30,6 @@ document.getElementById("btn-delete-account").onclick = () => {
 // FORM
 // ------------------------------
 
-let form = document.getElementById("edit-profile-form");
 form.addEventListener("submit", (e) => {
   // validation
   let errorConditions = [
