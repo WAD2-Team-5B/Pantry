@@ -7,7 +7,12 @@
 
 <!-- JS -->
 {% block js_block %}
-<script src="{% static 'js/pages/recipe.js' %}"></script>
+<script type="text/javascript">
+  const csrfToken = "{{ csrf_token }}";
+  const recipeId = {{ recipe.id }};
+</script>
+
+<script type="module" src="{% static 'js/pages/recipe.js' %}"></script>
 {% endblock %}
 
 <!-- TITLE -->
@@ -17,7 +22,6 @@
 {% block main_block %}
 <!-- RECIPE HEADER -->
 <header class="recipe-header">
-
   <!-- USERNAME / PUBLISHED DATE -->
   <div class="left-aside">
     <a class="user" href="{% url 'pantry:user-profile' recipe.user.id %}">
@@ -36,12 +40,10 @@
     <button id="bookmark"></button>
     {% endif %}
   </div>
-
 </header>
 
 <!-- RECIPE INFO -->
 <div class="recipe-info">
-
   <!-- IMAGE / DESCRIPTION -->
   <div class="description">
     <img src="{{ MEDIA_URL }}{{ recipe.image }}" />
@@ -62,12 +64,10 @@
       <li>Cook - {{ recipe.cook }}h</li>
     </ul>
   </div>
-
 </div>
 
 <!-- RECIPE FACTS -->
 <div class="recipe-facts">
-
   <!-- STEPS -->
   <div class="steps">
     <h5>Steps</h5>
@@ -97,27 +97,36 @@
       {% endfor %}
     </ul>
   </div>
-
 </div>
 
 <!-- REVIEWS -->
 <h3 id="review-header">Reviews</h3>
 
 <!-- POST REVIEW -->
-{% if not my_profile and user.is_authenticated %}
-<div class="user-review">
-  <textarea id="review" placeholder="I love this recipe..."></textarea>
+{% if user.is_authenticated and not my_profile and not has_reviewed %}
+<form
+  role="form"
+  id="post-review-form"
+  method="post"
+  enctype="multipart/form-data"
+  action="{% url 'pantry:recipe' recipe.user.id recipe.id %}"
+>
+  {% csrf_token %}
+  <textarea
+    id="review"
+    placeholder="I love this recipe..."
+    name="review"
+  ></textarea>
   <div class="user-review-submit-container">
-    <button id="user-review-submit">post</button>
+    <input type="submit" id="user-review-submit" value="post" />
   </div>
-</div>
-{% endif %} 
+</form>
+{% endif %}
 
 <!-- REVIEW LIST -->
 {% for review in reviews %}
 <div class="review">
   <div class="review-aside">
-
     <!-- USERNAME / PUBLISHED DATE -->
     <div>
       <a class="user" href="{% url 'pantry:user-profile' review.user.id %}">
@@ -138,12 +147,10 @@
       {% endif %}
       <p class="review-likes">{{ review.likes }}</p>
     </div>
-
   </div>
 
   <!-- REVIEW TEXT -->
   <p class="review-text">{{ review.review }}</p>
-
 </div>
 {% endfor %} 
 

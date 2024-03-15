@@ -198,12 +198,26 @@ def logout(request):
 def recipe(request, user_id, recipe_id):
 
     recipe = Recipe.objects.get(id=recipe_id)
+
+    # user is posting a review
+    if request.method == "POST":
+
+        request_review = request.POST.get("review")
+
+        review = Review.objects.create(
+            user=request.user, recipe=recipe, review=request_review
+        )
+
+        review.save()
+
     reviews = Review.objects.filter(recipe=recipe)
     # ingredients stored as single string with 'SPACER' delimiter
     ingredients = recipe.ingredients.split(SPACER)
 
     user = request.user
     other_user = User.objects.get(id=user_id)
+
+    has_reviewed = has_reviewed_helper(request.user, recipe)
 
     context_dict = {
         "recipe": recipe,
@@ -212,6 +226,7 @@ def recipe(request, user_id, recipe_id):
         # steps stored as single string with 'SPACER' delimiter
         "steps": recipe.steps.split(SPACER),
         "my_profile": is_own_profile(user, other_user),
+        "has_reviewed": has_reviewed,
     }
 
     return render(request, "pantry/recipe.html", context=context_dict)
