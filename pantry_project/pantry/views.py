@@ -261,6 +261,24 @@ def create_a_recipe(request):
 
 def user_profile(request, user_id):
 
+    if request.GET.get("request", False):
+        search_query = request.GET.get("search_query")
+
+        if not search_query:
+            return render(request, "pantry/user-response.html")
+
+
+        search_query_query = Q(username__startswith=search_query)
+
+        users = User.objects.filter(search_query_query)
+
+        context_dict = {
+            "users": users,
+        }
+
+        return render(request, "pantry/user-response.html", context=context_dict)
+
+
     user = request.user
     other_user = User.objects.get(id=user_id)
     own_profile = is_own_profile(user, other_user)

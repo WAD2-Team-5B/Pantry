@@ -74,22 +74,13 @@
   <div class="right-container">
     <!-- SEARCH BAR -->
     <div class="search-bar">
-      <input
-        type="text"
-        id="search"
-        name="search_query"
-        placeholder="search a recipe"
-        value="{{ search_query }}"
-      />
+      <input type="text" id="search" name="search_query" placeholder="search a recipe" value="{{ search_query }}" />
     </div>
 
     <!-- SEARCH RESULTS -->
     <div id="search-results">
       {% for recipe in recipes %}
-      <a
-        class="recipe"
-        href="{% url 'pantry:recipe' recipe.user.id recipe.id %}"
-      >
+      <a class="recipe" href="{% url 'pantry:recipe' recipe.user.id recipe.id %}">
         <img class="recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" />
         <ul>
           <li>{{ recipe.title }}</li>

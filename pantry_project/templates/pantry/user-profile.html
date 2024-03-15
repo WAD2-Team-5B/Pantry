@@ -6,7 +6,10 @@
 {% endblock %}
 
 <!-- JS -->
-{% block js_block %} {% endblock %}
+<!-- JS -->
+{% block js_block %}
+<script type="module" src="{% static 'js/pages/user-profile.js' %}"></script>
+{% endblock %}
 
 <!-- TITLE -->
 {% block title_block %} User Profile {% endblock %}
@@ -29,12 +32,7 @@
 
     <!-- SEARCH -->
     <div class="search">
-      <input
-        type="text"
-        id="search"
-        name="search_query"
-        placeholder="search a user"
-      />
+      <input type="text" id="search" name="search_query" placeholder="search a user" />
       <ul id="search-results"></ul>
     </div>
 
