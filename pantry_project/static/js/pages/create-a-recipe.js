@@ -128,6 +128,15 @@ createStep();
 // FORM
 // ------------------------------
 
+function validateIngredients() {
+  for (let i = 0; i < ingredients.length; i++) {
+    if (!ingredients[i].trim()) {
+      return true;
+    }
+  }
+  return false;
+}
+
 let form = document.getElementById("create-a-recipe-form");
 form.addEventListener("submit", (e) => {
   // validation
@@ -135,6 +144,10 @@ form.addEventListener("submit", (e) => {
     {
       condition: ingredients.length === 0,
       message: "Please have atleast one ingredient!",
+    },
+    {
+      condition: validateIngredients(),
+      message: "You have an empty ingredient!",
     },
     { condition: cuisine.length === 0, message: "Please select a cuisine!" },
     {

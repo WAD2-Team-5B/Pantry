@@ -269,12 +269,10 @@ def create_a_recipe(request):
 
 def user_profile(request, user_id):
 
+    # user is searching users
     if request.GET.get("request", False):
+
         search_query = request.GET.get("search_query")
-
-        if not search_query:
-            return render(request, "pantry/user-response.html")
-
 
         search_query_query = Q(username__startswith=search_query)
 
@@ -285,7 +283,6 @@ def user_profile(request, user_id):
         }
 
         return render(request, "pantry/user-response.html", context=context_dict)
-
 
     user = request.user
     other_user = User.objects.get(id=user_id)
@@ -428,6 +425,8 @@ def edit_profile(request):
             print("changed bio")
 
         auth.login(request, user)
+
+        return redirect(reverse("pantry:user-profile", kwargs={"user_id": user.id}))
 
     context_dict = {"userprofile": userprofile}
 
