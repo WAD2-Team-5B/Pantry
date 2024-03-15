@@ -1,0 +1,19 @@
+{% load staticfiles %}
+
+{% for recipe in recipes %}
+<a class="recipe" href="{% url 'pantry:recipe' recipe.user.id recipe.id %}">
+    <img class="recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" />
+    <ul>
+    <li>{{ recipe.title }}</li>
+    <li>
+        <img src="{% static 'images/star.svg' %}" />
+        {{ recipe.rating }}
+    </li>
+    <li>{{ recipe.saves }} saves</li>
+    <li>{{ recipe.difficulty }}</li>
+    <li>{{ recipe.cuisine }}</li>
+    <li>Prep - {{ recipe.prep }}h</li>
+    <li>Cook - {{ recipe.cook }}h</li>
+    </ul>
+</a>
+{% endfor %}

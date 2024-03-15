@@ -91,7 +91,7 @@ h5 {
   list-style-type: none;
 }
 
-.recipe-card {
+.data-card {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -106,11 +106,11 @@ h5 {
 }
 
 /* if we hover on button dont do background color */
-.recipe-card:hover {
+.data-card:hover {
   background-color: var(--color-2);
 }
 
-.recipe-card img {
+.data-card img {
   /* scaled (roughly) */
   height: 7.5rem;
   width: 13.2rem;
@@ -122,19 +122,22 @@ h5 {
 
 /* if review */
 
-.recipe-card p {
+.data-card p {
   max-height: 8rem;
   width: 15rem;
 
   margin-inline: 1rem;
   margin-bottom: 1rem;
-  padding: 0.25rem;
+  padding: 0.5rem;
 
   border-radius: 1rem;
   border: 0.1rem solid var(--color-1);
 
   overflow-wrap: break-word;
   overflow-y: auto;
+
+  color: black;
+  font-size: 0.75rem;
 }
 
 .btn-remove {
@@ -167,17 +170,17 @@ h5 {
   }
 
   #data-list,
-  .recipe-card {
+  .data-card {
     width: 20rem;
   }
 
-  .recipe-card img {
+  .data-card img {
     /* scaled (roughly) */
     height: 11.35rem;
     width: 20rem;
   }
 
-  .recipe-card p {
+  .data-card p {
     width: 18rem;
     max-height: 9rem;
   }

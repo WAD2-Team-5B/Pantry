@@ -22,7 +22,7 @@ textarea {
   align-items: center;
 
   width: 75%;
-  height: 70vh;
+  height: 28rem;
 }
 
 /* LEFT COLUMN */
@@ -409,6 +409,8 @@ textarea {
 #error-message {
   width: 75%;
 
+  margin-bottom: 2rem;
+
   border-radius: 0.5rem;
 
   color: var(--color-3);
@@ -419,7 +421,6 @@ textarea {
 
 .error-message-active {
   padding: 0.5rem;
-  margin-bottom: 2rem;
   margin-top: 1rem;
 }
 

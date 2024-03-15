@@ -1,4 +1,4 @@
-import { initButtons } from "../utility/helpers.js";
+import { initButtons, imagePreview } from "../utility/helpers.js";
 import { Form } from "../utility/form.js";
 
 // ------------------------------
@@ -92,14 +92,12 @@ function createStep() {
 //  INIT
 // ------------------------------
 
-let difficultyBtns = Array.from(
-  document.getElementsByClassName("btn-difficulty")
-);
-let cuisineBtns = Array.from(document.getElementsByClassName("btn-cuisine"));
-let categoryBtns = Array.from(document.getElementsByClassName("btn-category"));
+let difficultyBtns = document.getElementsByClassName("btn-difficulty");
+let cuisineBtns = document.getElementsByClassName("btn-cuisine");
+let categoryBtns = document.getElementsByClassName("btn-category");
 
-initButtons(difficultyBtns, difficulty, "btn-difficulty-active");
-initButtons(cuisineBtns, cuisine, "btn-cuisine-active");
+initButtons(difficultyBtns, difficulty, "btn-difficulty-active", false);
+initButtons(cuisineBtns, cuisine, "btn-cuisine-active", false);
 initButtons(categoryBtns, categories, "btn-category-active", true);
 
 let addIngredientBtn = document.getElementById("btn-add-ingredient");
@@ -119,13 +117,10 @@ addIngredientBtn.onclick = () => {
   return false;
 };
 
-let fileInput = document.getElementById("recipe-image");
-// user selects file
-fileInput.onchange = () => {
-  let image = fileInput.files[0];
-  document.getElementById("recipe-image-preview").src =
-    URL.createObjectURL(image);
-};
+imagePreview(
+  document.getElementById("recipe-image"),
+  document.getElementById("recipe-image-preview")
+);
 
 createStep();
 
@@ -148,7 +143,9 @@ form.addEventListener("submit", (e) => {
     },
     { condition: numSteps <= 1, message: "Please have atleast one step!" },
     {
-      condition: fileInput.files.length === 0 || fileInput.files.length > 1,
+      condition:
+        document.getElementById("recipe-image").value === "" ||
+        document.getElementById("recipe-image").files.length > 1,
       message: "Please select a single image!",
     },
     {
@@ -179,8 +176,11 @@ form.addEventListener("submit", (e) => {
     { input: document.getElementById("ingredients"), value: ingredients },
     { input: document.getElementById("difficulty"), value: difficulty },
     { input: document.getElementById("steps"), value: steps },
-    { input: document.getElementById("cuisines"), value: cuisine },
+    { input: document.getElementById("cuisine"), value: cuisine },
     { input: document.getElementById("categories"), value: categories },
   ];
+
+  console.log(hiddenInputs);
+
   Form.assignHiddenInputs(hiddenInputs);
 });

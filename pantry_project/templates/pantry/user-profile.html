@@ -13,17 +13,20 @@
 
 <!-- CONTENT -->
 {% block main_block %}
-<h3 id="user">{{ username }}</h3>
+<!-- HEADER -->
+<h3 id="user">{{ profileuser.username }}</h3>
 
 <div class="super-container">
+
   <!-- BIO -->
   <div class="bio">
-    <img src="{{ user_image }}" />
-    <p>{{ user_bio }}</p>
+    <img src="{{ MEDIA_URL }}{{ profileuser_profile.image }}" />
+    <p>{{ profileuser_profile.bio }}</p>
   </div>
 
   <!-- TOOLS -->
   <div class="tools">
+
     <!-- SEARCH -->
     <div class="search">
       <input
@@ -38,27 +41,41 @@
     <!-- LINKS -->
     <ul class="links">
       {% if own_profile %}
+
+      <!-- include 'edit-profile' and 'create-a-recipe' links -->
       <li>
-        <a href="{% url 'pantry:user-recipes' %}">My Recipes</a>
+        <a href="{% url 'pantry:edit-profile' %}">Edit Profile</a>
       </li>
-      <li><a href="{% url 'pantry:user-reviews' %}">My Reviews</a></li>
-      <li><a href="{% url 'pantry:saved-recipes' %}">Saved Recipes</a></li>
-      <li><a href="{% url 'pantry:create-a-recipe' %}">Create A Recipe</a></li>
-      <li><a href="">Edit Profile</a></li>
+      <li>
+        <a href="{% url 'pantry:create-a-recipe' %}">Create A Recipe</a>
+      </li>
+      <li>
+        <a href="{% url 'pantry:user-recipes' profileuser.id %}">My Recipes</a>
+      </li>
+      <li>
+        <a href="{% url 'pantry:user-reviews' profileuser.id %}">My Reviews</a>
+      </li>
+      <li>
+        <a href="{% url 'pantry:saved-recipes' profileuser.id %}">Saved Recipes</a>
+      </li>
+
       {% else %}
+
+      <!-- include other users name in link text -->
       <li>
-        <a href="{% url 'pantry:user-recipes' %}">{{ username }} Recipes</a>
+        <a href="{% url 'pantry:user-recipes' profileuser.id %}">{{ profileuser.username }} Recipes</a>
       </li>
       <li>
-        <a href="{% url 'pantry:user-reviews' %}">{{ username }} Reviews</a>
+        <a href="{% url 'pantry:user-reviews' profileuser.id %}">{{ profileuser.username }} Reviews</a>
       </li>
       <li>
-        <a href="{% url 'pantry:saved-recipes' %}"
-          >{{ username }}'s Saved Recipes</a
-        >
+        <a href="{% url 'pantry:saved-recipes' profileuser.id %}">{{ profileuser.username }}'s Saved Recipes</a>
       </li>
+
       {% endif %}
     </ul>
+
   </div>
+
 </div>
 {% endblock %}
