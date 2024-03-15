@@ -32,7 +32,7 @@ function jquery() {
     selected_sort: selectedSortBy.join(SPACER),
   };
 
-  PantryAPI.searchRecipes(data);
+  PantryAPI.searchDatabase(data);
 }
 
 initButtons(cuisineBtns, selectedCuisines, "btn-cuisine-active", true, jquery);

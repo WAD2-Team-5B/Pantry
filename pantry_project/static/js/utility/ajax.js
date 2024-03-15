@@ -1,5 +1,5 @@
 export class PantryAPI {
-  static searchRecipes(data) {
+  static searchDatabase(data) {
     $.get("", data, function (response) {
       // response is the html of the search results
       $("#search-results").html(response);
@@ -17,9 +17,9 @@ export class PantryAPI {
     });
   }
 
-  static bookmark() {}
+  static bookmark() { }
 
-  static like() {}
+  static like() { }
 }
 
 // $(document).ready(function () {
