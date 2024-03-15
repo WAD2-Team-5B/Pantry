@@ -232,11 +232,12 @@ def recipe(request, user_id, recipe_id):
 
     has_reviewed = has_reviewed_helper(request.user, recipe)
 
-    bookmark_exists = SavedRecipes.objects.filter(user=request.user, recipe=recipe)
-    if bookmark_exists:
-        context_dict["bookmarked"] = True
-    else:
-        context_dict["bookmarked"] = False
+    if user.is_authenticated:
+        bookmark_exists = SavedRecipes.objects.filter(user=request.user, recipe=recipe)
+        if bookmark_exists:
+            context_dict["bookmarked"] = True
+        else:
+            context_dict["bookmarked"] = False
 
     context_dict["reviews"] = reviews
     context_dict["ingredients"] = ingredients
