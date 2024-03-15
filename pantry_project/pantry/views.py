@@ -142,6 +142,7 @@ def signup(request):
 
             profile = profile_form.save(commit=False)
             profile.user = user
+            profile.bio = "Hey there, I'm a new user!"
             profile.save()
 
             auth.login(request, user)

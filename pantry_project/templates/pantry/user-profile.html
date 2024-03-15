@@ -25,7 +25,7 @@
     {% if profileuser_profile.image %}
     <img src="{{ MEDIA_URL }}{{ profileuser_profile.image }}" />
     {% else %}
-    <img src="" />
+    <img class="default-profile-img" src="{% static 'images/profile-default.jpg' %}" />
     {% endif %}
     <textarea readonly>{{ profileuser_profile.bio }}</textarea>
   </div>

@@ -43,6 +43,10 @@ h3 {
   background-color: var(--color-1);
 }
 
+.default-profile-img {
+  border: 0.1rem solid var(--color-1);
+}
+
 #search-results {
   display: flex;
   flex-direction: column;
