@@ -52,7 +52,7 @@
     <!-- IMAGE -->
     <div class="subcontainer-right">
       <h4>Change Profile Image</h4>
-      <input type="file" id="profile-image" name="changed_image" />
+      <input type="file" id="profile-image" name="changed_image" accept="image/*"/>
       <img
         id="profile-image-preview"
         src="{{ MEDIA_URL }}{{ userprofile.image }}"

@@ -36,7 +36,7 @@ class Recipe(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE)
-    categories = models.ManyToManyField(Category)
+    categories = models.ManyToManyField(Category, blank=True)
 
     title = models.CharField(max_length=200)
     image = models.ImageField(upload_to=recipe_upload_path)

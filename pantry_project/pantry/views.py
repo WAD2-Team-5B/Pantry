@@ -242,7 +242,8 @@ def create_a_recipe(request):
         )
 
         # add our category instances
-        recipe.categories.set(Category.objects.filter(type__in=category_strings))
+        if category_strings:
+            recipe.categories.set(Category.objects.filter(type__in=category_strings))
 
         # save first to generate a recipe id
         # (this is needed for saving image into correct media dir using recipe id)
@@ -250,6 +251,13 @@ def create_a_recipe(request):
 
         recipe.image = request.FILES.get("image")
         recipe.save()
+
+        return redirect(
+            reverse(
+                "pantry:recipe",
+                kwargs={"user_id": request.user.id, "recipe_id": recipe.id},
+            )
+        )
 
     cuisines = Cuisine.objects.all().values_list("type", flat=True)
     categories = Category.objects.all().values_list("type", flat=True)
@@ -366,22 +374,27 @@ def edit_profile(request):
             user.delete()
             return redirect(reverse("pantry:index"))
 
+        # current info
+        user = request.user
+
         # edit profile request
         changed_username = request.POST.get("changed_username")
         changed_password = request.POST.get("changed_password")
         changed_image = request.FILES.get("changed_image", False)
         changed_bio = request.POST.get("changed_bio")
 
+        auth.logout(request)
+
         # check if username was changed
-        if request.user.username != changed_username:
-            request.user.username = changed_username
-            request.user.save()
-            print(f"changed username to {request.user.username}")
+        if user.username != changed_username:
+            user.username = changed_username
+            user.save()
+            print(f"changed username to {user.username}")
 
         # check if password was changed
         if changed_password != "":
-            request.user.set_password(changed_password)
-            request.user.save()
+            user.set_password(changed_password)
+            user.save()
             print("changed password")
 
         # check if image was changed
@@ -395,6 +408,8 @@ def edit_profile(request):
             userprofile.bio = changed_bio
             userprofile.save()
             print("changed bio")
+
+        auth.login(request, user)
 
     context_dict = {"userprofile": userprofile}
 
