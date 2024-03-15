@@ -44,10 +44,18 @@
       <p>{{ data.review }}</p>
     </a>
 
+    {% elif is_saved_recipes_page %}
+
+    <a class="data-card" href="{% url 'pantry:recipe' data.recipe.user.id data.recipe.id %}">
+      <!-- saved recipes page 'data' will be given as SavedRecipes model -->
+      <h5>{{ data.recipe.title }}</h5>
+      <img src="{{ MEDIA_URL }}{{ data.recipe.image }}" />
+    </a>
+
     {% else %}
 
     <a class="data-card" href="{% url 'pantry:recipe' data.user.id data.id %}">
-      <!-- user/saved recipe page 'data' will both be given as Recipe Model -->
+      <!-- user recipes page 'data' will be given as Recipe Model -->
       <h5>{{ data.title }}</h5>
       <img src="{{ MEDIA_URL }}{{ data.image }}" />
     </a>

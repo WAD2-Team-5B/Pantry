@@ -37,7 +37,28 @@
   <div class="right-aside">
     {% if not my_profile and user.is_authenticated %}
     <div id="stars"></div>
-    <button id="bookmark"></button>
+
+    <!-- BOOKMARK -->
+    <form
+      role="form"
+      id="bookmark-form"
+      method="post"
+      enctype="multipart/form-data"
+      action="{% url 'pantry:recipe' recipe.user.id recipe.id %}"
+    >
+      {% csrf_token %}
+      <input type="hidden" name="reason" value="bookmark" />
+      {% if bookmarked %}
+      <button id="bookmark" name="bookmarked" value="true">
+        <img src="{% static "images/bookmark.svg" %}" />
+      </button>
+      {% else %}
+      <button id="bookmark" name="bookmarked" value="false">
+        <img src="{% static "images/bookmark-empty.svg" %}" />
+      </button>
+      {% endif %}
+    </form>
+
     {% endif %}
   </div>
 </header>
@@ -112,6 +133,7 @@
   action="{% url 'pantry:recipe' recipe.user.id recipe.id %}"
 >
   {% csrf_token %}
+  <input type="hidden" name="reason" value="review" />
   <textarea
     id="review"
     placeholder="I love this recipe..."

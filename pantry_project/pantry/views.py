@@ -199,17 +199,29 @@ def logout(request):
 def recipe(request, user_id, recipe_id):
 
     recipe = Recipe.objects.get(id=recipe_id)
+    context_dict = {"recipe": recipe}
 
     # user is posting a review
     if request.method == "POST":
 
-        request_review = request.POST.get("review")
+        if request.POST.get("reason") == "bookmark":
 
-        review = Review.objects.create(
-            user=request.user, recipe=recipe, review=request_review
-        )
+            bookmarked = request.POST.get("bookmarked")
 
-        review.save()
+            if bookmarked == "true":
+                SavedRecipes.objects.get(user=request.user, recipe=recipe).delete()
+            else:
+                SavedRecipes.objects.create(user=request.user, recipe=recipe).save()
+
+        elif request.POST.get("reason") == "review":
+
+            request_review = request.POST.get("review")
+
+            review = Review.objects.create(
+                user=request.user, recipe=recipe, review=request_review
+            )
+
+            review.save()
 
     reviews = Review.objects.filter(recipe=recipe)
     # ingredients stored as single string with 'SPACER' delimiter
@@ -220,15 +232,17 @@ def recipe(request, user_id, recipe_id):
 
     has_reviewed = has_reviewed_helper(request.user, recipe)
 
-    context_dict = {
-        "recipe": recipe,
-        "reviews": reviews,
-        "ingredients": ingredients,
-        # steps stored as single string with 'SPACER' delimiter
-        "steps": recipe.steps.split(SPACER),
-        "my_profile": is_own_profile(user, other_user),
-        "has_reviewed": has_reviewed,
-    }
+    bookmark_exists = SavedRecipes.objects.filter(user=request.user, recipe=recipe)
+    if bookmark_exists:
+        context_dict["bookmarked"] = True
+    else:
+        context_dict["bookmarked"] = False
+
+    context_dict["reviews"] = reviews
+    context_dict["ingredients"] = ingredients
+    context_dict["steps"] = recipe.steps.split(SPACER)
+    context_dict["my_profile"] = is_own_profile(user, other_user)
+    context_dict["has_reviewed"] = has_reviewed
 
     return render(request, "pantry/recipe.html", context=context_dict)
 
@@ -343,14 +357,13 @@ def saved_recipes(request, user_id):
     # user deleting their bookmarked recipe
     if request.GET.get("request", False):
 
-        recipe_id = request.GET.get("dataId")
-        recipe = Recipe.objects.get(id=recipe_id)
-        saved_recipe = SavedRecipes.objects.get(user=request.user, recipe=recipe)
+        saved_recipe_id = request.GET.get("dataId")
+        saved_recipe = SavedRecipes.objects.get(id=saved_recipe_id)
         saved_recipe.delete()
 
         # check that we successfully deleted the object
         try:
-            SavedRecipes.objects.get(user=request.user, recipe=recipe)
+            SavedRecipes.objects.get(id=saved_recipe_id)
         except SavedRecipes.DoesNotExist:
             return HttpResponse("success")
 
@@ -457,24 +470,6 @@ def edit_profile(request):
     context_dict = {"userprofile": userprofile}
 
     return render(request, "pantry/edit-profile.html", context=context_dict)
-
-
-class SaveRecipeView(View):
-    @method_decorator(login_required)
-    def get(self, request):
-        recipe_id = request.GET["recipe_id"]
-
-        try:
-            recipe = Recipe.objects.get(id=int(recipe_id))
-        except Recipe.DoesNotExist:
-            return HttpResponse(-1)
-        except ValueError:
-            return HttpResponse(-1)
-
-        recipe.saves = recipe.save + 1
-        recipe.save()
-
-        return HttpResponse(recipe.saves)
 
 
 class LikeReviewView(View):

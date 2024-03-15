@@ -75,6 +75,14 @@ h3 {
   cursor: pointer;
 }
 
+#bookmark img {
+  height: 100%;
+}
+
+#bookmark-form {
+  display: flex;
+}
+
 /* RECIPE INFO */
 
 .recipe-info,
