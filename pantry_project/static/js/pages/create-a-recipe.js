@@ -96,8 +96,8 @@ let difficultyBtns = document.getElementsByClassName("btn-difficulty");
 let cuisineBtns = document.getElementsByClassName("btn-cuisine");
 let categoryBtns = document.getElementsByClassName("btn-category");
 
-initButtons(difficultyBtns, difficulty, "btn-difficulty-active");
-initButtons(cuisineBtns, cuisine, "btn-cuisine-active");
+initButtons(difficultyBtns, difficulty, "btn-difficulty-active", false);
+initButtons(cuisineBtns, cuisine, "btn-cuisine-active", false);
 initButtons(categoryBtns, categories, "btn-category-active", true);
 
 let addIngredientBtn = document.getElementById("btn-add-ingredient");
@@ -128,6 +128,15 @@ createStep();
 // FORM
 // ------------------------------
 
+function validateIngredients() {
+  for (let i = 0; i < ingredients.length; i++) {
+    if (!ingredients[i].trim()) {
+      return true;
+    }
+  }
+  return false;
+}
+
 let form = document.getElementById("create-a-recipe-form");
 form.addEventListener("submit", (e) => {
   // validation
@@ -135,6 +144,10 @@ form.addEventListener("submit", (e) => {
     {
       condition: ingredients.length === 0,
       message: "Please have atleast one ingredient!",
+    },
+    {
+      condition: validateIngredients(),
+      message: "You have an empty ingredient!",
     },
     { condition: cuisine.length === 0, message: "Please select a cuisine!" },
     {

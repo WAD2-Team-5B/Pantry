@@ -1,4 +1,4 @@
-from pantry.models import Review, User
+from pantry.models import *
 
 # HELPER FUNCTIONS
 
@@ -42,5 +42,20 @@ def get_user_data_context_dict(request, user_id, recipe_string, model):
 
     if model == Review:
         context_dict["is_reviews_page"] = True
+    elif model == SavedRecipes:
+        context_dict["is_saved_recipes_page"] = True
 
     return context_dict
+
+
+def has_reviewed_helper(user, recipe):
+
+    if not user.is_authenticated:
+        return False
+
+    user_review = Review.objects.filter(user=user, recipe=recipe)
+
+    if user_review:
+        return True
+
+    return False

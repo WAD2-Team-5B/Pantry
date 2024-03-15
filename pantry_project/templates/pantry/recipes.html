@@ -15,18 +15,13 @@
 
 <!-- CONTENT -->
 {% block main_block %}
+<!-- HEADER -->
 <h3>Find Recipes</h3>
 
-<form
-  role="form"
-  id="search-form"
-  method="post"
-  action="{% url 'pantry:recipes' %}"
->
-  {% csrf_token %}
+<div id="search-form">
   <!-- LEFT COLUMN -->
   <div class="left-container">
-    <!-- CREATE RECIPE LINK -->
+    <!-- CREATE-A-RECIPE LINK -->
     {% if user.is_authenticated %}
     <a href="{% url 'pantry:create-a-recipe' %}">Create A Recipe</a>
     {% endif %}
@@ -79,19 +74,13 @@
   <div class="right-container">
     <!-- SEARCH BAR -->
     <div class="search-bar">
-      <input
-        type="text"
-        id="search"
-        name="search_query"
-        placeholder="search a recipe"
-      />
-      <input type="submit" id="submit" value="search" />
+      <input type="text" id="search" name="search_query" placeholder="search a recipe" value="{{ search_query }}" />
     </div>
 
     <!-- SEARCH RESULTS -->
     <div id="search-results">
       {% for recipe in recipes %}
-      <a class="recipe" href="{{ recipe.link }}">
+      <a class="recipe" href="{% url 'pantry:recipe' recipe.user.id recipe.id %}">
         <img class="recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" />
         <ul>
           <li>{{ recipe.title }}</li>
@@ -109,11 +98,5 @@
       {% endfor %}
     </div>
   </div>
-
-  <!-- HIDDEN SUBMISSIONS -->
-  <input type="hidden" id="difficulty" name="selected_difficulty" />
-  <input type="hidden" id="cuisines" name="selected_cuisines" />
-  <input type="hidden" id="categories" name="selected_categories" />
-  <input type="hidden" id="sort" name="selected_sort" />
-</form>
+</div>
 {% endblock %}

@@ -15,6 +15,7 @@
 
 <!-- CONTENT -->
 {% block main_block %}
+<!-- HEADER -->
 <h3>Edit Profile</h3>
 
 <form
@@ -22,10 +23,13 @@
   id="edit-profile-form"
   method="post"
   enctype="multipart/form-data"
-  action="{% url 'pantry:edit-profile' user.id %}"
+  action="{% url 'pantry:edit-profile' %}"
 >
+
   {% csrf_token %}
+
   <div class="container">
+
     <!-- USERNAME / PASSWORD -->
     <div class="subcontainer-left">
       <h4>Change Username</h4>
@@ -34,7 +38,7 @@
         id="username"
         class="input-text-small"
         name="changed_username"
-        value="{{ username }}"
+        value="{{ user.username }}"
       />
       <h4>Change Password</h4>
       <input
@@ -42,28 +46,38 @@
         id="password"
         class="input-text-small"
         name="changed_password"
-        value=""
       />
     </div>
 
     <!-- IMAGE -->
     <div class="subcontainer-right">
       <h4>Change Profile Image</h4>
-      <input type="file" id="profile-image" name="changed_image" />
-      <img id="profile-image-preview" src="{{ user_image }}" />
+      <input type="file" id="profile-image" name="changed_image" accept="image/*"/>
+      {% if userprofile.image %}
+      <img id="profile-image-preview" src="{{ MEDIA_URL }}{{ userprofile.image }}" />
+      {% else %}
+      <img id="profile-image-preview" src="" />
+      {% endif %}
     </div>
+
   </div>
 
   <!-- BIO -->
   <h4>Change Bio</h4>
-  <textarea id="profile-bio" name="changed_bio">{{ user_bio }}</textarea>
+  <textarea id="profile-bio" name="changed_bio">{{ userprofile.bio }}</textarea>
 
+  <!-- ERROR MESSAGE -->
+  {% if error %}
+  <h5 class="error-message-active" id="error-message">{{ error }}</h5>
+  {% else %}
   <h5 id="error-message"></h5>
+  {% endif %}
 
   <!-- ACCOUNT DELETION / SUBMIT -->
   <div class="container-submit">
-    <input type="submit" id="submit" value="confirm" />
-    <button type="button" id="btn-delete-account">delete account</button>
+    <input type="submit" id="btn-submit" value="confirm" />
+    <button id="btn-delete-account" name="delete-request" value="">delete account</button>
   </div>
+  
 </form>
 {% endblock %}

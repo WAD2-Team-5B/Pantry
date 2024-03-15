@@ -1,12 +1,16 @@
 # Pantry
 
+## Deployed
+
+[Hosted on PythonAnywhere](https://andyh.pythonanywhere.com/)
+
 ## Description
 
 WAD2 Team 5B project **_Pantry_** repo.
 
 **_Pantry_** is a social media site based around food recipes to allow users to share their food ideas and explore others.
 
-## Team
+## WAD2 Team 5B
 
 - [Andrew Holligan](https://github.com/andrew-holligan)
 - [Nicole Sung](https://github.com/uofg-neec)
@@ -48,30 +52,6 @@ First ensure your ready to merge i.e. you have pulled and pushed on your branch,
 - git merge NAME (sets up a commit to merge branch called NAME)
 - git push (push the merge commit and thus carry out the merge)
 - git branch -d NAME (delete branch called NAME) (it is safe to delete your branch after it is merged or you can keep it) (DO NOT DELETE main PRODUCTION BRANCH!!!)
+- git push origin --delete NAME (delete branch from GitHub)
 
-## Contributing
 
-Git commit messages for this repo must follow the conventions outlined [here](https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716)
-
-## File Structure
-
-Pantry
-- README.md
-- api.md
-- pantry_project
-    - media
-    - pantry
-        - ...
-    - pantry_project
-        - ...
-    - static
-        - css
-            - base
-            - pages
-        - images
-        - js
-            - pages
-    - templates
-        - pantry
-            - base
- 

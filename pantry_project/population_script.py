@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 import django
+from datetime import datetime
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pantry_project.settings")
 django.setup()
@@ -12,6 +13,8 @@ from django.core.files.images import ImageFile
 from pantry.models import *
 from pantry.views import SPACER
 
+from django.contrib.auth.models import User
+from pantry.models import Cuisine, Category, Recipe, UserProfile
 
 # HELPERS
 
@@ -54,8 +57,9 @@ def add_recipe(recipe_data):
         prep=recipe_data["prep"],
         cook=recipe_data["cook"],
         difficulty=recipe_data["difficulty"],
-        rating=recipe_data["rating"],
-        saves=recipe_data["saves"],
+        # in order to calculate rating
+        star_count=recipe_data["star_count"],
+        star_submissions=recipe_data["star_submissions"],
     )
     recipe.categories.set(recipe_data["categories"])
     # save first so generate a recipe id
@@ -63,6 +67,22 @@ def add_recipe(recipe_data):
     recipe.image = recipe_data["image"]
     recipe.save()
     return recipe
+
+
+def add_review(review_data):
+    recipes = Recipe.objects.all()
+    for recipe in recipes:
+        # user cant review his own recipe
+        if recipe.user == review_data["user"]:
+            continue
+
+        review = Review.objects.create(
+            user=review_data["user"],
+            recipe=recipe,
+            review=review_data["review"],
+            likes=review_data["likes"],
+        )
+        review.save()
 
 
 # CREATE FUNCTIONS
@@ -110,13 +130,10 @@ def create_users_and_profiles():
 
     for user_data in users_data:
         user_object = add_user(user_data["username"], user_data["password"])
-        print(f"Created User: {user_object.username}")
-
-        print(user_object.username, user_object.id)
         userprofile_object = add_userprofile(
             user_object, user_data["image"], user_data["bio"]
         )
-        print(f"Created UserProfile")
+        print(f"Created User: {user_object.username}\tCreated UserProfile")
 
 
 def create_cuisines_and_categories():
@@ -197,8 +214,8 @@ def create_recipes():
             "prep": "0:20",
             "cook": "0:20",
             "difficulty": "intermediate",
-            "rating": 3.0,
-            "saves": 10,
+            "star_count": 32,
+            "star_submissions": 9,
         },
         {
             "user": User.objects.get(username="andrewM"),
@@ -221,8 +238,8 @@ def create_recipes():
             "prep": "0:30",
             "cook": "0:30",
             "difficulty": "expert",
-            "rating": 4.0,
-            "saves": 15,
+            "star_count": 57,
+            "star_submissions": 12,
         },
         {
             "user": User.objects.get(username="andrewH"),
@@ -247,8 +264,8 @@ def create_recipes():
             "prep": "0:25",
             "cook": "0:20",
             "difficulty": "expert",
-            "rating": 4.0,
-            "saves": 12,
+            "star_count": 12,
+            "star_submissions": 3,
         },
         {
             "user": User.objects.get(username="nicole"),
@@ -266,8 +283,8 @@ def create_recipes():
             "prep": "0:15",
             "cook": "0:10",
             "difficulty": "intermediate",
-            "rating": 4.0,
-            "saves": 18,
+            "star_count": 25,
+            "star_submissions": 6,
         },
         {
             "user": User.objects.get(username="jeval"),
@@ -289,8 +306,8 @@ def create_recipes():
             "prep": "0:40",
             "cook": "0:00",
             "difficulty": "expert",
-            "rating": 4.0,
-            "saves": 25,
+            "star_count": 23,
+            "star_submissions": 5,
         },
         {
             "user": User.objects.get(username="layla"),
@@ -312,8 +329,8 @@ def create_recipes():
             "prep": "0:30",
             "cook": "0:20",
             "difficulty": "expert",
-            "rating": 5.0,
-            "saves": 20,
+            "star_count": 42,
+            "star_submissions": 9,
         },
     ]
 
@@ -322,8 +339,49 @@ def create_recipes():
         print(f"{recipe.title} has been created")
 
 
+def create_reviews():
+    reviews_data = [
+        {
+            "user": User.objects.get(username="layla"),
+            "likes": 40,
+            "review": "I loved this recipe!",
+        },
+        {
+            "user": User.objects.get(username="nicole"),
+            "likes": 25,
+            "review": "The recipe was OK",
+        },
+        {
+            "user": User.objects.get(username="jeval"),
+            "likes": 19,
+            "review": "This recipe proved to be a great addition to my kitchen!",
+        },
+        {
+            "user": User.objects.get(username="andrewH"),
+            "likes": 7,
+            "review": "This was a great recipe!",
+        },
+        {
+            "user": User.objects.get(username="andrewS"),
+            "likes": 100,
+            "review": "I really liked this one!",
+        },
+        {
+            "user": User.objects.get(username="andrewM"),
+            "likes": 22,
+            "review": "It was not too bad...",
+        },
+    ]
+
+    for review_data in reviews_data:
+        add_review(review_data)
+        username = review_data["user"]
+        print(f"created reviews by user: {username}")
+
+
 if __name__ == "__main__":
     print("Starting Rango population script...")
     create_users_and_profiles()
     create_cuisines_and_categories()
     create_recipes()
+    create_reviews()

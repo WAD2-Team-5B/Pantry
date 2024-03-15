@@ -6,12 +6,13 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
 from django.db import IntegrityError
-from django.db.models import Q
+from django.db.models import Q, Count
 from pantry_project.settings import MEDIA_DIR
+from django.utils.decorators import method_decorator
+from django.views import View
 
-from pantry.models import Review, UserProfile, Recipe, SavedRecipes, Cuisine, Category
-from pantry.forms import UserForm, UserProfileForm
-
+from pantry.models import *
+from pantry.forms import *
 from pantry.helpers import *
 
 SPACER = "<SPACER>"
@@ -21,10 +22,12 @@ SPACER = "<SPACER>"
 
 def index(request):
 
-    # TODO - if request = post, then they are have searched so need the redirect to the recipes page
-    # need to somehow send in the search_query with the redirect
+    # user is using search bar
+    if request.method == "POST":
+        search_query = request.POST.get("search_query")
+        # send in url parameters with get request
+        return redirect(reverse("pantry:recipes") + "?search_query=" + search_query)
 
-    # UNCOMMENT ONCE DATABASE IS SET UP
     highest_rated_recipes = Recipe.objects.order_by("-rating", "-pub_date")[:10]
     newest_recipes = Recipe.objects.order_by("-pub_date")[:10]
 
@@ -34,6 +37,7 @@ def index(request):
         "num_highest_rated": len(highest_rated_recipes),
         "num_newest": len(newest_recipes),
     }
+
     return render(request, "pantry/index.html", context=context_dict)
 
 
@@ -43,64 +47,89 @@ def about(request):
 
 def recipes(request):
 
-    # assume that request method = post? - what of they have jumped to find recipes page
-    # TODO - if redirect then user is coming from the index page and we need to display search query results
+    # user is searching and not page refresh
+    if request.GET.get("request", False):
 
-    recipes = []
+        search_query = request.GET.get("search_query")
 
-    if request.method == "POST":
+        # only display results if user has given a search query
+        if not search_query:
+            return render(request, "pantry/recipe-response.html")
 
-        difficulties = request.POST.get("selected_difficulty")
-        cuisines = request.POST.get("selected_cuisines")
-        categories = request.POST.get("selected_categories")
-        sort = request.POST.get("selected_sort")
+        difficulties = request.GET.get("selected_difficulty").split(SPACER)
+        cuisines = request.GET.get("selected_cuisines").split(SPACER)
+        categories = request.GET.get("selected_categories").split(SPACER)
+        sort = request.GET.get("selected_sort").split(SPACER)[0]
+
+        search_query_query = Q(title__startswith=search_query)
 
         difficulty_query = Q()
-        # reviews is the only different one
+
         for difficulty in difficulties:
-            difficulty_query |= Q(difficulty=difficulty)
+            if difficulty:
+                difficulty_query |= Q(difficulty=difficulty)
 
         cuisine_query = Q()
 
         for cuisine in cuisines:
-            cuisine_query |= Q(cuisine=cuisine)
+            if cuisine:
+                cuisine_query |= Q(cuisine=Cuisine.objects.get(type=cuisine))
 
         category_query = Q()
 
         for category in categories:
-            categories |= Q(category=category)
+            if category:
+                category_query |= Q(categories=Category.objects.get(type=category))
 
-        recipes = Recipe.objects.filter(difficulty_query, cuisine_query, category_query)
-        if sort != "":
-            recipes = recipes.order_by("-" + sort)
+        recipes = Recipe.objects.filter(
+            search_query_query & difficulty_query & cuisine_query & category_query
+        )
+
+        if sort == "rating":
+            recipes = recipes.order_by("-rating")
+        elif sort == "reviews":
+            recipes = recipes.order_by("-reviews")
+        elif sort == "saves":
+            # Count() will count number of review objects
+            # we create our own pseudo field for number of review objects and order by this field
+            recipes = recipes.annotate(num_reviews=Count("reviews")).order_by(
+                "-num_reviews"
+            )
         else:
             recipes = recipes.order_by("-pub_date")
 
-        recipes = recipes.values(
-            "title",
-            "link",
-            "image",
-            "rating",
-            "saves",
-            "difficulty",
-            "cuisine",
-            "prep",
-            "cook",
-        )
+        context_dict = {
+            "recipes": recipes,
+        }
+
+        return render(request, "pantry/recipe-response.html", context=context_dict)
 
     cuisines = Cuisine.objects.all().values_list("type", flat=True)
     categories = Category.objects.all().values_list("type", flat=True)
 
     context_dict = {
-        "recipes": recipes,
         "cuisines": cuisines,
         "categories": categories,
     }
+
+    # user was redirected from index page using search bar
+    search_query = request.GET.get("search_query", False)
+
+    # only find results if a search was given
+    # (user could of accidentally hit submit from index page)
+    if search_query:
+
+        search_query_query = Q(title__startswith=search_query)
+        recipes = Recipe.objects.filter(search_query_query)
+        context_dict["recipes"] = recipes
+        context_dict["search_query"] = search_query
+
     return render(request, "pantry/recipes.html", context=context_dict)
 
 
 def signup(request):
 
+    # user is signing up
     if request.method == "POST":
 
         user_form = UserForm(request.POST)
@@ -113,13 +142,9 @@ def signup(request):
 
             profile = profile_form.save(commit=False)
             profile.user = user
-
-            # TODO - i dont think we are sending images in the signup form?
-
-            if "image" in request.FILES:
-                profile.image = request.FILES["image"]
-
+            profile.bio = "Hey there, I'm a new user!"
             profile.save()
+
             auth.login(request, user)
 
             return redirect(reverse("pantry:index"))
@@ -146,6 +171,7 @@ def login(request):
 
     context_dict = {"success": True}
 
+    # user is logging in
     if request.method == "POST":
 
         username = request.POST.get("username")
@@ -173,17 +199,51 @@ def logout(request):
 def recipe(request, user_id, recipe_id):
 
     recipe = Recipe.objects.get(id=recipe_id)
-    reviews = Review.objects.filter(recipe=recipe)
+    context_dict = {"recipe": recipe}
 
-    # additional
+    # user is posting a review
+    if request.method == "POST":
+
+        if request.POST.get("reason") == "bookmark":
+
+            bookmarked = request.POST.get("bookmarked")
+
+            if bookmarked == "true":
+                SavedRecipes.objects.get(user=request.user, recipe=recipe).delete()
+            else:
+                SavedRecipes.objects.create(user=request.user, recipe=recipe).save()
+
+        elif request.POST.get("reason") == "review":
+
+            request_review = request.POST.get("review")
+
+            review = Review.objects.create(
+                user=request.user, recipe=recipe, review=request_review
+            )
+
+            review.save()
+
+    reviews = Review.objects.filter(recipe=recipe)
+    # ingredients stored as single string with 'SPACER' delimiter
     ingredients = recipe.ingredients.split(SPACER)
 
-    context_dict = {
-        "recipe": recipe,
-        "reviews": reviews,
-        "ingredients": ingredients,
-        "steps": recipe.steps.split(SPACER),
-    }
+    user = request.user
+    other_user = User.objects.get(id=user_id)
+
+    has_reviewed = has_reviewed_helper(request.user, recipe)
+
+    if user.is_authenticated:
+        bookmark_exists = SavedRecipes.objects.filter(user=request.user, recipe=recipe)
+        if bookmark_exists:
+            context_dict["bookmarked"] = True
+        else:
+            context_dict["bookmarked"] = False
+
+    context_dict["reviews"] = reviews
+    context_dict["ingredients"] = ingredients
+    context_dict["steps"] = recipe.steps.split(SPACER)
+    context_dict["my_profile"] = is_own_profile(user, other_user)
+    context_dict["has_reviewed"] = has_reviewed
 
     return render(request, "pantry/recipe.html", context=context_dict)
 
@@ -191,7 +251,7 @@ def recipe(request, user_id, recipe_id):
 @login_required
 def create_a_recipe(request):
 
-    # user is submitting the form
+    # user is creating a recipe
     if request.method == "POST":
 
         # get our cuisine instance
@@ -199,7 +259,6 @@ def create_a_recipe(request):
 
         # get our categories strings
         category_strings = request.POST.get("categories").split(SPACER)
-        print(category_strings)
 
         recipe = Recipe.objects.create(
             user=request.user,
@@ -214,13 +273,22 @@ def create_a_recipe(request):
         )
 
         # add our category instances
-        recipe.categories.set(Category.objects.filter(type__in=category_strings))
+        if category_strings:
+            recipe.categories.set(Category.objects.filter(type__in=category_strings))
 
-        # save first so generate a recipe id
+        # save first to generate a recipe id
+        # (this is needed for saving image into correct media dir using recipe id)
         recipe.save()
 
         recipe.image = request.FILES.get("image")
         recipe.save()
+
+        return redirect(
+            reverse(
+                "pantry:recipe",
+                kwargs={"user_id": request.user.id, "recipe_id": recipe.id},
+            )
+        )
 
     cuisines = Cuisine.objects.all().values_list("type", flat=True)
     categories = Category.objects.all().values_list("type", flat=True)
@@ -232,14 +300,29 @@ def create_a_recipe(request):
 
 def user_profile(request, user_id):
 
+    # user is searching users
+    if request.GET.get("request", False):
+
+        search_query = request.GET.get("search_query")
+
+        search_query_query = Q(username__startswith=search_query)
+
+        users = User.objects.filter(search_query_query)
+
+        context_dict = {
+            "users": users,
+        }
+
+        return render(request, "pantry/user-response.html", context=context_dict)
+
     user = request.user
     other_user = User.objects.get(id=user_id)
     own_profile = is_own_profile(user, other_user)
     other_user_profile = UserProfile.objects.get(user=other_user)
 
     context_dict = {
-        "user": other_user,
-        "user_profile": other_user_profile,
+        "profileuser": other_user,
+        "profileuser_profile": other_user_profile,
         "own_profile": own_profile,
     }
 
@@ -247,6 +330,21 @@ def user_profile(request, user_id):
 
 
 def user_recipes(request, user_id):
+
+    # user is deleting their recipe
+    if request.GET.get("request", False):
+
+        recipe_id = request.GET.get("dataId")
+        recipe = Recipe.objects.get(id=recipe_id)
+        recipe.delete()
+
+        # check that we successfully deleted the object
+        try:
+            Recipe.objects.get(id=recipe_id)
+        except Recipe.DoesNotExist:
+            return HttpResponse("success")
+
+        return HttpResponse("fail")
 
     return render(
         request,
@@ -256,6 +354,21 @@ def user_recipes(request, user_id):
 
 
 def saved_recipes(request, user_id):
+
+    # user deleting their bookmarked recipe
+    if request.GET.get("request", False):
+
+        saved_recipe_id = request.GET.get("dataId")
+        saved_recipe = SavedRecipes.objects.get(id=saved_recipe_id)
+        saved_recipe.delete()
+
+        # check that we successfully deleted the object
+        try:
+            SavedRecipes.objects.get(id=saved_recipe_id)
+        except SavedRecipes.DoesNotExist:
+            return HttpResponse("success")
+
+        return HttpResponse("fail")
 
     return render(
         request,
@@ -268,6 +381,21 @@ def saved_recipes(request, user_id):
 
 def user_reviews(request, user_id):
 
+    # user is deleting their review
+    if request.GET.get("request", False):
+
+        review_id = request.GET.get("dataId")
+        review = Review.objects.get(id=review_id)
+        review.delete()
+
+        # check that we successfully deleted the object
+        try:
+            Review.objects.get(id=review_id)
+        except Review.DoesNotExist:
+            return HttpResponse("success")
+
+        return HttpResponse("fail")
+
     return render(
         request,
         "pantry/user-data.html",
@@ -278,4 +406,86 @@ def user_reviews(request, user_id):
 @login_required
 def edit_profile(request):
 
-    return render(request, "pantry/edit-profile.html")
+    userprofile = UserProfile.objects.get(user=request.user)
+
+    # user submitting request
+    if request.method == "POST":
+
+        # delete account request
+        delete_request = request.POST.get("delete-request")
+        if delete_request == "true":
+            user = User.objects.get(id=request.user.id)
+            auth.logout(request)
+            user.delete()
+            return redirect(reverse("pantry:index"))
+
+        # current info
+        user = request.user
+
+        # edit profile request
+        changed_username = request.POST.get("changed_username")
+        changed_password = request.POST.get("changed_password")
+        changed_image = request.FILES.get("changed_image", False)
+        changed_bio = request.POST.get("changed_bio")
+
+        # check if username was changed
+        if user.username != changed_username:
+
+            # check if username is avaliable
+            exists = User.objects.filter(username=changed_username)
+            if exists:
+                context_dict = {
+                    "userprofile": userprofile,
+                    "error": "Username already exists!",
+                }
+                return render(request, "pantry/edit-profile.html", context=context_dict)
+
+            user.username = changed_username
+            user.save()
+            print(f"changed username to {user.username}")
+
+        auth.logout(request)
+
+        # check if password was changed
+        if changed_password != "":
+            user.set_password(changed_password)
+            user.save()
+            print("changed password")
+
+        # check if image was changed
+        if changed_image:
+            userprofile.image = changed_image
+            userprofile.save()
+            print("changed image")
+
+        # check if bio was changed
+        if userprofile.bio != changed_bio:
+            userprofile.bio = changed_bio
+            userprofile.save()
+            print("changed bio")
+
+        auth.login(request, user)
+
+        return redirect(reverse("pantry:user-profile", kwargs={"user_id": user.id}))
+
+    context_dict = {"userprofile": userprofile}
+
+    return render(request, "pantry/edit-profile.html", context=context_dict)
+
+
+class LikeReviewView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        reveiw_id = request.GET["review_id"]
+
+        try:
+            review = Review.objects.get(id=int(reveiw_id))
+        except Review.DoesNotExist:
+            return HttpResponse(-1)
+        except ValueError:
+            return HttpResponse(-1)
+
+        review.likes = review.likes + 1
+        review.save()
+
+        return HttpResponse(review.likes)

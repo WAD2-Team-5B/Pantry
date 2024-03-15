@@ -1,5 +1,6 @@
 import { initButtons } from "../utility/helpers.js";
-import { Form } from "../utility/form.js";
+import { SPACER } from "../utility/form.js";
+import { PantryAPI } from "../utility/ajax.js";
 
 // ------------------------------
 // GLOBALS
@@ -10,6 +11,7 @@ let selectedCategories = [];
 // arrays for passing by reference
 let selectedDifficulty = [];
 let selectedSortBy = [];
+let searchQuery = "";
 
 // ------------------------------
 // INIT
@@ -20,21 +22,27 @@ let categoryBtns = document.getElementsByClassName("btn-category");
 let difficultyBtns = document.getElementsByClassName("btn-difficulty");
 let sortByBtns = document.getElementsByClassName("btn-sort-by");
 
-initButtons(cuisineBtns, selectedCuisines, "btn-cuisine-active", true);
-initButtons(categoryBtns, selectedCategories, "btn-category-active", true);
-initButtons(difficultyBtns, selectedDifficulty, "btn-difficulty-active");
-initButtons(sortByBtns, selectedSortBy, "btn-sort-by-active");
+function jquery() {
+  const data = {
+    request: true,
+    search_query: searchQuery,
+    selected_cuisines: selectedCuisines.join(SPACER),
+    selected_categories: selectedCategories.join(SPACER),
+    selected_difficulty: selectedDifficulty.join(SPACER),
+    selected_sort: selectedSortBy.join(SPACER),
+  };
 
-// ------------------------------
-// FORM
-// ------------------------------
+  PantryAPI.searchDatabase(data);
+}
 
-document.getElementById("search-form").addEventListener("submit", (e) => {
-  let hiddenInputs = [
-    { input: document.getElementById("difficulty"), value: selectedDifficulty },
-    { input: document.getElementById("cuisines"), value: selectedCuisines },
-    { input: document.getElementById("categories"), value: selectedCategories },
-    { input: document.getElementById("sort"), value: selectedSortBy },
-  ];
-  Form.assignHiddenInputs(hiddenInputs, values);
-});
+initButtons(cuisineBtns, selectedCuisines, "btn-cuisine-active", true, jquery);
+initButtons(categoryBtns, selectedCategories, "btn-category-active", true, jquery);
+initButtons(difficultyBtns, selectedDifficulty, "btn-difficulty-active", false, jquery);
+initButtons(sortByBtns, selectedSortBy, "btn-sort-by-active", false, jquery);
+
+let searchBar = document.getElementById("search");
+searchBar.oninput = () => {
+  searchQuery = searchBar.value;
+
+  jquery();
+};

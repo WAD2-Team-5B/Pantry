@@ -100,6 +100,8 @@ h4:first-of-type {
   border: 0.1rem solid var(--color-1);
   border-radius: 0.5rem;
 
+  font-family: var(--font);
+
   /* users arent allowed to resize */
   resize: none;
   overflow-y: auto;
@@ -116,7 +118,7 @@ h4:first-of-type {
   margin-top: 1rem;
 }
 
-#submit,
+#btn-submit,
 #btn-delete-account {
   text-align: center;
   font-weight: bold;
@@ -132,7 +134,7 @@ h4:first-of-type {
   background-color: var(--color-1);
 }
 
-#submit:hover {
+#btn-submit:hover {
   color: var(--color-1);
   background-color: var(--color-2);
 
@@ -181,7 +183,7 @@ h4:first-of-type {
   }
 
   .subcontainer-left,
-  #submit {
+  #btn-submit {
     width: 100%;
 
     margin-bottom: 1rem;
