@@ -414,13 +414,23 @@ def edit_profile(request):
         changed_image = request.FILES.get("changed_image", False)
         changed_bio = request.POST.get("changed_bio")
 
-        auth.logout(request)
-
         # check if username was changed
         if user.username != changed_username:
+
+            # check if username is avaliable
+            exists = User.objects.filter(username=changed_username)
+            if exists:
+                context_dict = {
+                    "userprofile": userprofile,
+                    "error": "Username already exists!",
+                }
+                return render(request, "pantry/edit-profile.html", context=context_dict)
+
             user.username = changed_username
             user.save()
             print(f"changed username to {user.username}")
+
+        auth.logout(request)
 
         # check if password was changed
         if changed_password != "":

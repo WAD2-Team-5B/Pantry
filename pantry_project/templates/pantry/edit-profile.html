@@ -67,7 +67,11 @@
   <textarea id="profile-bio" name="changed_bio">{{ userprofile.bio }}</textarea>
 
   <!-- ERROR MESSAGE -->
+  {% if error %}
+  <h5 class="error-message-active" id="error-message">{{ error }}</h5>
+  {% else %}
   <h5 id="error-message"></h5>
+  {% endif %}
 
   <!-- ACCOUNT DELETION / SUBMIT -->
   <div class="container-submit">
