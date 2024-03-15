@@ -6,7 +6,6 @@
 {% endblock %}
 
 <!-- JS -->
-<!-- JS -->
 {% block js_block %}
 <script type="module" src="{% static 'js/pages/user-profile.js' %}"></script>
 {% endblock %}
@@ -28,7 +27,7 @@
     {% else %}
     <img src="" />
     {% endif %}
-    <p>{{ profileuser_profile.bio }}</p>
+    <textarea readonly>{{ profileuser_profile.bio }}</textarea>
   </div>
 
   <!-- TOOLS -->

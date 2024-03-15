@@ -111,17 +111,19 @@ h3 {
   background-color: var(--color-1);
 }
 
-.description p {
+.description textarea {
   /* take away image width */
   width: calc(100% - 14.08rem);
   height: 8rem;
 
   border: 1rem solid transparent;
+  border-radius: 1rem;
 
   font-size: 0.75rem;
+  font-family: Arial;
 
-  overflow-wrap: break-word;
   overflow-y: auto;
+  resize: none;
 }
 
 .info {
@@ -172,8 +174,11 @@ h3 {
 .steps ul,
 .ingredients ul,
 .categories ul {
+  max-height: 10rem;
   height: 10rem;
   width: 100%;
+
+  margin-top: 0.5rem;
 
   font-size: 0.75rem;
 
@@ -347,6 +352,12 @@ h3 {
     margin-bottom: 1rem;
   }
 
+  .steps ul,
+  .ingredients ul,
+  .categories ul {
+    height: auto;
+  }
+
   .categories {
     margin-bottom: 0;
   }
@@ -357,7 +368,7 @@ h3 {
     width: 20rem;
   }
 
-  .description p {
+  .description textarea {
     width: 100%;
     height: 11.35rem;
 
@@ -378,14 +389,12 @@ h3 {
     justify-content: space-between;
     /* messy but atleast no extra divs */
     flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
   }
 
   .info ul li {
     justify-content: center;
-
-    width: 25%;
-
-    margin-top: 1rem;
   }
 
   .review-aside {
