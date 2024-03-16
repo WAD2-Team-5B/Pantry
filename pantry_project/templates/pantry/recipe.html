@@ -5,16 +5,6 @@
 <link rel="stylesheet" href="{% static 'css/pages/recipe.css' %}" />
 {% endblock %}
 
-<!-- JS -->
-{% block js_block %}
-<script type="text/javascript">
-  const csrfToken = "{{ csrf_token }}";
-  const recipeId = {{ recipe.id }};
-</script>
-
-<script type="module" src="{% static 'js/pages/recipe.js' %}"></script>
-{% endblock %}
-
 <!-- TITLE -->
 {% block title_block %} Recipe {% endblock %}
 
@@ -146,6 +136,7 @@
 {% endif %}
 
 <!-- REVIEW LIST -->
+<div id="review-url" data-url="{% url 'pantry:like-review' %}"></div>
 {% for review in reviews %}
 <div class="review">
   <div class="review-aside">
@@ -160,7 +151,11 @@
     <!-- RATING -->
     <div class="review-rating">
       {% if user.is_authenticated %}
-      <button class="review-heart"></button>
+        {% if review.id in liked_reviews %}
+          <button class="review-heart" value="{{ review.id }}" data-liked="true"></button>
+        {% else %}
+          <button class="review-heart" value="{{ review.id }}" data-liked="false"></button>
+        {% endif %}
       {% else %}
       <img
         class="review-heart-image"
@@ -176,4 +171,14 @@
 </div>
 {% endfor %} 
 
+{% endblock %}
+
+<!-- JS -->
+{% block js_block %}
+<script type="text/javascript">
+  const csrfToken = "{{ csrf_token }}";
+  const recipeId = {{ recipe.id }};
+</script>
+
+<script type="module" src="{% static 'js/pages/recipe.js' %}"></script>
 {% endblock %}
