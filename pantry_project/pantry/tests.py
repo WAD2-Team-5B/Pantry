@@ -1,8 +1,11 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.core.files.images import ImageFile
 from pantry.forms import UserForm
-from pantry.models import UserProfile, Recipe
+from pantry.models import UserProfile, Recipe, Cuisine, Category
+from pantry.views import SPACER
+from population_script import add_cuisine, add_recipe
 
 
 class TestLogin(TestCase):
@@ -148,3 +151,60 @@ class TestViewsAuthentication(TestCase):
         self.assertContains(index, "Login")
         self.assertNotContains(index, "Logout")
         self.assertNotContains(index, "Profile")
+
+
+class TestRecipe(TestCase):
+    def setUp(self):
+        self.username = "username"
+        self.password = "password"
+        self.user = User.objects.create_user(
+            username=self.username, password=self.password
+        )
+        self.alt_username = "other"
+        self.alt_user = User.objects.create_user(
+            username=self.alt_username, password=self.password
+        )
+        self.cuisine = add_cuisine("Italian")
+        self.recipe = add_recipe(
+            {
+                "user": self.user,
+                "cuisine": self.cuisine,
+                "categories": Category.objects.filter(
+                    type__in=["Low Fat", "Organic", "Vegetarian"]
+                ),
+                "title": "Spaghetti Carbonara",
+                "image": ImageFile(
+                    open("./populate_data/spaghetti_carbonara.jpeg", "rb")
+                ),
+                "desc": "Classic Italian pasta dish with eggs, cheese, bacon, and black pepper.",
+                "ingredients": SPACER.join(
+                    ["Pasta", "Eggs", "Parmesan Cheese", "Bacon"]
+                ),
+                "steps": SPACER.join(
+                    [
+                        "Boil pasta",
+                        "Cook bacon",
+                        "Mix eggs and cheese",
+                        "Combine all with pasta",
+                    ]
+                ),
+                "prep": "0:20",
+                "cook": "0:20",
+                "difficulty": "intermediate",
+                "saves": 10,
+                "star_count": 32,
+                "star_submissions": 9,
+            }
+        )
+
+    def test_recipe_html_authenticated(self):
+        self.client.force_login(self.user)
+        recipe = self.client.get(f"/pantry/recipes/{self.user.id}/{self.recipe.id}")
+        print(recipe.content)
+        self.assertContains(recipe, '<button class="review-heart">')
+
+    def test_recipe_html_authenticated_not_own_profile(self):
+        self.client.logout()
+        self.client.login(username=self.alt_username, passwrd=self.password)
+        recipe = self.client.get(f"/pantry/recipes/{self.user.id}/{self.recipe.id}")
+        self.assertContains(recipe, '<div class="user-review">')
