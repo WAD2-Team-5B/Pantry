@@ -49,7 +49,6 @@ class Recipe(models.Model):
     rating = models.FloatField(default=0)
     star_count = models.IntegerField(default=0)
     star_submissions = models.IntegerField(default=0)
-    saves = models.IntegerField(default=0)
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -88,7 +87,7 @@ class UserProfile(models.Model):
 class Review(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="reviews")
 
     review = models.CharField(max_length=500)
     likes = models.IntegerField(default=0)
@@ -100,16 +99,18 @@ class Review(models.Model):
 
 class SavedRecipes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-
-    def save(self, *args, **kwargs):
-
-        # call save as usual
-        super().save(*args, **kwargs)
-
-        # Increment saves in the associated Recipe
-        self.recipe.saves = SavedRecipes.objects.filter(recipe=self.recipe).count()
-        self.recipe.save()
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="saves")
 
     class Meta:
         unique_together = ("user", "recipe")
+
+
+class LikedReviews(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+
+
+class StarredRecipes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    value = models.IntegerField()

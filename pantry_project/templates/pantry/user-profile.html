@@ -64,10 +64,10 @@
 
       <!-- include other users name in link text -->
       <li>
-        <a href="{% url 'pantry:user-recipes' profileuser.id %}">{{ profileuser.username }} Recipes</a>
+        <a href="{% url 'pantry:user-recipes' profileuser.id %}">{{ profileuser.username }}'s Recipes</a>
       </li>
       <li>
-        <a href="{% url 'pantry:user-reviews' profileuser.id %}">{{ profileuser.username }} Reviews</a>
+        <a href="{% url 'pantry:user-reviews' profileuser.id %}">{{ profileuser.username }}'s Reviews</a>
       </li>
       <li>
         <a href="{% url 'pantry:saved-recipes' profileuser.id %}">{{ profileuser.username }}'s Saved Recipes</a>

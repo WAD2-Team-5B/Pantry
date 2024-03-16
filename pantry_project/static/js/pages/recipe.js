@@ -2,11 +2,12 @@
 // GLOBALS
 // ------------------------------
 
+import { PantryAPI } from "../utility/ajax.js";
+
 const STARS_AMOUNT = 5;
 
 let rating = 0;
 let bookmarked = false;
-let likedReviews = [];
 
 // ------------------------------
 // HELPERS
@@ -43,23 +44,31 @@ function updateBookmark() {
   bookmark.style.backgroundImage = "url(../../../static/images/bookmark.svg)";
 }
 
-function updateReviewLike(likeButtons, index) {
+function updateReviewLike(likeButtons, index, like) {
   let likeTexts = document.getElementsByClassName("review-likes");
-
-  // user deselecting like
-  if (likedReviews.includes(index)) {
-    likeButtons[index].style.backgroundImage =
-      "url(../../../static/images/heart-empty.svg)";
-    likeTexts[index].innerText = parseInt(likeTexts[index].innerText) - 1;
-    likedReviews.splice(likedReviews.indexOf(index), 1);
-    return;
+  let url = document.getElementById("review-url").getAttribute("data-url");
+  let prevLikeStatus = likeButtons[index].getAttribute("data-liked");
+  let reviewId = likeButtons[index].value;
+  const data = {
+    reviewId: reviewId
   }
+  // user deselecting like
+  if (prevLikeStatus === "true") {
+    likeButtons[index].style.backgroundImage = "url(../../../static/images/heart-empty.svg)";
+    likeButtons[index].setAttribute("data-liked","false")
+    data["like"] = false
+    likeTexts[index].innerText = parseInt(likeTexts[index].innerText) - 1;
+  } else if (prevLikeStatus === "false"){
+    // user is selecting like
+    likeButtons[index].style.backgroundImage = "url(../../../static/images/heart.svg)";
+    likeButtons[index].setAttribute("data-liked","true")
+    data["like"] = true
+    likeTexts[index].innerText = parseInt(likeTexts[index].innerText) + 1;
+  } 
 
-  // user is selecting like
-  likeButtons[index].style.backgroundImage =
-    "url(../../../static/images/heart.svg)";
-  likeTexts[index].innerText = parseInt(likeTexts[index].innerText) + 1;
-  likedReviews.push(index);
+  PantryAPI.likeReview(data, url, csrfToken);
+
+ 
 }
 
 // ------------------------------
@@ -99,9 +108,14 @@ if (bookmark) {
 // review likes
 let likeButtons = document.getElementsByClassName("review-heart");
 for (let i = 0; i < likeButtons.length; i++) {
-  likeButtons[i].style.backgroundImage =
-    "url(../../../static/images/heart-empty.svg)";
+  let liked = likeButtons[i].getAttribute("data-liked");
 
+  if (liked === "true"){
+    likeButtons[i].style.backgroundImage = "url(../../../static/images/heart.svg)";
+  } else if (liked === "false"){
+    likeButtons[i].style.backgroundImage ="url(../../../static/images/heart-empty.svg)";
+  } 
+ 
   likeButtons[i].onclick = () => {
     updateReviewLike(likeButtons, i);
   };

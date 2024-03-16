@@ -17,7 +17,9 @@ export class PantryAPI {
     });
   }
 
-  static likeReview() {}
-
+  static likeReview(data, url, csrfToken) {
+    $.post(url, {data:data, csrfmiddlewaretoken: csrfToken})
+  }
+  
   static starRecipe() {}
 }

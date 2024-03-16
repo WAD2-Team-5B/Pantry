@@ -78,7 +78,11 @@
         <img src="{% static 'images/star.svg' %}" />
         {{ recipe.rating }}
       </li>
-      <li>{{ recipe.saves }} saves</li>
+      {% if saves == 1 %}
+      <li>{{ saves }} save</li>
+      {% else %}
+      <li>{{ saves }} saves</li>
+      {% endif %}
       <li>{{ recipe.difficulty }}</li>
       <li>{{ recipe.cuisine }}</li>
       <li>Prep - {{ recipe.prep }}h</li>
@@ -146,6 +150,7 @@
 {% endif %}
 
 <!-- REVIEW LIST -->
+<div id="review-url" data-url="{% url 'pantry:like-review' %}"></div>
 {% for review in reviews %}
 <div class="review">
   <div class="review-aside">
@@ -160,7 +165,11 @@
     <!-- RATING -->
     <div class="review-rating">
       {% if user.is_authenticated %}
-      <button class="review-heart"></button>
+        {% if review.id in liked_reviews %}
+          <button class="review-heart" value="{{ review.id }}" data-liked="true"></button>
+        {% else %}
+          <button class="review-heart" value="{{ review.id }}" data-liked="false"></button>
+        {% endif %}
       {% else %}
       <img
         class="review-heart-image"
@@ -177,3 +186,5 @@
 {% endfor %} 
 
 {% endblock %}
+
+
