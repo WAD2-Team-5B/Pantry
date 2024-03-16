@@ -12,5 +12,5 @@ def update_reviews_count_on_review_delete(sender, instance, **kwargs):
 @receiver(pre_delete, sender=SavedRecipes)
 def update_saves_on_unsave(sender, instance, **kwargs):
     recipe = instance.recipe
-    recipe.saves = Review.objects.filter(recipe=recipe).count() - 1
+    recipe.saves = SavedRecipes.objects.filter(recipe=recipe).count() - 1
     recipe.save()
