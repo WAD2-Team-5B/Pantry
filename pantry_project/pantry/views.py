@@ -88,13 +88,13 @@ def recipes(request):
         if sort == "rating":
             recipes = recipes.order_by("-rating")
         elif sort == "reviews":
-            recipes = recipes.order_by("-reviews")
-        elif sort == "saves":
             # Count() will count number of review objects
             # we create our own pseudo field for number of review objects and order by this field
             recipes = recipes.annotate(num_reviews=Count("reviews")).order_by(
                 "-num_reviews"
             )
+        elif sort == "saves":
+            recipes = recipes.order_by("-saves")
         else:
             recipes = recipes.order_by("-pub_date")
 
