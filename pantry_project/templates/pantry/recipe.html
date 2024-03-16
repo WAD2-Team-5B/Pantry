@@ -5,6 +5,16 @@
 <link rel="stylesheet" href="{% static 'css/pages/recipe.css' %}" />
 {% endblock %}
 
+<!-- JS -->
+{% block js_block %}
+<script type="text/javascript">
+  const csrfToken = "{{ csrf_token }}";
+  const recipeId = {{ recipe.id }};
+</script>
+
+<script type="module" src="{% static 'js/pages/recipe.js' %}"></script>
+{% endblock %}
+
 <!-- TITLE -->
 {% block title_block %} Recipe {% endblock %}
 
@@ -173,12 +183,4 @@
 
 {% endblock %}
 
-<!-- JS -->
-{% block js_block %}
-<script type="text/javascript">
-  const csrfToken = "{{ csrf_token }}";
-  const recipeId = {{ recipe.id }};
-</script>
 
-<script type="module" src="{% static 'js/pages/recipe.js' %}"></script>
-{% endblock %}
