@@ -159,7 +159,9 @@ h3 {
 }
 
 /* RECIPE FACTS */
-
+#recipe-difficulty {
+  text-transform: capitalize;
+}
 .steps,
 .ingredients,
 .categories {
