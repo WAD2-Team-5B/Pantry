@@ -181,10 +181,12 @@ form.addEventListener("submit", (e) => {
   Form.validate(e, errorConditions, document.getElementById("error-message"));
 
   // assign hidden inputs
+  let stepElements = document.getElementsByClassName("step");
   let steps = [];
-  Array.from(document.getElementsByClassName("step")).forEach((step) => {
-    steps.push(step.value);
-  });
+  for (let i = 0; i < stepElements.length - 1; i++) {
+    steps.push(stepElements[i].value);
+  }
+
   let hiddenInputs = [
     { input: document.getElementById("ingredients"), value: ingredients },
     { input: document.getElementById("difficulty"), value: difficulty },
@@ -192,8 +194,5 @@ form.addEventListener("submit", (e) => {
     { input: document.getElementById("cuisine"), value: cuisine },
     { input: document.getElementById("categories"), value: categories },
   ];
-
-  console.log(hiddenInputs);
-
   Form.assignHiddenInputs(hiddenInputs);
 });

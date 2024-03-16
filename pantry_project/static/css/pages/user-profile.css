@@ -65,7 +65,7 @@ h3 {
   overflow-y: auto;
 }
 
-.bio textarea {
+.bio p {
   /* match the image width */
   width: 17.6rem;
   height: calc(100% - 10rem);
@@ -79,8 +79,9 @@ h3 {
   font-size: 0.75rem;
   font-family: Arial;
 
-  resize: none;
   overflow-y: auto;
+  white-space: pre-line;
+  overflow-wrap: break-word;
 }
 
 /* TOOLS */
@@ -201,5 +202,14 @@ h3 {
     max-height: 24rem;
 
     margin-top: 1rem;
+  }
+
+  .bio {
+    height: auto;
+  }
+
+  .bio p {
+    max-height: calc(100% - 10rem);
+    height: auto;
   }
 }

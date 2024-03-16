@@ -119,7 +119,7 @@ h3 {
   background-color: var(--color-1);
 }
 
-.description textarea {
+.description p {
   /* take away image width */
   width: calc(100% - 14.08rem);
   height: 8rem;
@@ -131,7 +131,9 @@ h3 {
   font-family: Arial;
 
   overflow-y: auto;
-  resize: none;
+  /* keep the newlines */
+  white-space: pre-line;
+  overflow-wrap: break-word;
 }
 
 .info {
@@ -203,6 +205,11 @@ h3 {
   font-weight: bold;
 }
 
+.steps ul li {
+  overflow-wrap: break-word;
+  white-space: pre-line;
+}
+
 .ingredients ul li,
 .categories ul li {
   display: flex;
@@ -250,6 +257,7 @@ h3 {
   width: calc(100% - 10rem);
 
   overflow-wrap: break-word;
+  white-space: pre-line;
 }
 
 .review-rating {
@@ -376,9 +384,10 @@ h3 {
     width: 20rem;
   }
 
-  .description textarea {
+  .description p {
     width: 100%;
-    height: 11.35rem;
+    height: auto;
+    max-height: 11.35rem;
 
     margin-left: 0;
   }
