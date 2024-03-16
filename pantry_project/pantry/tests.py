@@ -5,7 +5,12 @@ from django.core.files.images import ImageFile
 from pantry.forms import UserForm
 from pantry.models import UserProfile, Recipe, Cuisine, Category
 from pantry.views import SPACER
-from population_script import add_cuisine, add_recipe
+from population_script import (
+    create_cuisines_and_categories,
+    create_recipes,
+    create_reviews,
+    create_users_and_profiles,
+)
 
 
 class TestLogin(TestCase):
@@ -60,16 +65,16 @@ class TestSignup(TestCase):
 
     # tests if the signup view is working and has a form on it with inputs
     def test_signup_view_get(self):
-        signup = self.client.get(reverse("pantry:signup"))
+        response = self.client.get(reverse("pantry:signup"))
 
         # check there is a form, with 5 inputs (3 for user form + csrf + submit)
-        self.assertContains(signup, "<form")
-        self.assertContains(signup, "<input", count=5)
+        self.assertContains(response, "<form")
+        self.assertContains(response, "<input", count=5)
 
         # the page contains elements with the correct ids
-        self.assertContains(signup, 'id="username"')
-        self.assertContains(signup, 'id="password"')
-        self.assertContains(signup, 'id="confirm-password"')
+        self.assertContains(response, 'id="username"')
+        self.assertContains(response, 'id="password"')
+        self.assertContains(response, 'id="confirm-password"')
 
     # valid UserForm should have no errors
     def test_user_form_success(self):
@@ -126,7 +131,7 @@ class TestSignup(TestCase):
         self.assertIsNotNone(user_profile)
 
 
-class TestViewsAuthentication(TestCase):
+class TestBase(TestCase):
     def setUp(self):
         self.username = "username"
         self.password = "password"
@@ -137,75 +142,89 @@ class TestViewsAuthentication(TestCase):
     # tests if base.html template shows correct navbar when user is logged in
     def test_base_html_navbar_authenticated(self):
         self.client.login(username=self.username, password=self.password)
-        index = self.client.get("/")
-        self.assertContains(index, "Logout")
-        self.assertContains(index, self.username)
-        self.assertContains(index, self.username)
-        self.assertNotContains(index, "Sign Up")
-        self.assertNotContains(index, "Login")
+        response = self.client.get("/")
+        self.assertContains(response, "Logout")
+        self.assertContains(response, self.username)
+        self.assertContains(response, self.username)
+        self.assertNotContains(response, "Sign Up")
+        self.assertNotContains(response, "Login")
 
     # tests if base.html template shows correct navbar when user is logged out
     def test_base_html_navbar_anonymous(self):
         self.client.logout()
-        index = self.client.get("/")
-        self.assertContains(index, "Sign Up")
-        self.assertContains(index, "Login")
-        self.assertNotContains(index, "Logout")
-        self.assertNotContains(index, "Profile")
+        response = self.client.get("/")
+        self.assertContains(response, "Sign Up")
+        self.assertContains(response, "Login")
+        self.assertNotContains(response, "Logout")
+        self.assertNotContains(response, "Profile")
 
 
 class TestRecipe(TestCase):
     def setUp(self):
-        self.username = "username"
-        self.password = "password"
-        self.user = User.objects.create_user(
-            username=self.username, password=self.password
-        )
-        self.alt_username = "other"
-        self.alt_user = User.objects.create_user(
-            username=self.alt_username, password=self.password
-        )
-        self.cuisine = add_cuisine("Italian")
-        self.recipe = add_recipe(
-            {
-                "user": self.user,
-                "cuisine": self.cuisine,
-                "categories": Category.objects.filter(
-                    type__in=["Low Fat", "Organic", "Vegetarian"]
-                ),
-                "title": "Spaghetti Carbonara",
-                "image": ImageFile(
-                    open("./populate_data/spaghetti_carbonara.jpeg", "rb")
-                ),
-                "desc": "Classic Italian pasta dish with eggs, cheese, bacon, and black pepper.",
-                "ingredients": SPACER.join(
-                    ["Pasta", "Eggs", "Parmesan Cheese", "Bacon"]
-                ),
-                "steps": SPACER.join(
-                    [
-                        "Boil pasta",
-                        "Cook bacon",
-                        "Mix eggs and cheese",
-                        "Combine all with pasta",
-                    ]
-                ),
-                "prep": "0:20",
-                "cook": "0:20",
-                "difficulty": "intermediate",
-                "saves": 10,
-                "star_count": 32,
-                "star_submissions": 9,
-            }
-        )
+        # from population script
+        create_users_and_profiles()
+        create_cuisines_and_categories()
+        create_recipes()
+        create_reviews()
 
-    def test_recipe_html_authenticated(self):
+        # get a recipe that is created by self.user
+        self.user = User.objects.get(username="jeval")
+        self.recipe = Recipe.objects.filter(user=self.user)[0]
+
+    # tests that review form is not present when a user views their own recipe
+    def test_post_review_own_recipe(self):
         self.client.force_login(self.user)
-        recipe = self.client.get(f"/pantry/recipes/{self.user.id}/{self.recipe.id}")
-        print(recipe.content)
-        self.assertContains(recipe, '<button class="review-heart">')
+        response = self.client.get(
+            reverse(f"pantry:recipe", args=[self.user.id, self.recipe.id])
+        )
+        self.assertNotContains(response, '"post-review-form"')
 
-    def test_recipe_html_authenticated_not_own_profile(self):
+    # tests that review form is present on other users' recipes
+    def test_post_review_not_own_recipe(self):
+        # a test user must be created, as the population script has users who have already posted reviews
+        self.client.force_login(
+            User.objects.create(username="david", password="123456")
+        )
+
+        response = self.client.get(
+            reverse(f"pantry:recipe", args=[self.user.id, self.recipe.id])
+        )
+        self.assertContains(response, '"post-review-form"')
+
+    # tests that review form is not present when a user has already posted a review
+    def test_post_review_already_reviewed(self):
+        self.client.force_login(User.objects.get(username="andrewH"))
+        response = self.client.get(
+            reverse(f"pantry:recipe", args=[self.user.id, self.recipe.id])
+        )
+        self.assertNotContains(response, '"post-review-form"')
+
+
+class TestRecipes(TestCase):
+    def setUp(self):
+        # from population script
+        create_users_and_profiles()
+        create_cuisines_and_categories()
+        create_recipes()
+        create_reviews()
+
+        # get a recipe that is created by self.user
+        self.user = User.objects.get(username="jeval")
+        self.recipe = Recipe.objects.filter(user=self.user)[0]
+
+    # tests that create a recipe is visible when the user is logged in
+    def test_create_a_recipe_authenticated(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("pantry:recipes"))
+        self.assertInHTML(
+            "<a href=" + reverse("pantry:create-a-recipe") + ">Create A Recipe</a>",
+            response.content.decode(),
+        )
+
+    # tests that create a recipe is not visible when the user is not logged in
+    def test_create_a_recipe_anonymous(self):
         self.client.logout()
-        self.client.login(username=self.alt_username, passwrd=self.password)
-        recipe = self.client.get(f"/pantry/recipes/{self.user.id}/{self.recipe.id}")
-        self.assertContains(recipe, '<div class="user-review">')
+
+        response = self.client.get(reverse("pantry:recipes"))
+        self.assertNotContains(response, "Create A Recipe")
