@@ -78,7 +78,11 @@
         <img src="{% static 'images/star.svg' %}" />
         {{ recipe.rating }}
       </li>
+      {% if recipe.saves == 1 %}
+      <li>{{ recipe.saves }} save</li>
+      {% else %}
       <li>{{ recipe.saves }} saves</li>
+      {% endif %}
       <li>{{ recipe.difficulty }}</li>
       <li>{{ recipe.cuisine }}</li>
       <li>Prep - {{ recipe.prep }}h</li>
