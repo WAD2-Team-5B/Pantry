@@ -7,7 +7,12 @@
 
 <!-- JS -->
 {% block js_block %}
-<script src="{% static 'js/pages/recipe.js' %}"></script>
+<script type="text/javascript">
+  const csrfToken = "{{ csrf_token }}";
+  const recipeId = {{ recipe.id }};
+</script>
+
+<script type="module" src="{% static 'js/pages/recipe.js' %}"></script>
 {% endblock %}
 
 <!-- TITLE -->
@@ -17,7 +22,6 @@
 {% block main_block %}
 <!-- RECIPE HEADER -->
 <header class="recipe-header">
-
   <!-- USERNAME / PUBLISHED DATE -->
   <div class="left-aside">
     <a class="user" href="{% url 'pantry:user-profile' recipe.user.id %}">
@@ -33,15 +37,34 @@
   <div class="right-aside">
     {% if not my_profile and user.is_authenticated %}
     <div id="stars"></div>
-    <button id="bookmark"></button>
+
+    <!-- BOOKMARK -->
+    <form
+      role="form"
+      id="bookmark-form"
+      method="post"
+      enctype="multipart/form-data"
+      action="{% url 'pantry:recipe' recipe.user.id recipe.id %}"
+    >
+      {% csrf_token %}
+      <input type="hidden" name="reason" value="bookmark" />
+      {% if bookmarked %}
+      <button id="bookmark" name="bookmarked" value="true">
+        <img src="{% static "images/bookmark.svg" %}" />
+      </button>
+      {% else %}
+      <button id="bookmark" name="bookmarked" value="false">
+        <img src="{% static "images/bookmark-empty.svg" %}" />
+      </button>
+      {% endif %}
+    </form>
+
     {% endif %}
   </div>
-
 </header>
 
 <!-- RECIPE INFO -->
 <div class="recipe-info">
-
   <!-- IMAGE / DESCRIPTION -->
   <div class="description">
     <img src="{{ MEDIA_URL }}{{ recipe.image }}" />
@@ -55,19 +78,21 @@
         <img src="{% static 'images/star.svg' %}" />
         {{ recipe.rating }}
       </li>
-      <li>{{ recipe.saves }} saves</li>
-      <li>{{ recipe.difficulty }}</li>
+      {% if saves == 1 %}
+      <li>{{ saves }} save</li>
+      {% else %}
+      <li>{{ saves }} saves</li>
+      {% endif %}
+      <li id="recipe-difficulty">{{ recipe.difficulty }}</li>
       <li>{{ recipe.cuisine }}</li>
       <li>Prep - {{ recipe.prep }}h</li>
       <li>Cook - {{ recipe.cook }}h</li>
     </ul>
   </div>
-
 </div>
 
 <!-- RECIPE FACTS -->
 <div class="recipe-facts">
-
   <!-- STEPS -->
   <div class="steps">
     <h5>Steps</h5>
@@ -97,27 +122,38 @@
       {% endfor %}
     </ul>
   </div>
-
 </div>
 
 <!-- REVIEWS -->
 <h3 id="review-header">Reviews</h3>
 
 <!-- POST REVIEW -->
-{% if not my_profile and user.is_authenticated %}
-<div class="user-review">
-  <textarea id="review" placeholder="I love this recipe..."></textarea>
+{% if user.is_authenticated and not my_profile and not has_reviewed %}
+<form
+  role="form"
+  id="post-review-form"
+  method="post"
+  enctype="multipart/form-data"
+  action="{% url 'pantry:recipe' recipe.user.id recipe.id %}"
+>
+  {% csrf_token %}
+  <input type="hidden" name="reason" value="review" />
+  <textarea
+    id="review"
+    placeholder="I love this recipe..."
+    name="review"
+  ></textarea>
   <div class="user-review-submit-container">
-    <button id="user-review-submit">post</button>
+    <input type="submit" id="user-review-submit" value="post" />
   </div>
-</div>
-{% endif %} 
+</form>
+{% endif %}
 
 <!-- REVIEW LIST -->
+<div id="review-url" data-url="{% url 'pantry:like-review' %}"></div>
 {% for review in reviews %}
 <div class="review">
   <div class="review-aside">
-
     <!-- USERNAME / PUBLISHED DATE -->
     <div>
       <a class="user" href="{% url 'pantry:user-profile' review.user.id %}">
@@ -129,7 +165,11 @@
     <!-- RATING -->
     <div class="review-rating">
       {% if user.is_authenticated %}
-      <button class="review-heart"></button>
+        {% if review.id in liked_reviews %}
+          <button class="review-heart" value="{{ review.id }}" data-liked="true"></button>
+        {% else %}
+          <button class="review-heart" value="{{ review.id }}" data-liked="false"></button>
+        {% endif %}
       {% else %}
       <img
         class="review-heart-image"
@@ -138,13 +178,13 @@
       {% endif %}
       <p class="review-likes">{{ review.likes }}</p>
     </div>
-
   </div>
 
   <!-- REVIEW TEXT -->
   <p class="review-text">{{ review.review }}</p>
-
 </div>
 {% endfor %} 
 
 {% endblock %}
+
+

@@ -128,6 +128,15 @@ createStep();
 // FORM
 // ------------------------------
 
+function validateIngredients() {
+  for (let i = 0; i < ingredients.length; i++) {
+    if (!ingredients[i].trim()) {
+      return true;
+    }
+  }
+  return false;
+}
+
 let form = document.getElementById("create-a-recipe-form");
 form.addEventListener("submit", (e) => {
   // validation
@@ -135,6 +144,10 @@ form.addEventListener("submit", (e) => {
     {
       condition: ingredients.length === 0,
       message: "Please have atleast one ingredient!",
+    },
+    {
+      condition: validateIngredients(),
+      message: "You have an empty ingredient!",
     },
     { condition: cuisine.length === 0, message: "Please select a cuisine!" },
     {
@@ -168,10 +181,12 @@ form.addEventListener("submit", (e) => {
   Form.validate(e, errorConditions, document.getElementById("error-message"));
 
   // assign hidden inputs
+  let stepElements = document.getElementsByClassName("step");
   let steps = [];
-  Array.from(document.getElementsByClassName("step")).forEach((step) => {
-    steps.push(step.value);
-  });
+  for (let i = 0; i < stepElements.length - 1; i++) {
+    steps.push(stepElements[i].value);
+  }
+
   let hiddenInputs = [
     { input: document.getElementById("ingredients"), value: ingredients },
     { input: document.getElementById("difficulty"), value: difficulty },
@@ -179,8 +194,5 @@ form.addEventListener("submit", (e) => {
     { input: document.getElementById("cuisine"), value: cuisine },
     { input: document.getElementById("categories"), value: categories },
   ];
-
-  console.log(hiddenInputs);
-
   Form.assignHiddenInputs(hiddenInputs);
 });

@@ -5,12 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
-from django.db import IntegrityError
 from django.db.models import Q, Count
-from pantry_project.settings import MEDIA_DIR
-from django.utils.decorators import method_decorator
-from django.views import View
-
+from django.views.decorators.csrf import csrf_exempt
 from pantry.models import *
 from pantry.forms import *
 from pantry.helpers import *
@@ -85,16 +81,20 @@ def recipes(request):
             search_query_query & difficulty_query & cuisine_query & category_query
         )
 
+        recipes = recipes.annotate(num_saves=Count("saves"))
+
         if sort == "rating":
             recipes = recipes.order_by("-rating")
         elif sort == "reviews":
-            recipes = recipes.order_by("-reviews")
-        elif sort == "saves":
             # Count() will count number of review objects
             # we create our own pseudo field for number of review objects and order by this field
             recipes = recipes.annotate(num_reviews=Count("reviews")).order_by(
                 "-num_reviews"
             )
+        elif sort == "saves":
+            # Count() will count number of review objects
+            # we create our own pseudo field for number of review objects and order by this field
+            recipes = recipes.order_by("-num_saves")
         else:
             recipes = recipes.order_by("-pub_date")
 
@@ -121,6 +121,7 @@ def recipes(request):
 
         search_query_query = Q(title__startswith=search_query)
         recipes = Recipe.objects.filter(search_query_query)
+        recipes = recipes.annotate(num_saves=Count("saves"))
         context_dict["recipes"] = recipes
         context_dict["search_query"] = search_query
 
@@ -142,6 +143,7 @@ def signup(request):
 
             profile = profile_form.save(commit=False)
             profile.user = user
+            profile.bio = "Hey there, I'm a new user!"
             profile.save()
 
             auth.login(request, user)
@@ -198,21 +200,57 @@ def logout(request):
 def recipe(request, user_id, recipe_id):
 
     recipe = Recipe.objects.get(id=recipe_id)
+    context_dict = {"recipe": recipe}
+
+    # user is posting a review
+    if request.method == "POST":
+
+        if request.POST.get("reason") == "bookmark":
+
+            bookmarked = request.POST.get("bookmarked")
+
+            if bookmarked == "true":
+                SavedRecipes.objects.get(user=request.user, recipe=recipe).delete()
+            else:
+                SavedRecipes.objects.create(user=request.user, recipe=recipe).save()
+
+        elif request.POST.get("reason") == "review":
+
+            request_review = request.POST.get("review")
+
+            review = Review.objects.create(
+                user=request.user, recipe=recipe, review=request_review
+            )
+
+            review.save()
+
     reviews = Review.objects.filter(recipe=recipe)
+
     # ingredients stored as single string with 'SPACER' delimiter
     ingredients = recipe.ingredients.split(SPACER)
 
     user = request.user
     other_user = User.objects.get(id=user_id)
 
-    context_dict = {
-        "recipe": recipe,
-        "reviews": reviews,
-        "ingredients": ingredients,
-        # steps stored as single string with 'SPACER' delimiter
-        "steps": recipe.steps.split(SPACER),
-        "my_profile": is_own_profile(user, other_user),
-    }
+    has_reviewed = has_reviewed_helper(request.user, recipe)
+
+    if user.is_authenticated:
+        bookmark_exists = SavedRecipes.objects.filter(user=request.user, recipe=recipe)
+        if bookmark_exists:
+            context_dict["bookmarked"] = True
+        else:
+            context_dict["bookmarked"] = False
+
+        liked_reviews = LikedReviews.objects.filter(user=user, review__recipe=recipe)
+        liked_review_ids = list(liked_reviews.values_list("review__id", flat=True))
+        context_dict["liked_reviews"] = liked_review_ids
+
+    context_dict["reviews"] = reviews
+    context_dict["ingredients"] = ingredients
+    context_dict["steps"] = recipe.steps.split(SPACER)
+    context_dict["my_profile"] = is_own_profile(user, other_user)
+    context_dict["has_reviewed"] = has_reviewed
+    context_dict["saves"] = SavedRecipes.objects.filter(recipe=recipe).count()
 
     return render(request, "pantry/recipe.html", context=context_dict)
 
@@ -242,7 +280,8 @@ def create_a_recipe(request):
         )
 
         # add our category instances
-        recipe.categories.set(Category.objects.filter(type__in=category_strings))
+        if category_strings:
+            recipe.categories.set(Category.objects.filter(type__in=category_strings))
 
         # save first to generate a recipe id
         # (this is needed for saving image into correct media dir using recipe id)
@@ -250,6 +289,13 @@ def create_a_recipe(request):
 
         recipe.image = request.FILES.get("image")
         recipe.save()
+
+        return redirect(
+            reverse(
+                "pantry:recipe",
+                kwargs={"user_id": request.user.id, "recipe_id": recipe.id},
+            )
+        )
 
     cuisines = Cuisine.objects.all().values_list("type", flat=True)
     categories = Category.objects.all().values_list("type", flat=True)
@@ -260,6 +306,22 @@ def create_a_recipe(request):
 
 
 def user_profile(request, user_id):
+
+    # user is searching users
+    if request.GET.get("request", False):
+
+        search_query = request.GET.get("search_query")
+
+        # no Q needed here
+        users = User.objects.filter(username__startswith=search_query)[
+            :10
+        ]  # return top 10
+
+        context_dict = {
+            "users": users,
+        }
+
+        return render(request, "pantry/user-response.html", context=context_dict)
 
     user = request.user
     other_user = User.objects.get(id=user_id)
@@ -304,14 +366,13 @@ def saved_recipes(request, user_id):
     # user deleting their bookmarked recipe
     if request.GET.get("request", False):
 
-        recipe_id = request.GET.get("dataId")
-        recipe = Recipe.objects.get(id=recipe_id)
-        saved_recipe = SavedRecipes.objects.get(user=request.user, recipe=recipe)
+        saved_recipe_id = request.GET.get("dataId")
+        saved_recipe = SavedRecipes.objects.get(id=saved_recipe_id)
         saved_recipe.delete()
 
         # check that we successfully deleted the object
         try:
-            SavedRecipes.objects.get(user=request.user, recipe=recipe)
+            SavedRecipes.objects.get(id=saved_recipe_id)
         except SavedRecipes.DoesNotExist:
             return HttpResponse("success")
 
@@ -366,6 +427,9 @@ def edit_profile(request):
             user.delete()
             return redirect(reverse("pantry:index"))
 
+        # current info
+        user = request.user
+
         # edit profile request
         changed_username = request.POST.get("changed_username")
         changed_password = request.POST.get("changed_password")
@@ -373,15 +437,27 @@ def edit_profile(request):
         changed_bio = request.POST.get("changed_bio")
 
         # check if username was changed
-        if request.user.username != changed_username:
-            request.user.username = changed_username
-            request.user.save()
-            print(f"changed username to {request.user.username}")
+        if user.username != changed_username:
+
+            # check if username is avaliable
+            exists = User.objects.filter(username=changed_username)
+            if exists:
+                context_dict = {
+                    "userprofile": userprofile,
+                    "error": "Username already exists!",
+                }
+                return render(request, "pantry/edit-profile.html", context=context_dict)
+
+            user.username = changed_username
+            user.save()
+            print(f"changed username to {user.username}")
+
+        auth.logout(request)
 
         # check if password was changed
         if changed_password != "":
-            request.user.set_password(changed_password)
-            request.user.save()
+            user.set_password(changed_password)
+            user.save()
             print("changed password")
 
         # check if image was changed
@@ -396,42 +472,34 @@ def edit_profile(request):
             userprofile.save()
             print("changed bio")
 
+        auth.login(request, user)
+
+        return redirect(reverse("pantry:user-profile", kwargs={"user_id": user.id}))
+
     context_dict = {"userprofile": userprofile}
 
     return render(request, "pantry/edit-profile.html", context=context_dict)
 
 
-class SaveRecipeView(View):
-    @method_decorator(login_required)
-    def get(self, request):
-        recipe_id = request.GET["recipe_id"]
+@login_required
+def like_review(request):
+    review_id = request.POST.get("data[reviewId]")
+    user = request.user
+    review = Review.objects.get(id=review_id)
+    like = request.POST.get("data[like]")
 
-        try:
-            recipe = Recipe.objects.get(id=int(recipe_id))
-        except Recipe.DoesNotExist:
-            return HttpResponse(-1)
-        except ValueError:
-            return HttpResponse(-1)
+    if like == "true":
+        LikedReviews.objects.create(user=user, review=review)
+        print("created")
+    else:
+        liked_review = LikedReviews.objects.get(review=review, user=user)
+        liked_review.delete()
+        print("deleted")
 
-        recipe.saves = recipe.save + 1
-        recipe.save()
-
-        return HttpResponse(recipe.saves)
-
-
-class LikeReviewView(View):
-    @method_decorator(login_required)
-    def get(self, request):
-        reveiw_id = request.GET["review_id"]
-
-        try:
-            review = Review.objects.get(id=int(reveiw_id))
-        except Review.DoesNotExist:
-            return HttpResponse(-1)
-        except ValueError:
-            return HttpResponse(-1)
-
-        review.likes = review.likes + 1
-        review.save()
-
-        return HttpResponse(review.likes)
+    # check if like or unlike
+    if like == "true":
+        review.likes += 1
+    else:
+        review.likes -= 1
+    review.save()
+    return HttpResponse("success")

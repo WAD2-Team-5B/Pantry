@@ -75,6 +75,14 @@ h3 {
   cursor: pointer;
 }
 
+#bookmark img {
+  height: 100%;
+}
+
+#bookmark-form {
+  display: flex;
+}
+
 /* RECIPE INFO */
 
 .recipe-info,
@@ -117,11 +125,15 @@ h3 {
   height: 8rem;
 
   border: 1rem solid transparent;
+  border-radius: 1rem;
 
   font-size: 0.75rem;
+  font-family: Arial;
 
-  overflow-wrap: break-word;
   overflow-y: auto;
+  /* keep the newlines */
+  white-space: pre-line;
+  overflow-wrap: break-word;
 }
 
 .info {
@@ -147,7 +159,9 @@ h3 {
 }
 
 /* RECIPE FACTS */
-
+#recipe-difficulty {
+  text-transform: capitalize;
+}
 .steps,
 .ingredients,
 .categories {
@@ -172,8 +186,11 @@ h3 {
 .steps ul,
 .ingredients ul,
 .categories ul {
+  max-height: 10rem;
   height: 10rem;
   width: 100%;
+
+  margin-top: 0.5rem;
 
   font-size: 0.75rem;
 
@@ -188,6 +205,11 @@ h3 {
   color: var(--color-1);
 
   font-weight: bold;
+}
+
+.steps ul li {
+  overflow-wrap: break-word;
+  white-space: pre-line;
 }
 
 .ingredients ul li,
@@ -237,6 +259,7 @@ h3 {
   width: calc(100% - 10rem);
 
   overflow-wrap: break-word;
+  white-space: pre-line;
 }
 
 .review-rating {
@@ -253,7 +276,7 @@ h3 {
   margin-bottom: 1rem;
 }
 
-.user-review {
+#post-review-form {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -316,7 +339,7 @@ h3 {
   .recipe-header,
   .recipe-info,
   .recipe-facts,
-  .user-review,
+  #post-review-form,
   .review {
     flex-direction: column;
 
@@ -347,6 +370,12 @@ h3 {
     margin-bottom: 1rem;
   }
 
+  .steps ul,
+  .ingredients ul,
+  .categories ul {
+    height: auto;
+  }
+
   .categories {
     margin-bottom: 0;
   }
@@ -359,7 +388,8 @@ h3 {
 
   .description p {
     width: 100%;
-    height: 11.35rem;
+    height: auto;
+    max-height: 11.35rem;
 
     margin-left: 0;
   }
@@ -378,14 +408,12 @@ h3 {
     justify-content: space-between;
     /* messy but atleast no extra divs */
     flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
   }
 
   .info ul li {
     justify-content: center;
-
-    width: 25%;
-
-    margin-top: 1rem;
   }
 
   .review-aside {

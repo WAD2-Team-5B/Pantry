@@ -140,6 +140,7 @@ class TestViewsAuthentication(TestCase):
         index = self.client.get("/")
         self.assertContains(index, "Logout")
         self.assertContains(index, self.username)
+        self.assertContains(index, self.username)
         self.assertNotContains(index, "Sign Up")
         self.assertNotContains(index, "Login")
 

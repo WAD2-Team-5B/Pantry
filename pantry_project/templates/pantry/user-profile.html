@@ -6,7 +6,9 @@
 {% endblock %}
 
 <!-- JS -->
-{% block js_block %} {% endblock %}
+{% block js_block %}
+<script type="module" src="{% static 'js/pages/user-profile.js' %}"></script>
+{% endblock %}
 
 <!-- TITLE -->
 {% block title_block %} User Profile {% endblock %}
@@ -20,7 +22,11 @@
 
   <!-- BIO -->
   <div class="bio">
+    {% if profileuser_profile.image %}
     <img src="{{ MEDIA_URL }}{{ profileuser_profile.image }}" />
+    {% else %}
+    <img class="default-profile-img" src="{% static 'images/profile-default.jpg' %}" />
+    {% endif %}
     <p>{{ profileuser_profile.bio }}</p>
   </div>
 
@@ -29,12 +35,7 @@
 
     <!-- SEARCH -->
     <div class="search">
-      <input
-        type="text"
-        id="search"
-        name="search_query"
-        placeholder="search a user"
-      />
+      <input type="text" id="search" name="search_query" placeholder="search a user" />
       <ul id="search-results"></ul>
     </div>
 
@@ -63,10 +64,10 @@
 
       <!-- include other users name in link text -->
       <li>
-        <a href="{% url 'pantry:user-recipes' profileuser.id %}">{{ profileuser.username }} Recipes</a>
+        <a href="{% url 'pantry:user-recipes' profileuser.id %}">{{ profileuser.username }}'s Recipes</a>
       </li>
       <li>
-        <a href="{% url 'pantry:user-reviews' profileuser.id %}">{{ profileuser.username }} Reviews</a>
+        <a href="{% url 'pantry:user-reviews' profileuser.id %}">{{ profileuser.username }}'s Reviews</a>
       </li>
       <li>
         <a href="{% url 'pantry:saved-recipes' profileuser.id %}">{{ profileuser.username }}'s Saved Recipes</a>
