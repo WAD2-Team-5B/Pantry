@@ -36,12 +36,11 @@ function updateBookmark() {
     bookmarked = false;
     bookmark.style.backgroundImage =
       "url(../../../static/images/bookmark-empty.svg)";
-    return;
-  }
-
+  } else {
   // user selecting bookmark
-  bookmarked = true;
-  bookmark.style.backgroundImage = "url(../../../static/images/bookmark.svg)";
+    bookmarked = true;
+    bookmark.style.backgroundImage = "url(../../../static/images/bookmark.svg)";
+  }
 }
 
 function updateReviewLike(likeButtons, index, like) {

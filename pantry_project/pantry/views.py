@@ -205,6 +205,7 @@ def recipe(request, user_id, recipe_id):
             bookmarked = request.POST.get("bookmarked")
 
             if bookmarked == "true":
+                print("bookmarked = true ")
                 SavedRecipes.objects.get(user=request.user, recipe=recipe).delete()
             else:
                 SavedRecipes.objects.create(user=request.user, recipe=recipe).save()
@@ -218,6 +219,7 @@ def recipe(request, user_id, recipe_id):
             )
 
             review.save()
+            
 
     reviews = Review.objects.filter(recipe=recipe)
     
@@ -240,7 +242,6 @@ def recipe(request, user_id, recipe_id):
             
         liked_reviews = LikedReviews.objects.filter(user=user,review__recipe=recipe)
         liked_review_ids = list(liked_reviews.values_list('review__id', flat=True))
-        print(liked_review_ids)
         context_dict["liked_reviews"]= liked_review_ids
         
     context_dict["reviews"] = reviews
