@@ -243,7 +243,6 @@ def recipe(request, user_id, recipe_id):
 
         liked_reviews = LikedReviews.objects.filter(user=user, review__recipe=recipe)
         liked_review_ids = list(liked_reviews.values_list("review__id", flat=True))
-        print(liked_review_ids)
         context_dict["liked_reviews"] = liked_review_ids
 
     context_dict["reviews"] = reviews
