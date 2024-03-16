@@ -205,7 +205,6 @@ def recipe(request, user_id, recipe_id):
             bookmarked = request.POST.get("bookmarked")
 
             if bookmarked == "true":
-                print("bookmarked = true ")
                 SavedRecipes.objects.get(user=request.user, recipe=recipe).delete()
             else:
                 SavedRecipes.objects.create(user=request.user, recipe=recipe).save()
