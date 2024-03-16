@@ -24,5 +24,5 @@ urlpatterns = [
     path("<int:user_id>/saved-recipes/", views.saved_recipes, name="saved-recipes"),
     path("<int:user_id>/user-reviews/", views.user_reviews, name="user-reviews"),
 
-    path("like_review/", views.LikeReviewView.as_view(), name="like_recipe"),
+    path("like_review/", views.like_review, name="like-review"),
 ]

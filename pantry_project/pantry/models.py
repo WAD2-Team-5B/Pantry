@@ -113,3 +113,14 @@ class SavedRecipes(models.Model):
 
     class Meta:
         unique_together = ("user", "recipe")
+        
+class LikedReviews(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    
+        
+    
+class StarredRecipes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    value = models.IntegerField()

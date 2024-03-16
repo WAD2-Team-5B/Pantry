@@ -5,12 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
-from django.db import IntegrityError
 from django.db.models import Q, Count
-from pantry_project.settings import MEDIA_DIR
-from django.utils.decorators import method_decorator
-from django.views import View
-
+from django.views.decorators.csrf import csrf_exempt
 from pantry.models import *
 from pantry.forms import *
 from pantry.helpers import *
@@ -224,11 +220,14 @@ def recipe(request, user_id, recipe_id):
             review.save()
 
     reviews = Review.objects.filter(recipe=recipe)
+    
+    
     # ingredients stored as single string with 'SPACER' delimiter
     ingredients = recipe.ingredients.split(SPACER)
 
     user = request.user
     other_user = User.objects.get(id=user_id)
+
 
     has_reviewed = has_reviewed_helper(request.user, recipe)
 
@@ -238,12 +237,18 @@ def recipe(request, user_id, recipe_id):
             context_dict["bookmarked"] = True
         else:
             context_dict["bookmarked"] = False
-
+            
+        liked_reviews = LikedReviews.objects.filter(user=user,review__recipe=recipe)
+        liked_review_ids = list(liked_reviews.values_list('review__id', flat=True))
+        print(liked_review_ids)
+        context_dict["liked_reviews"]= liked_review_ids
+        
     context_dict["reviews"] = reviews
     context_dict["ingredients"] = ingredients
     context_dict["steps"] = recipe.steps.split(SPACER)
     context_dict["my_profile"] = is_own_profile(user, other_user)
     context_dict["has_reviewed"] = has_reviewed
+    
 
     return render(request, "pantry/recipe.html", context=context_dict)
 
@@ -305,9 +310,8 @@ def user_profile(request, user_id):
 
         search_query = request.GET.get("search_query")
 
-        search_query_query = Q(username__startswith=search_query)
-
-        users = User.objects.filter(search_query_query)
+        # no Q needed here 
+        users = User.objects.filter(username__startswith=search_query)[:10] # return top 10
 
         context_dict = {
             "users": users,
@@ -473,19 +477,27 @@ def edit_profile(request):
     return render(request, "pantry/edit-profile.html", context=context_dict)
 
 
-class LikeReviewView(View):
-    @method_decorator(login_required)
-    def get(self, request):
-        reveiw_id = request.GET["review_id"]
 
-        try:
-            review = Review.objects.get(id=int(reveiw_id))
-        except Review.DoesNotExist:
-            return HttpResponse(-1)
-        except ValueError:
-            return HttpResponse(-1)
+@login_required
+def like_review(request):
+    review_id = request.POST.get("data[reviewId]")
+    user = request.user
+    review = Review.objects.get(id=review_id)
+    like = request.POST.get("data[like]")
+    
+    if like == "true":
+        LikedReviews.objects.create(user=user,review=review)
+        print("created")
+    else:
+        liked_review = LikedReviews.objects.get(review=review, user=user)
+        liked_review.delete()
+        print("deleted")
 
-        review.likes = review.likes + 1
-        review.save()
 
-        return HttpResponse(review.likes)
+    # check if like or unlike
+    if like == "true":
+        review.likes += 1
+    else:
+        review.likes -= 1
+    review.save()
+    return  HttpResponse("success")
