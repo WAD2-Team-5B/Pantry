@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.files.images import ImageFile
 from pantry.forms import UserForm
-from pantry.models import UserProfile, Recipe, Cuisine, Category
+from pantry.models import UserProfile, Recipe, Cuisine, Category, Review
 from pantry.views import SPACER
 from population_script import (
     create_cuisines_and_categories,
@@ -171,8 +171,11 @@ class TestRecipe(TestCase):
         self.user = User.objects.get(username="jeval")
         self.recipe = Recipe.objects.filter(user=self.user)[0]
 
+        # am additional test user must be created, as the population script has users who have already posted reviews
+        self.reviewing_user = User.objects.create(username="david", password="123456")
+
     # tests that review form is not present when a user views their own recipe
-    def test_post_review_own_recipe(self):
+    def test_review_form_present_own_recipe(self):
         self.client.force_login(self.user)
         response = self.client.get(
             reverse(f"pantry:recipe", args=[self.user.id, self.recipe.id])
@@ -180,24 +183,41 @@ class TestRecipe(TestCase):
         self.assertNotContains(response, '"post-review-form"')
 
     # tests that review form is present on other users' recipes
-    def test_post_review_not_own_recipe(self):
-        # a test user must be created, as the population script has users who have already posted reviews
-        self.client.force_login(
-            User.objects.create(username="david", password="123456")
-        )
-
+    def test_review_form_present_not_own_recipe(self):
+        self.client.force_login(self.reviewing_user)
         response = self.client.get(
             reverse(f"pantry:recipe", args=[self.user.id, self.recipe.id])
         )
         self.assertContains(response, '"post-review-form"')
 
     # tests that review form is not present when a user has already posted a review
-    def test_post_review_already_reviewed(self):
+    def test_review_form_present_already_reviewed(self):
         self.client.force_login(User.objects.get(username="andrewH"))
         response = self.client.get(
             reverse(f"pantry:recipe", args=[self.user.id, self.recipe.id])
         )
         self.assertNotContains(response, '"post-review-form"')
+
+    # tests that a posted review is added to the database
+    def test_post_review(self):
+        self.client.force_login(self.reviewing_user)
+        contents = "this is my review :)"
+        response = self.client.post(reverse(
+            f"pantry:recipe",
+            args=[self.user.id, self.recipe.id]),
+            data={"reason": "review", "review": contents},
+        )
+        review = Review.objects.filter(user=self.reviewing_user)[0]
+        self.assertEqual(contents, review.review)
+
+    # tests that the recipe view shows a new review
+    def test_post_review_view(self):
+        contents = "this is the review that should show up"
+        review = Review.objects.create(user=self.reviewing_user, review=contents, recipe_id=self.recipe.id)
+
+        response = self.client.get(reverse(f"pantry:recipe", args=[self.user.id, self.recipe.id]))
+
+        self.assertContains(response, contents)
 
 
 class TestRecipes(TestCase):
@@ -228,3 +248,22 @@ class TestRecipes(TestCase):
 
         response = self.client.get(reverse("pantry:recipes"))
         self.assertNotContains(response, "Create A Recipe")
+
+
+    # there should only be one recipe (sushi) on the search page with the query 'sus'
+    def test_search_single_item(self):
+        response = self.client.get(reverse("pantry:recipes")+"?search_query=sus")
+
+        self.assertContains(response, '<a class="recipe"', count=1)
+
+    # the page should not contain any links to recipes when the search query does not match any
+    def test_search_no_items(self):
+        response = self.client.get(reverse("pantry:recipes")+"?search_query=nothing should match this")
+
+        self.assertNotContains(response, '<a class="recipe"')
+
+    # there should be exactly two recipes (sushi, spaghetti) on the search page with the query 's'
+    def test_search_multiple_items(self):
+        response = self.client.get(reverse("pantry:recipes")+"?search_query=s")
+
+        self.assertContains(response, '<a class="recipe"', count=2)
