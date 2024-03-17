@@ -10,6 +10,7 @@ from population_script import (
     create_recipes,
     create_reviews,
     create_users_and_profiles,
+    add_recipe,
 )
 
 
@@ -161,7 +162,6 @@ class TestBase(TestCase):
 
 class TestRecipe(TestCase):
     def setUp(self):
-        # from population script
         create_users_and_profiles()
         create_cuisines_and_categories()
         create_recipes()
@@ -202,9 +202,8 @@ class TestRecipe(TestCase):
     def test_post_review(self):
         self.client.force_login(self.reviewing_user)
         contents = "this is my review :)"
-        response = self.client.post(reverse(
-            f"pantry:recipe",
-            args=[self.user.id, self.recipe.id]),
+        response = self.client.post(
+            reverse(f"pantry:recipe", args=[self.user.id, self.recipe.id]),
             data={"reason": "review", "review": contents},
         )
         review = Review.objects.filter(user=self.reviewing_user)[0]
@@ -213,16 +212,43 @@ class TestRecipe(TestCase):
     # tests that the recipe view shows a new review
     def test_post_review_view(self):
         contents = "this is the review that should show up"
-        review = Review.objects.create(user=self.reviewing_user, review=contents, recipe_id=self.recipe.id)
+        review = Review.objects.create(
+            user=self.reviewing_user, review=contents, recipe_id=self.recipe.id
+        )
 
-        response = self.client.get(reverse(f"pantry:recipe", args=[self.user.id, self.recipe.id]))
+        response = self.client.get(
+            reverse(f"pantry:recipe", args=[self.user.id, self.recipe.id])
+        )
 
         self.assertContains(response, contents)
+
+    # tests that a newly created recipe is accessible
+    def test_new_recipe_view(self):
+        recipe = add_recipe(
+            {
+                "user": User.objects.get(username="andrewS"),
+                "cuisine": Cuisine.objects.get(type="Mexican"),
+                "categories": Category.objects.filter(type__in=["Low Fat"]),
+                "title": "New recipe !!",
+                "image": ImageFile(open("./populate_data/vegetarian_tacos.jpeg", "rb")),
+                "desc": "Description",
+                "ingredients": SPACER.join(["Something", "something else"]),
+                "steps": SPACER.join(["Step 1", "Step 2"]),
+                "prep": "0:15",
+                "cook": "0:10",
+                "difficulty": "intermediate",
+                "star_count": 25,
+                "star_submissions": 6,
+            }
+        )
+        response = self.client.get(
+            reverse(f"pantry:recipe", args=[self.recipe.user.id, self.recipe.id])
+        )
+        self.assertEqual(200, response.status_code)
 
 
 class TestRecipes(TestCase):
     def setUp(self):
-        # from population script
         create_users_and_profiles()
         create_cuisines_and_categories()
         create_recipes()
@@ -249,21 +275,100 @@ class TestRecipes(TestCase):
         response = self.client.get(reverse("pantry:recipes"))
         self.assertNotContains(response, "Create A Recipe")
 
-
     # there should only be one recipe (sushi) on the search page with the query 'sus'
     def test_search_single_item(self):
-        response = self.client.get(reverse("pantry:recipes")+"?search_query=sus")
+        response = self.client.get(reverse("pantry:recipes") + "?search_query=sus")
 
         self.assertContains(response, '<a class="recipe"', count=1)
 
     # the page should not contain any links to recipes when the search query does not match any
     def test_search_no_items(self):
-        response = self.client.get(reverse("pantry:recipes")+"?search_query=nothing should match this")
+        response = self.client.get(
+            reverse("pantry:recipes") + "?search_query=nothing should match this"
+        )
 
         self.assertNotContains(response, '<a class="recipe"')
 
     # there should be exactly two recipes (sushi, spaghetti) on the search page with the query 's'
     def test_search_multiple_items(self):
-        response = self.client.get(reverse("pantry:recipes")+"?search_query=s")
+        response = self.client.get(reverse("pantry:recipes") + "?search_query=s")
 
         self.assertContains(response, '<a class="recipe"', count=2)
+
+
+class TestCreateARecipe(TestCase):
+    def setUp(self):
+        create_users_and_profiles()
+        create_cuisines_and_categories()
+        create_recipes()
+        create_reviews()
+
+        self.user = User.objects.get(username="layla")
+
+    # tests that a posted recipe is added to the database
+    def test_create_a_recipe_post(self):
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("pantry:create-a-recipe"),
+            data={
+                "user": self.user,
+                "cuisine": Cuisine.objects.get(type="Italian"),
+                "categories": Category.objects.filter(
+                    type__in=["Low Fat", "Organic", "Vegetarian"]
+                ),
+                "name": "New recipe",
+                "image": ImageFile(
+                    open("./populate_data/spaghetti_carbonara.jpeg", "rb")
+                ),
+                "description": "Description",
+                "ingredients": SPACER.join(["Bacon"]),
+                "steps": SPACER.join(["Step 1", "Step 2", "Step 3"]),
+                "prep": "0:20",
+                "cook": "0:20",
+                "difficulty": "intermediate",
+                "star_count": 32,
+                "star_submissions": 9,
+            },
+        )
+
+        created_recipe = Recipe.objects.filter(title="New recipe")[0]
+        self.assertEqual(created_recipe.user, self.user)
+
+
+class TestIndex(TestCase):
+    def setUp(self):
+        create_users_and_profiles()
+        create_cuisines_and_categories()
+        create_recipes()
+        create_reviews()
+
+    # a link to a new recipe should appear on the home page
+    def test_new_recipe(self):
+        recipe = add_recipe(
+            {
+                "user": User.objects.get(username="nicole"),
+                "cuisine": Cuisine.objects.get(type="Italian"),
+                "categories": Category.objects.filter(type__in=["Low Fat"]),
+                "title": "Title no other recipe will have",
+                "image": ImageFile(open("./populate_data/vegetarian_tacos.jpeg", "rb")),
+                "desc": "Description",
+                "ingredients": SPACER.join(["Something", "something else"]),
+                "steps": SPACER.join(["Step 1", "Step 2"]),
+                "prep": "0:15",
+                "cook": "0:10",
+                "difficulty": "intermediate",
+                "star_count": 25,
+                "star_submissions": 6,
+            }
+        )
+        response = self.client.get(reverse("pantry:index"))
+        self.assertContains(response, f'"/pantry/recipes/{recipe.user.id}/{recipe.id}"')
+        self.assertContains(response, recipe.title)
+
+
+class TestAbout(TestCase):
+    # tests that the about page renders the correct template
+    def test_about_view(self):
+        response = self.client.get(reverse("pantry:about"))
+        self.assertTemplateUsed(response, "pantry/about.html")
