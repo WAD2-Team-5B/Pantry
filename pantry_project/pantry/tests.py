@@ -372,3 +372,143 @@ class TestAbout(TestCase):
     def test_about_view(self):
         response = self.client.get(reverse("pantry:about"))
         self.assertTemplateUsed(response, "pantry/about.html")
+
+
+class TestProfile(TestCase):
+    def setUp(self):
+        create_users_and_profiles()
+        create_cuisines_and_categories()
+        create_recipes()
+        create_reviews()
+
+        self.user = User.objects.get(username="andrewM")
+        self.user_profile = UserProfile.objects.get(user=self.user)
+
+        self.alt_user = User.objects.get(username="jeval")
+        self.alt_user_profile = UserProfile.objects.get(user=self.alt_user)
+
+    # tests profile view is correct when viewing own profile
+    def test_profile_view_own_profile(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("pantry:user-profile", args=[self.user.id]))
+
+        self.assertContains(response, self.user_profile.bio)
+
+        self.assertContains(response, "Edit Profile")
+        self.assertContains(response, "Create A Recipe")
+        self.assertContains(response, "My Recipes")
+        self.assertContains(response, "My Reviews")
+        self.assertContains(response, "Saved Recipes")
+
+    # tests profile view is correct when viewing another user's profile
+    def test_profile_view_other_profile(self):
+        response = self.client.get(
+            reverse("pantry:user-profile", args=[self.alt_user.id])
+        )
+
+        self.assertContains(response, self.alt_user.username)
+        self.assertContains(response, self.alt_user_profile.bio)
+
+        self.assertContains(response, f"{self.alt_user.username}'s Recipes")
+        self.assertContains(response, f"{self.alt_user.username}'s Reviews")
+        self.assertContains(response, f"{self.alt_user.username}'s Saved Recipes")
+
+    # tests that the username can be changed
+    def test_edit_profile_change_username(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "pantry:edit-profile",
+            ),
+            data={
+                "changed_username": "david",
+                "changed_password": "",
+                "changed_bio": self.user_profile.bio,
+            },
+        )
+        user = User.objects.get(id=self.user.id)
+        self.assertEqual("david", user.username)
+
+    # user should not be able to change their username to one that already exists
+    def test_edit_profile_change_username_same(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "pantry:edit-profile",
+            ),
+            data={
+                "changed_username": self.alt_user.username,
+                "changed_password": "",
+                "changed_bio": self.user_profile.bio,
+            },
+        )
+        user = User.objects.get(id=self.user.id)
+        self.assertEqual(self.user.username, user.username)
+
+        self.assertContains(response, "Username already exists!")
+
+    # tests that the bio can be changed
+    def test_edit_profile_change_bio(self):
+        new_bio = "This is my new bio!!"
+
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "pantry:edit-profile",
+            ),
+            data={
+                "changed_username": self.user.username,
+                "changed_password": "",
+                "changed_bio": new_bio,
+            },
+        )
+        user_profile = UserProfile.objects.get(user=self.user.id)
+        self.assertEqual(new_bio, user_profile.bio)
+
+    # tests that the password can be changed (user can then login with new password)
+    def test_edit_profile_change_password(self):
+        new_password = "This is my new password!!"
+
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "pantry:edit-profile",
+            ),
+            data={
+                "changed_username": self.user.username,
+                "changed_password": new_password,
+                "changed_bio": self.user_profile.bio,
+            },
+        )
+
+        self.client.logout()
+
+        self.assertTrue(
+            self.client.login(username=self.user.username, password=new_password)
+        )
+
+    # tests that an account can be deleted
+    def test_edit_profile_delete_account(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "pantry:edit-profile",
+            ),
+            data={"delete-request": "true"},
+        )
+
+        self.assertEqual(0, len(User.objects.filter(id=self.user.id)))
+
+    # tests that the user is redirected after their account is deleted
+    def test_edit_profile_delete_account_redirect(self):
+        self.client.force_login(self.user)
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "pantry:edit-profile",
+            ),
+            data={"delete-request": "true"},
+        )
+
+        self.assertRedirects(response, reverse("pantry:index"))
