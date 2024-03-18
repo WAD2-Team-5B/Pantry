@@ -8,7 +8,7 @@ const STARS_AMOUNT = 5;
 
 let rating = 0;
 let bookmarked = false;
-let prevStarred = document.getElementById("prevStarred");
+let prevStarred = false;
 
 // ------------------------------
 // HELPERS
@@ -21,7 +21,7 @@ function updateStars(index) {
 
   for (let i = 0; i < STARS_AMOUNT; i++) {
 
-    if (i < index) {
+    if (i < rating) {
       stars[i].style.backgroundImage = "url(../../../static/images/star.svg)";
     }
 
@@ -82,11 +82,12 @@ function updateReviewLike(likeButtons, index, like) {
 
 // stars
 let stars = document.getElementById("stars");
+console.log(prevStarred);
 // if null then user not logged in
 if (stars) {
-  if (prevStarred == "false") {
+  if (prevStarred == false) {
 
-    console.log("prevStarred false!")
+    console.log("prevStarred false!");
     
     for (let i = 0; i < STARS_AMOUNT; i++) {
       let star = document.createElement("button");
@@ -101,18 +102,20 @@ if (stars) {
       }
 
       document.getElementById("prevStarred").value = "true";
+      prevStarred = true;
       stars.appendChild(star);
     }
   }
-  else {
+  else if (prevStarred == true) {
 
     console.log("prevStarred true!")
+    document.getElementById("prevStarred").value = "true";
 
     for (let i = 0; i < STARS_AMOUNT; i++) {
       let star = document.createElement("button");
 
       star.id = "star-" + (i + 1);
-      
+
       if (i < rating) {
         star.style.backgroundImage = "url(../../../static/images/star.svg)";
       }

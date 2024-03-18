@@ -222,10 +222,12 @@ def recipe(request, user_id, recipe_id):
 
             if not prevStarred:
                 StarredRecipes.objects.create(user=request.user, recipe=recipe, value=int(value))
+                print("not prev")
             
             else:
                 StarredRecipes.objects.filter(user=request.user, recipe=recipe).delete()
                 StarredRecipes.objects.create(user=request.user, recipe=recipe, value=int(value))
+                print("is prev")
 
             
 
