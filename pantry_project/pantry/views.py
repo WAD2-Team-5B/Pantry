@@ -17,8 +17,9 @@ SPACER = "<SPACER>"
 
 
 def index(request):
-
     # user is using search bar
+    print("index page")
+    print("make this happen")
     if request.method == "POST":
         search_query = request.POST.get("search_query")
         # send in url parameters with get request
@@ -205,14 +206,17 @@ def recipe(request, user_id, recipe_id):
     # user is posting a review
     if request.method == "POST":
 
-        if request.POST.get("reason") == "bookmark":
+        if "data[bookmarked]" in request.POST:
 
-            bookmarked = request.POST.get("bookmarked")
+            bookmarked = request.POST.get("data[bookmarked]")
 
             if bookmarked == "true":
                 SavedRecipes.objects.get(user=request.user, recipe=recipe).delete()
-            else:
+                return return_bookmark_success(request, recipe, "success", "fail")
+
+            elif bookmarked == "false":
                 SavedRecipes.objects.create(user=request.user, recipe=recipe).save()
+                return return_bookmark_success(request, recipe, "fail", "success")
 
         elif request.POST.get("reason") == "review":
 
@@ -313,9 +317,7 @@ def user_profile(request, user_id):
         search_query = request.GET.get("search_query")
 
         # no Q needed here
-        users = User.objects.filter(username__startswith=search_query)[
-            :10
-        ]  # return top 10
+        users = User.objects.filter(username__startswith=search_query)[:10]  # return top 10
 
         context_dict = {
             "users": users,
@@ -340,75 +342,43 @@ def user_profile(request, user_id):
 def user_recipes(request, user_id):
 
     # user is deleting their recipe
-    if request.GET.get("request", False):
-
-        recipe_id = request.GET.get("dataId")
-        recipe = Recipe.objects.get(id=recipe_id)
-        recipe.delete()
-
-        # check that we successfully deleted the object
-        try:
-            Recipe.objects.get(id=recipe_id)
-        except Recipe.DoesNotExist:
-            return HttpResponse("success")
-
-        return HttpResponse("fail")
-
-    return render(
-        request,
-        "pantry/user-data.html",
-        context=get_user_data_context_dict(request, user_id, "Recipe", Recipe),
-    )
+    if request.method == "POST":
+        return delete_user_data(request, Recipe)
+    else:
+        return render(
+            request,
+            "pantry/user-data.html",
+            context=get_user_data_context_dict(request, user_id, "Recipe", Recipe),
+        )
+    
 
 
 def saved_recipes(request, user_id):
 
     # user deleting their bookmarked recipe
-    if request.GET.get("request", False):
-
-        saved_recipe_id = request.GET.get("dataId")
-        saved_recipe = SavedRecipes.objects.get(id=saved_recipe_id)
-        saved_recipe.delete()
-
-        # check that we successfully deleted the object
-        try:
-            SavedRecipes.objects.get(id=saved_recipe_id)
-        except SavedRecipes.DoesNotExist:
-            return HttpResponse("success")
-
-        return HttpResponse("fail")
-
-    return render(
-        request,
-        "pantry/user-data.html",
-        context=get_user_data_context_dict(
-            request, user_id, "Saved Recipe", SavedRecipes
-        ),
+    if request.method == "POST":
+        return delete_user_data(request, SavedRecipes)
+    else:
+        return render(
+            request,
+            "pantry/user-data.html",
+            context=get_user_data_context_dict(
+                request, user_id, "Saved Recipe", SavedRecipes
+            )
     )
 
 
 def user_reviews(request, user_id):
 
     # user is deleting their review
-    if request.GET.get("request", False):
-
-        review_id = request.GET.get("dataId")
-        review = Review.objects.get(id=review_id)
-        review.delete()
-
-        # check that we successfully deleted the object
-        try:
-            Review.objects.get(id=review_id)
-        except Review.DoesNotExist:
-            return HttpResponse("success")
-
-        return HttpResponse("fail")
-
-    return render(
-        request,
-        "pantry/user-data.html",
-        context=get_user_data_context_dict(request, user_id, "Reviewed Recipe", Review),
-    )
+    if request.method == "POST":
+        return delete_user_data(request, Review)
+    else:
+        return render(
+            request,
+            "pantry/user-data.html",
+            context=get_user_data_context_dict(request, user_id, "Reviewed Recipe", Review),
+        )
 
 
 @login_required

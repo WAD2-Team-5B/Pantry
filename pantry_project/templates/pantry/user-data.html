@@ -7,6 +7,9 @@
 
 <!-- JS -->
 {% block js_block %}
+<script type="text/javascript">
+  const csrfToken = "{{ csrf_token }}";
+</script>
 <script type="module" src="{% static 'js/pages/user-data.js' %}"></script>
 {% endblock %}
 
@@ -19,7 +22,6 @@
 <h3>{{ page_name }}</h3>
 
 <!-- SORT BUTTONS -->
-{% if own_profile %}
 <div class="container">
   <div class="container-sort-by">
     <h5>Sort By</h5>
@@ -29,13 +31,14 @@
     </div>
   </div>
 </div>
-{% endif %}
+
 
 <!-- MY RECIPES / MY SAVED RECIPES / MY REVIEWS -->
 <ul id="data-list">
 
   {% for data in user_data %}
-  <li>
+  {% comment %} gets date ISO 8601 format so js can cast to date obj {% endcomment %}
+  <li data-date = "{{data.pub_date|date:"c"}}">
     {% if is_reviews_page %}
 
     <a class="data-card" href="{% url 'pantry:recipe' data.user.id data.recipe.id %}">

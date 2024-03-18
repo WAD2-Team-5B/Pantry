@@ -6,19 +6,36 @@ export class PantryAPI {
     });
   }
 
-  static removeUserData(data, btn) {
-    $.get("", data, function (response) {
-      if (response === "success") {
+  static removeUserData(data, btn, csrfToken) {
+    $.post("", {data:data, csrfmiddlewaretoken: csrfToken}, function (response) {
+      if (response == "success") {
         btn.parentElement.remove();
-        return true;
+        console.log("remove user data success")
+      } else if (response == "fail"){
+        console.log("remove user data fail")
       }
-      alert("error deleting please try again");
-      return false;
     });
   }
 
   static likeReview(data, url, csrfToken) {
-    $.post(url, {data:data, csrfmiddlewaretoken: csrfToken})
+    $.post(url, {data:data, csrfmiddlewaretoken: csrfToken}, function (response) {
+      if (response == "success") {
+        console.log("like review success")
+      } else if (response == "fail"){
+        console.log("like review fail")
+      }
+    });
+  }
+
+  static bookmark(data, csrfToken){
+    $.post("", {data:data, csrfmiddlewaretoken: csrfToken}, function (response) {
+      if (response == "success") {
+        console.log("bookmark success")
+      } else if (response == "fail"){
+        console.log("bookmark fail")
+      }
+    });
+
   }
   
   static starRecipe() {}
