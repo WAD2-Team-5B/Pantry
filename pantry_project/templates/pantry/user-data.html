@@ -7,6 +7,9 @@
 
 <!-- JS -->
 {% block js_block %}
+<script type="text/javascript">
+  const csrfToken = "{{ csrf_token }}";
+</script>
 <script type="module" src="{% static 'js/pages/user-data.js' %}"></script>
 {% endblock %}
 

@@ -26,11 +26,10 @@ for (let i = 0; i < btnsRemove.length; i++) {
   let dataId = btn.value;
 
   const data = {
-    request: true,
-    dataId: dataId,
+    dataId: dataId
   };
 
   btn.onclick = () => {
-    PantryAPI.removeUserData(data, btn);
+    PantryAPI.removeUserData(data, btn, csrfToken);
   };
 }

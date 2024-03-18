@@ -313,9 +313,7 @@ def user_profile(request, user_id):
         search_query = request.GET.get("search_query")
 
         # no Q needed here
-        users = User.objects.filter(username__startswith=search_query)[
-            :10
-        ]  # return top 10
+        users = User.objects.filter(username__startswith=search_query)[:10]  # return top 10
 
         context_dict = {
             "users": users,
@@ -359,31 +357,35 @@ def user_recipes(request, user_id):
         "pantry/user-data.html",
         context=get_user_data_context_dict(request, user_id, "Recipe", Recipe),
     )
+    
+def delete_user_data(request, model):
+    print(request.POST)
+    data_id = request.POST.get("data[dataID]")
+    stored_data = model.objects.get(id=data_id)
+    stored_data.delete()
+
+    # check that we successfully deleted the object
+    try:
+        model.objects.get(id=data_id)
+    except models.DoesNotExist:
+        return HttpResponse("success")
+
+    return HttpResponse("fail")
+    
 
 
 def saved_recipes(request, user_id):
 
     # user deleting their bookmarked recipe
-    if request.GET.get("request", False):
-
-        saved_recipe_id = request.GET.get("dataId")
-        saved_recipe = SavedRecipes.objects.get(id=saved_recipe_id)
-        saved_recipe.delete()
-
-        # check that we successfully deleted the object
-        try:
-            SavedRecipes.objects.get(id=saved_recipe_id)
-        except SavedRecipes.DoesNotExist:
-            return HttpResponse("success")
-
-        return HttpResponse("fail")
-
-    return render(
-        request,
-        "pantry/user-data.html",
-        context=get_user_data_context_dict(
-            request, user_id, "Saved Recipe", SavedRecipes
-        ),
+    if request.method == "POST":
+        delete_user_data(request, SavedRecipes)
+    else:
+        return render(
+            request,
+            "pantry/user-data.html",
+            context=get_user_data_context_dict(
+                request, user_id, "Saved Recipe", SavedRecipes
+            )
     )
 
 
