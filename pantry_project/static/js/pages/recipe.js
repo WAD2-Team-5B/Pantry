@@ -7,7 +7,6 @@ import { PantryAPI } from "../utility/ajax.js";
 const STARS_AMOUNT = 5;
 
 let rating = 0;
-let bookmarked = false;
 
 // ------------------------------
 // HELPERS
@@ -30,17 +29,36 @@ function updateStars(index) {
 
 function updateBookmark() {
   let bookmark = document.getElementById("bookmark");
-
+  let bookmarked = bookmark.value;
+  const data = {"bookmarked": bookmarked};
+  PantryAPI.bookmark(data,csrfToken);
   // user deselecting bookmark
-  if (bookmarked) {
-    bookmarked = false;
-    bookmark.style.backgroundImage =
-      "url(../../../static/images/bookmark-empty.svg)";
-  } else {
+  if (bookmarked === "true") {
+    bookmark.setAttribute("value", "false");
+    bookmark.style.backgroundImage = "url(../../../static/images/bookmark-empty.svg)"; 
+    updateSaves(false);
+  } else if (bookmarked === "false") {
   // user selecting bookmark
-    bookmarked = true;
+    bookmark.setAttribute("value", "true");
     bookmark.style.backgroundImage = "url(../../../static/images/bookmark.svg)";
+    updateSaves(true);
   }
+}
+
+function updateSaves(increment) {
+  let saves = document.getElementById("saves");
+  let value = parseInt(saves.getAttribute("data-save"));
+
+  if (increment) {
+    value += 1;
+  } else {
+    value -= 1;
+  }
+
+  saves.setAttribute("data-save", value);
+
+  let ending = (value === 1) ? "" : "s";
+  saves.innerHTML = value + " save" + ending;
 }
 
 function updateReviewLike(likeButtons, index, like) {
@@ -97,8 +115,13 @@ if (stars) {
 let bookmark = document.getElementById("bookmark");
 // if null then user not logged in
 if (bookmark) {
-  bookmark.style.backgroundImage =
-    "url(../../../static/images/bookmark-empty.svg)";
+  let bookmarked = bookmark.value
+  // set up background image
+  if (bookmarked === "true"){
+    bookmark.style.backgroundImage = "url(../../../static/images/bookmark.svg)";
+  } else if (bookmarked === "false") {
+    bookmark.style.backgroundImage = "url(../../../static/images/bookmark-empty.svg)";
+  }
   bookmark.onclick = () => {
     updateBookmark();
   };

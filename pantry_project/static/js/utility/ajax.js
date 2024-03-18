@@ -10,14 +10,32 @@ export class PantryAPI {
     $.post("", {data:data, csrfmiddlewaretoken: csrfToken}, function (response) {
       if (response == "success") {
         btn.parentElement.remove();
+        console.log("remove user data success")
       } else if (response == "fail"){
-        alert("error deleting please try again");
+        console.log("remove user data fail")
       }
     });
   }
 
   static likeReview(data, url, csrfToken) {
-    $.post(url, {data:data, csrfmiddlewaretoken: csrfToken})
+    $.post(url, {data:data, csrfmiddlewaretoken: csrfToken}, function (response) {
+      if (response == "success") {
+        console.log("like review success")
+      } else if (response == "fail"){
+        console.log("like review fail")
+      }
+    });
+  }
+
+  static bookmark(data, csrfToken){
+    $.post("", {data:data, csrfmiddlewaretoken: csrfToken}, function (response) {
+      if (response == "success") {
+        console.log("bookmark success")
+      } else if (response == "fail"){
+        console.log("bookmark fail")
+      }
+    });
+
   }
   
   static starRecipe() {}

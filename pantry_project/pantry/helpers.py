@@ -75,3 +75,11 @@ def delete_user_data(request, model):
         return HttpResponse("success")
 
     return HttpResponse("fail")
+
+def return_bookmark_success(request, recipe, dne_str, no_exception_str):
+    try:
+        SavedRecipes.objects.get(user=request.user, recipe=recipe)
+    except SavedRecipes.DoesNotExist:
+        return HttpResponse(dne_str)
+
+    return HttpResponse(no_exception_str)

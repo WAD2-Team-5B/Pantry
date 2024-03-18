@@ -206,14 +206,17 @@ def recipe(request, user_id, recipe_id):
     # user is posting a review
     if request.method == "POST":
 
-        if request.POST.get("reason") == "bookmark":
+        if "data[bookmarked]" in request.POST:
 
-            bookmarked = request.POST.get("bookmarked")
+            bookmarked = request.POST.get("data[bookmarked]")
 
             if bookmarked == "true":
                 SavedRecipes.objects.get(user=request.user, recipe=recipe).delete()
-            else:
+                return return_bookmark_success(request, recipe, "success", "fail")
+
+            elif bookmarked == "false":
                 SavedRecipes.objects.create(user=request.user, recipe=recipe).save()
+                return return_bookmark_success(request, recipe, "fail", "success")
 
         elif request.POST.get("reason") == "review":
 

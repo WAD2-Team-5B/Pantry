@@ -36,28 +36,16 @@
   <!-- STARS / BOOKMARK -->
   <div class="right-aside">
     {% if not my_profile and user.is_authenticated %}
+
     <div id="stars"></div>
 
     <!-- BOOKMARK -->
-    <form
-      role="form"
-      id="bookmark-form"
-      method="post"
-      enctype="multipart/form-data"
-      action="{% url 'pantry:recipe' recipe.user.id recipe.id %}"
-    >
-      {% csrf_token %}
-      <input type="hidden" name="reason" value="bookmark" />
-      {% if bookmarked %}
-      <button id="bookmark" name="bookmarked" value="true">
-        <img src="{% static "images/bookmark.svg" %}" />
-      </button>
-      {% else %}
-      <button id="bookmark" name="bookmarked" value="false">
-        <img src="{% static "images/bookmark-empty.svg" %}" />
-      </button>
-      {% endif %}
-    </form>
+    {% if bookmarked == True %}
+    <button id="bookmark" name="bookmarked" value="true"></button>
+    {% else %}
+    <button id="bookmark" name="bookmarked" value="false"></button>
+    {% endif %}
+    
 
     {% endif %}
   </div>
@@ -79,9 +67,9 @@
         {{ recipe.rating }}
       </li>
       {% if saves == 1 %}
-      <li>{{ saves }} save</li>
+      <li id = "saves" data-save = {{saves}}>{{ saves }} save</li>
       {% else %}
-      <li>{{ saves }} saves</li>
+      <li id = "saves" data-save = {{saves}}>{{ saves }} saves</li>
       {% endif %}
       <li id="recipe-difficulty">{{ recipe.difficulty }}</li>
       <li>{{ recipe.cuisine }}</li>
