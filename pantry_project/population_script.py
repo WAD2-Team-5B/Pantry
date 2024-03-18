@@ -380,7 +380,7 @@ def create_reviews():
 
 
 if __name__ == "__main__":
-    print("Starting Rango population script...")
+    print("Starting Pantry population script...")
     create_users_and_profiles()
     create_cuisines_and_categories()
     create_recipes()
