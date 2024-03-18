@@ -112,5 +112,25 @@ class LikedReviews(models.Model):
 
 class StarredRecipes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="stars")
     value = models.IntegerField()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        self.recipe.star_submissions += 1
+        self.recipe.star_count += self.value
+
+        self.recipe.save()
+       
+        
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        
+        self.recipe.star_submissions -= 1
+        self.recipe.star_count -= self.value
+
+        self.recipe.save()
+
+        
+

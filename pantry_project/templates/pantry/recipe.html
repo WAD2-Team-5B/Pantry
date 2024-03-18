@@ -9,7 +9,7 @@
 {% block js_block %}
 <script type="text/javascript">
   const csrfToken = "{{ csrf_token }}";
-  const recipeId = {{ recipe.id }};
+  const recipeId = "{{ recipe.id }}";
 </script>
 
 <script type="module" src="{% static 'js/pages/recipe.js' %}"></script>
@@ -38,6 +38,20 @@
     {% if not my_profile and user.is_authenticated %}
     <div id="stars"></div>
 
+    <form 
+      role="form" 
+      id="star-form" 
+      method="post" 
+      enctype="multipart/form-data" 
+      action="{% url 'pantry:recipe' recipe.user.id recipe.id %}"
+    >
+    {% csrf_token %}
+    <input type="hidden" name="reason" value="stars">
+    <input type="hidden" id="rating" name="rating" value="0">
+    <input type="hidden" id="prevStarred" value="false">
+    </form>
+
+
     <!-- BOOKMARK -->
     <form
       role="form"
@@ -50,11 +64,11 @@
       <input type="hidden" name="reason" value="bookmark" />
       {% if bookmarked %}
       <button id="bookmark" name="bookmarked" value="true">
-        <img src="{% static "images/bookmark.svg" %}" />
+        <img src="{% static 'images/bookmark.svg' %}" />
       </button>
       {% else %}
       <button id="bookmark" name="bookmarked" value="false">
-        <img src="{% static "images/bookmark-empty.svg" %}" />
+        <img src="{% static 'images/bookmark-empty.svg' %}" />
       </button>
       {% endif %}
     </form>

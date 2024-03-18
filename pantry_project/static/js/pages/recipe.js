@@ -8,6 +8,7 @@ const STARS_AMOUNT = 5;
 
 let rating = 0;
 let bookmarked = false;
+let prevStarred = document.getElementById("prevStarred");
 
 // ------------------------------
 // HELPERS
@@ -19,13 +20,18 @@ function updateStars(index) {
   rating = index;
 
   for (let i = 0; i < STARS_AMOUNT; i++) {
+
     if (i < index) {
       stars[i].style.backgroundImage = "url(../../../static/images/star.svg)";
-    } else {
-      stars[i].style.backgroundImage =
-        "url(../../../static/images/star-empty.svg)";
+    }
+
+    else {
+      stars[i].style.backgroundImage = "url(../../../static/images/star-empty.svg)";
     }
   }
+
+  document.getElementById("rating").value = rating;
+  
 }
 
 function updateBookmark() {
@@ -78,20 +84,55 @@ function updateReviewLike(likeButtons, index, like) {
 let stars = document.getElementById("stars");
 // if null then user not logged in
 if (stars) {
-  for (let i = 0; i < STARS_AMOUNT; i++) {
-    let star = document.createElement("button");
+  if (prevStarred == "false") {
 
-    star.id = "star-" + (i + 1);
-    star.style.backgroundImage = "url(../../../static/images/star-empty.svg)";
-    star.className = "star";
+    console.log("prevStarred false!")
+    
+    for (let i = 0; i < STARS_AMOUNT; i++) {
+      let star = document.createElement("button");
 
-    star.onclick = () => {
-      updateStars(i + 1);
-    };
+      star.id = "star-" + (i + 1);
+      star.style.backgroundImage = "url(../../../static/images/star-empty.svg)";
+      star.className = "star";
 
-    stars.appendChild(star);
+      star.onclick = () => {
+        updateStars(i + 1);
+        document.forms["star-form"].submit();
+      }
+
+      document.getElementById("prevStarred").value = "true";
+      stars.appendChild(star);
+    }
+  }
+  else {
+
+    console.log("prevStarred true!")
+
+    for (let i = 0; i < STARS_AMOUNT; i++) {
+      let star = document.createElement("button");
+
+      star.id = "star-" + (i + 1);
+      
+      if (i < rating) {
+        star.style.backgroundImage = "url(../../../static/images/star.svg)";
+      }
+
+      else {
+        star.style.backgroundImage = "url(../../../static/images/star-empty.svg)";
+      }
+
+      star.className = "star";
+
+      star.onclick = () => {
+        updateStars(i + 1);
+        document.forms["star-form"].submit();
+      }
+
+      stars.appendChild(star);
+    }
   }
 }
+
 
 // bookmark
 let bookmark = document.getElementById("bookmark");
@@ -119,3 +160,4 @@ for (let i = 0; i < likeButtons.length; i++) {
     updateReviewLike(likeButtons, i);
   };
 }
+

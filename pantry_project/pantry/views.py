@@ -214,6 +214,22 @@ def recipe(request, user_id, recipe_id):
             else:
                 SavedRecipes.objects.create(user=request.user, recipe=recipe).save()
 
+        elif request.POST.get("reason") == "stars":
+
+            prevStarred = request.POST.get("prevStarred")
+            value = request.POST.get("rating")
+            print(value)
+
+            if not prevStarred:
+                StarredRecipes.objects.create(user=request.user, recipe=recipe, value=int(value))
+            
+            else:
+                StarredRecipes.objects.filter(user=request.user, recipe=recipe).delete()
+                StarredRecipes.objects.create(user=request.user, recipe=recipe, value=int(value))
+
+            
+
+
         elif request.POST.get("reason") == "review":
 
             request_review = request.POST.get("review")
