@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Avg
 from django.views.decorators.csrf import csrf_exempt
 from pantry.models import *
 from pantry.forms import *
@@ -18,15 +18,14 @@ SPACER = "<SPACER>"
 
 def index(request):
     # user is using search bar
-    print("index page")
-    print("make this happen")
     if request.method == "POST":
         search_query = request.POST.get("search_query")
         # send in url parameters with get request
         return redirect(reverse("pantry:recipes") + "?search_query=" + search_query)
 
-    highest_rated_recipes = Recipe.objects.order_by("-rating", "-pub_date")[:10]
-    newest_recipes = Recipe.objects.order_by("-pub_date")[:10]
+    recipes = Recipe.objects.annotate(rating=Avg("ratings__value"))
+    highest_rated_recipes = recipes.order_by("-rating", "-pub_date")[:10]
+    newest_recipes = recipes.order_by("-pub_date")[:10]
 
     context_dict = {
         "highest_rated_recipes": highest_rated_recipes,
@@ -200,61 +199,78 @@ def logout(request):
 
 def recipe(request, user_id, recipe_id):
 
-    recipe = Recipe.objects.get(id=recipe_id)
-    context_dict = {"recipe": recipe}
+    context_dict = {}
 
-    # user is posting a review
+    # get our recipe
+    recipe = Recipe.objects.get(id=recipe_id)
+
     if request.method == "POST":
 
-        if "data[bookmarked]" in request.POST:
-
-            bookmarked = request.POST.get("data[bookmarked]")
-
-            if bookmarked == "true":
+        # user is bookmarking
+        if request.POST.get("reason") == "bookmark":
+            if request.POST.get("bookmarked") == "true":
                 SavedRecipes.objects.get(user=request.user, recipe=recipe).delete()
-                return return_bookmark_success(request, recipe, "success", "fail")
-
-            elif bookmarked == "false":
+            else:
                 SavedRecipes.objects.create(user=request.user, recipe=recipe).save()
-                return return_bookmark_success(request, recipe, "fail", "success")
 
+        # user is posting a review
         elif request.POST.get("reason") == "review":
-
             request_review = request.POST.get("review")
-
-            review = Review.objects.create(
+            Review.objects.create(
                 user=request.user, recipe=recipe, review=request_review
-            )
+            ).save()
 
-            review.save()
+        # user is starring
+        elif request.POST.get("reason") == "starring":
+            value = request.POST.get("star_value")
+            starred_object = StarredRecipes.objects.get_or_create(
+                user=request.user, recipe=recipe
+            )[0]
+            starred_object.value = value
+            starred_object.save()
 
-    reviews = Review.objects.filter(recipe=recipe)
+    # logged in user data
+    if request.user.is_authenticated:
+        bookmark_object = SavedRecipes.objects.filter(
+            user=request.user, recipe=recipe
+        )  # find out if user has bookmarked or not
+        context_dict["bookmarked"] = "true" if bookmark_object else "false"
 
-    # ingredients stored as single string with 'SPACER' delimiter
-    ingredients = recipe.ingredients.split(SPACER)
-
-    user = request.user
-    other_user = User.objects.get(id=user_id)
-
-    has_reviewed = has_reviewed_helper(request.user, recipe)
-
-    if user.is_authenticated:
-        bookmark_exists = SavedRecipes.objects.filter(user=request.user, recipe=recipe)
-        if bookmark_exists:
-            context_dict["bookmarked"] = True
+        star_object = StarredRecipes.objects.filter(
+            user=request.user, recipe=recipe
+        )  # find out if user has starred or not
+        if star_object:
+            star_value = star_object[0].value
+            context_dict["solid_stars"] = range(1, star_value + 1)
+            context_dict["empty_stars"] = range(star_value + 1, 6)
         else:
-            context_dict["bookmarked"] = False
+            context_dict["empty_stars"] = range(1, 5)
 
-        liked_reviews = LikedReviews.objects.filter(user=user, review__recipe=recipe)
+        liked_reviews = LikedReviews.objects.filter(
+            user=request.user, review__recipe=recipe
+        )
         liked_review_ids = list(liked_reviews.values_list("review__id", flat=True))
         context_dict["liked_reviews"] = liked_review_ids
+
+    # general page data
+    reviews = Review.objects.filter(recipe=recipe)
+    ingredients = recipe.ingredients.split(
+        SPACER
+    )  # ingredients stored as single string with 'SPACER' delimiter
+    other_user = User.objects.get(id=user_id)
+    has_reviewed = has_reviewed_helper(request.user, recipe)
+
+    # needed so to annotate at the end
+    recipes = Recipe.objects.annotate(
+        rating=Avg("ratings__value"), num_saves=Count("saves")
+    )
+    context_dict["recipe"] = recipes.get(id=recipe_id)
 
     context_dict["reviews"] = reviews
     context_dict["ingredients"] = ingredients
     context_dict["steps"] = recipe.steps.split(SPACER)
-    context_dict["my_profile"] = is_own_profile(user, other_user)
+    context_dict["my_profile"] = is_own_profile(request.user, other_user)
     context_dict["has_reviewed"] = has_reviewed
-    context_dict["saves"] = SavedRecipes.objects.filter(recipe=recipe).count()
 
     return render(request, "pantry/recipe.html", context=context_dict)
 
@@ -317,7 +333,9 @@ def user_profile(request, user_id):
         search_query = request.GET.get("search_query")
 
         # no Q needed here
-        users = User.objects.filter(username__startswith=search_query)[:10]  # return top 10
+        users = User.objects.filter(username__startswith=search_query)[
+            :10
+        ]  # return top 10
 
         context_dict = {
             "users": users,
@@ -350,7 +368,6 @@ def user_recipes(request, user_id):
             "pantry/user-data.html",
             context=get_user_data_context_dict(request, user_id, "Recipe", Recipe),
         )
-    
 
 
 def saved_recipes(request, user_id):
@@ -364,8 +381,8 @@ def saved_recipes(request, user_id):
             "pantry/user-data.html",
             context=get_user_data_context_dict(
                 request, user_id, "Saved Recipe", SavedRecipes
-            )
-    )
+            ),
+        )
 
 
 def user_reviews(request, user_id):
@@ -377,7 +394,9 @@ def user_reviews(request, user_id):
         return render(
             request,
             "pantry/user-data.html",
-            context=get_user_data_context_dict(request, user_id, "Reviewed Recipe", Review),
+            context=get_user_data_context_dict(
+                request, user_id, "Reviewed Recipe", Review
+            ),
         )
 
 

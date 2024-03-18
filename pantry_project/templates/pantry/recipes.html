@@ -78,25 +78,31 @@
     <!-- SEARCH RESULTS -->
     <div id="search-results">
       {% for recipe in recipes %}
-      <a class="recipe" href="{% url 'pantry:recipe' recipe.user.id recipe.id %}">
-        <img class="recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" />
-        <ul>
-          <li>{{ recipe.title }}</li>
-          <li>
-            <img src="{% static 'images/star.svg' %}" />
-            {{ recipe.rating }}
-          </li>
-          {% if recipe.num_saves == 1 %}
-          <li>{{ recipe.num_saves }} save</li>
-          {% else %}
-          <li>{{ recipe.num_saves }} saves</li>
-          {% endif %}
-          <li>{{ recipe.difficulty }}</li>
-          <li>{{ recipe.cuisine }}</li>
-          <li>Prep - {{ recipe.prep }}h</li>
-          <li>Cook - {{ recipe.cook }}h</li>
-        </ul>
-      </a>
+        <a class="recipe" href="{% url 'pantry:recipe' recipe.user.id recipe.id %}">
+          <img class="recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" />
+          <ul>
+              <li>{{ recipe.title }}</li>
+              <li>
+                  <img src="{% static 'images/star.svg' %}" />
+                  {% if recipe.rating %}
+                  {{ recipe.rating }}
+                  {% else %}
+                  no rating
+                  {% endif %}
+              </li>
+
+              {% if recipe.num_saves == 1 %}
+              <li>{{ recipe.num_saves }} save</li>
+              {% else %}
+              <li>{{ recipe.num_saves }} saves</li>
+              {% endif %}
+
+              <li>{{ recipe.difficulty }}</li>
+              <li>{{ recipe.cuisine }}</li>
+              <li>Prep - {{ recipe.prep }}h</li>
+              <li>Cook - {{ recipe.cook }}h</li>
+          </ul>
+        </a>
       {% endfor %}
     </div>
   </div>

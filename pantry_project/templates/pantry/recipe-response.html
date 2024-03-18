@@ -7,13 +7,19 @@
         <li>{{ recipe.title }}</li>
         <li>
             <img src="{% static 'images/star.svg' %}" />
+            {% if recipe.rating %}
             {{ recipe.rating }}
+            {% else %}
+            no rating
+            {% endif %}
         </li>
+
         {% if recipe.num_saves == 1 %}
-          <li>{{ recipe.num_saves }} save</li>
-          {% else %}
-          <li>{{ recipe.num_saves }} saves</li>
-          {% endif %}
+        <li>{{ recipe.num_saves }} save</li>
+        {% else %}
+        <li>{{ recipe.num_saves }} saves</li>
+        {% endif %}
+
         <li>{{ recipe.difficulty }}</li>
         <li>{{ recipe.cuisine }}</li>
         <li>Prep - {{ recipe.prep }}h</li>

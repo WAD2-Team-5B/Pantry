@@ -46,20 +46,7 @@ class Recipe(models.Model):
     prep = models.CharField(max_length=4)
     cook = models.CharField(max_length=4)
     difficulty = models.CharField(max_length=1)
-    rating = models.FloatField(default=0)
-    star_count = models.IntegerField(default=0)
-    star_submissions = models.IntegerField(default=0)
     pub_date = models.DateTimeField(auto_now_add=True)
-
-    def save(self, *args, **kwargs):
-        # every time an instance of the model is saved to the DB we recalculate the avg star rating
-        if self.star_submissions != 0:
-            # Calculate average star rating
-            self.rating = round(self.star_count / self.star_submissions, 2)
-        else:
-            self.rating = 0
-
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -100,6 +87,7 @@ class Review(models.Model):
 class SavedRecipes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="saves")
+
     pub_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -113,5 +101,6 @@ class LikedReviews(models.Model):
 
 class StarredRecipes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    value = models.IntegerField()
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="ratings")
+
+    value = models.IntegerField(default=0)

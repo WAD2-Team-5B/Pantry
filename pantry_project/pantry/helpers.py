@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.db.models import Subquery, Sum, OuterRef, F, Count, IntegerField
 from pantry.models import *
 
 # HELPER FUNCTIONS
@@ -14,7 +15,6 @@ def is_own_profile(user, other_user):
 
 
 def get_page_name(user, other_user, page_string):
-
     own_profile = is_own_profile(user, other_user)
 
     if own_profile:
@@ -26,12 +26,9 @@ def get_page_name(user, other_user, page_string):
 
 
 def get_user_data_context_dict(request, user_id, page_string, model):
-
     user = request.user
     other_user = User.objects.get(id=user_id)
-
     page_name, own_profile = get_page_name(user, other_user, page_string)
-
     user_data = model.objects.filter(user=other_user)
 
     context_dict = {
@@ -61,10 +58,11 @@ def has_reviewed_helper(user, recipe):
 
     return False
 
+
 def delete_user_data(request, model):
-    data_id = request.POST.get('data[dataId]')
+    data_id = request.POST.get("data[dataId]")
     print(request.POST.get("csrfmiddlewaretoken"))
-    
+
     stored_data = model.objects.get(id=data_id)
     stored_data.delete()
 
@@ -75,6 +73,7 @@ def delete_user_data(request, model):
         return HttpResponse("success")
 
     return HttpResponse("fail")
+
 
 def return_bookmark_success(request, recipe, dne_str, no_exception_str):
     try:

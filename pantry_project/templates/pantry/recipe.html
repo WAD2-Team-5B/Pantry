@@ -37,15 +37,35 @@
   <div class="right-aside">
     {% if not my_profile and user.is_authenticated %}
 
-    <div id="stars"></div>
+    <!-- STARS -->
+    <form
+      role="form"
+      id="star-form"
+      method="post"
+      action="{% url 'pantry:recipe' recipe.user.id recipe.id %}"
+    >
+      {% csrf_token %}
+      <input type="hidden" name="reason" value="starring" />
+      <input type="hidden" name="star_value" id="star-value" />
+      {% for i in solid_stars %}
+      <button class="star solid-star" value="{{ i }}"></button>
+      {% endfor %}
+      {% for i in empty_stars %}
+      <button class="star empty-star" value="{{ i }}"></button>
+      {% endfor %}
+    </form>
 
     <!-- BOOKMARK -->
-    {% if bookmarked == True %}
-    <button id="bookmark" name="bookmarked" value="true"></button>
-    {% else %}
-    <button id="bookmark" name="bookmarked" value="false"></button>
-    {% endif %}
-    
+    <form
+      role="form"
+      id="bookmark-form"
+      method="post"
+      action="{% url 'pantry:recipe' recipe.user.id recipe.id %}"
+    >
+      {% csrf_token %}
+      <input type="hidden" name="reason" value="bookmark" />
+      <button id="bookmark" name="bookmarked" class="bookmark-{{ bookmarked }}" value="{{ bookmarked }}"></button>
+    </form>
 
     {% endif %}
   </div>
@@ -64,13 +84,19 @@
     <ul>
       <li>
         <img src="{% static 'images/star.svg' %}" />
+        {% if recipe.rating %}
         {{ recipe.rating }}
+        {% else %}
+        no rating
+        {% endif %}
       </li>
-      {% if saves == 1 %}
-      <li id = "saves" data-save = {{saves}}>{{ saves }} save</li>
+
+      {% if recipe.num_saves == 1 %}
+      <li>{{ recipe.num_saves }} save</li>
       {% else %}
-      <li id = "saves" data-save = {{saves}}>{{ saves }} saves</li>
+      <li>{{ recipe.num_saves }} saves</li>
       {% endif %}
+
       <li id="recipe-difficulty">{{ recipe.difficulty }}</li>
       <li>{{ recipe.cuisine }}</li>
       <li>Prep - {{ recipe.prep }}h</li>

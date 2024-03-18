@@ -79,8 +79,25 @@ h3 {
   height: 100%;
 }
 
-#bookmark-form {
+#bookmark-form,
+#star-form {
   display: flex;
+}
+
+.bookmark-true {
+  background-image: url(../../images/bookmark.svg);
+}
+
+.bookmark-false {
+  background-image: url(../../images/bookmark-empty.svg);
+}
+
+.solid-star {
+  background-image: url(../../images/star.svg);
+}
+
+.empty-star {
+  background-image: url(../../images/star-empty.svg);
 }
 
 /* RECIPE INFO */
