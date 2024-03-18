@@ -6,9 +6,13 @@ import { PantryAPI } from "../utility/ajax.js";
 
 const STARS_AMOUNT = 5;
 
-let rating = 0;
+let rating = parseInt(document.getElementById("rating").value);
 let bookmarked = false;
-let prevStarred = false;
+if (localStorage.getItem("prevStarred") == null) {
+  localStorage.setItem("prevStarred", "false")
+}
+let prevStarred = localStorage.getItem("prevStarred")
+
 
 // ------------------------------
 // HELPERS
@@ -83,9 +87,10 @@ function updateReviewLike(likeButtons, index, like) {
 // stars
 let stars = document.getElementById("stars");
 console.log(prevStarred);
+console.log(rating);
 // if null then user not logged in
 if (stars) {
-  if (prevStarred == false) {
+  if (prevStarred == "false") {
 
     console.log("prevStarred false!");
     
@@ -96,17 +101,18 @@ if (stars) {
       star.style.backgroundImage = "url(../../../static/images/star-empty.svg)";
       star.className = "star";
 
+      document.getElementById("prevStarred").value = "false";
+
       star.onclick = () => {
         updateStars(i + 1);
         document.forms["star-form"].submit();
       }
 
-      document.getElementById("prevStarred").value = "true";
-      prevStarred = true;
+      localStorage.setItem("prevStarred", "true")
       stars.appendChild(star);
     }
   }
-  else if (prevStarred == true) {
+  else if (prevStarred == "true") {
 
     console.log("prevStarred true!")
     document.getElementById("prevStarred").value = "true";
@@ -126,10 +132,10 @@ if (stars) {
 
       star.className = "star";
 
-      star.onclick = () => {
-        updateStars(i + 1);
-        document.forms["star-form"].submit();
-      }
+       star.onclick = () => {
+         updateStars(i + 1);
+         document.forms["star-form"].submit();
+       }
 
       stars.appendChild(star);
     }

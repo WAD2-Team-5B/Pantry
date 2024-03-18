@@ -220,17 +220,19 @@ def recipe(request, user_id, recipe_id):
             value = request.POST.get("rating")
             print(value)
 
-            if not prevStarred:
+            if prevStarred == "false":
                 StarredRecipes.objects.create(user=request.user, recipe=recipe, value=int(value))
                 print("not prev")
             
-            else:
-                StarredRecipes.objects.filter(user=request.user, recipe=recipe).delete()
+            elif prevStarred == "true":
+                con = StarredRecipes.objects.filter(user=request.user, recipe=recipe)
+                print(con)
+                con.delete()
                 StarredRecipes.objects.create(user=request.user, recipe=recipe, value=int(value))
                 print("is prev")
 
-            
-
+            context_dict["rating"] = value
+            context_dict["prevStarred"] = "true"
 
         elif request.POST.get("reason") == "review":
 

@@ -103,7 +103,7 @@ class SavedRecipes(models.Model):
 
     class Meta:
         unique_together = ("user", "recipe")
-        verbose_name_plural = "SavedRecipes"
+        verbose_name_plural = "Saved Recipes"
 
 
 class LikedReviews(models.Model):
@@ -134,7 +134,7 @@ class StarredRecipes(models.Model):
         self.recipe.save()
 
     class Meta:
-        verbose_name_plural = "StarredRecipes"
+        verbose_name_plural = "Starred Recipes"
 
         
 

@@ -47,8 +47,8 @@
     >
     {% csrf_token %}
     <input type="hidden" name="reason" value="stars">
-    <input type="hidden" id="rating" name="rating" value="0">
-    <input type="hidden" id="prevStarred" value="false">
+    <input type="hidden" id="rating" name="rating" value="{{ rating }}">
+    <input type="hidden" id="prevStarred" name="prevStarred" value="{{ prevStarred }}">
     </form>
 
 
