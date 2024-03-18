@@ -6,14 +6,13 @@ export class PantryAPI {
     });
   }
 
-  static removeUserData(data, btn) {
-    $.get("", data, function (response) {
-      if (response === "success") {
+  static removeUserData(data, btn, csrfToken) {
+    $.post("", {data:data, csrfmiddlewaretoken: csrfToken}, function (response) {
+      if (response == "success") {
         btn.parentElement.remove();
-        return true;
+      } else if (response == "fail"){
+        alert("error deleting please try again");
       }
-      alert("error deleting please try again");
-      return false;
     });
   }
 

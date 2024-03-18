@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from pantry.models import *
 
 # HELPER FUNCTIONS
@@ -12,24 +13,24 @@ def is_own_profile(user, other_user):
     return own_profile
 
 
-def get_recipe_name(user, other_user, recipe_string):
+def get_page_name(user, other_user, page_string):
 
     own_profile = is_own_profile(user, other_user)
 
     if own_profile:
-        page_name = "My " + recipe_string + "s"
+        page_name = "My " + page_string + "s"
     else:
-        page_name = other_user.username + " " + recipe_string + "'s"
+        page_name = other_user.username + "'s " + page_string + "s"
 
     return page_name, own_profile
 
 
-def get_user_data_context_dict(request, user_id, recipe_string, model):
+def get_user_data_context_dict(request, user_id, page_string, model):
 
     user = request.user
     other_user = User.objects.get(id=user_id)
 
-    page_name, own_profile = get_recipe_name(user, other_user, recipe_string)
+    page_name, own_profile = get_page_name(user, other_user, page_string)
 
     user_data = model.objects.filter(user=other_user)
 
@@ -59,3 +60,18 @@ def has_reviewed_helper(user, recipe):
         return True
 
     return False
+
+def delete_user_data(request, model):
+    data_id = request.POST.get('data[dataId]')
+    print(request.POST.get("csrfmiddlewaretoken"))
+    
+    stored_data = model.objects.get(id=data_id)
+    stored_data.delete()
+
+    # check that we successfully deleted the object
+    try:
+        model.objects.get(id=data_id)
+    except model.DoesNotExist:
+        return HttpResponse("success")
+
+    return HttpResponse("fail")
