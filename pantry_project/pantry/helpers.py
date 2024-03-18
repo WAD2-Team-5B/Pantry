@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from pantry.models import *
 
 # HELPER FUNCTIONS
@@ -59,3 +60,18 @@ def has_reviewed_helper(user, recipe):
         return True
 
     return False
+
+def delete_user_data(request, model):
+    data_id = request.POST.get('data[dataId]')
+    print(request.POST.get("csrfmiddlewaretoken"))
+    
+    stored_data = model.objects.get(id=data_id)
+    stored_data.delete()
+
+    # check that we successfully deleted the object
+    try:
+        model.objects.get(id=data_id)
+    except model.DoesNotExist:
+        return HttpResponse("success")
+
+    return HttpResponse("fail")

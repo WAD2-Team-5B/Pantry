@@ -17,8 +17,9 @@ SPACER = "<SPACER>"
 
 
 def index(request):
-
     # user is using search bar
+    print("index page")
+    print("make this happen")
     if request.method == "POST":
         search_query = request.POST.get("search_query")
         # send in url parameters with get request
@@ -338,39 +339,14 @@ def user_profile(request, user_id):
 def user_recipes(request, user_id):
 
     # user is deleting their recipe
-    if request.GET.get("request", False):
-
-        recipe_id = request.GET.get("dataId")
-        recipe = Recipe.objects.get(id=recipe_id)
-        recipe.delete()
-
-        # check that we successfully deleted the object
-        try:
-            Recipe.objects.get(id=recipe_id)
-        except Recipe.DoesNotExist:
-            return HttpResponse("success")
-
-        return HttpResponse("fail")
-
-    return render(
-        request,
-        "pantry/user-data.html",
-        context=get_user_data_context_dict(request, user_id, "Recipe", Recipe),
-    )
-    
-def delete_user_data(request, model):
-    print(request.POST)
-    data_id = request.POST.get("data[dataID]")
-    stored_data = model.objects.get(id=data_id)
-    stored_data.delete()
-
-    # check that we successfully deleted the object
-    try:
-        model.objects.get(id=data_id)
-    except models.DoesNotExist:
-        return HttpResponse("success")
-
-    return HttpResponse("fail")
+    if request.method == "POST":
+        return delete_user_data(request, Recipe)
+    else:
+        return render(
+            request,
+            "pantry/user-data.html",
+            context=get_user_data_context_dict(request, user_id, "Recipe", Recipe),
+        )
     
 
 
@@ -378,7 +354,7 @@ def saved_recipes(request, user_id):
 
     # user deleting their bookmarked recipe
     if request.method == "POST":
-        delete_user_data(request, SavedRecipes)
+        return delete_user_data(request, SavedRecipes)
     else:
         return render(
             request,
@@ -392,25 +368,14 @@ def saved_recipes(request, user_id):
 def user_reviews(request, user_id):
 
     # user is deleting their review
-    if request.GET.get("request", False):
-
-        review_id = request.GET.get("dataId")
-        review = Review.objects.get(id=review_id)
-        review.delete()
-
-        # check that we successfully deleted the object
-        try:
-            Review.objects.get(id=review_id)
-        except Review.DoesNotExist:
-            return HttpResponse("success")
-
-        return HttpResponse("fail")
-
-    return render(
-        request,
-        "pantry/user-data.html",
-        context=get_user_data_context_dict(request, user_id, "Reviewed Recipe", Review),
-    )
+    if request.method == "POST":
+        return delete_user_data(request, Review)
+    else:
+        return render(
+            request,
+            "pantry/user-data.html",
+            context=get_user_data_context_dict(request, user_id, "Reviewed Recipe", Review),
+        )
 
 
 @login_required

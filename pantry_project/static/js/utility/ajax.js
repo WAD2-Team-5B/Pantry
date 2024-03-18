@@ -10,10 +10,8 @@ export class PantryAPI {
     $.post("", {data:data, csrfmiddlewaretoken: csrfToken}, function (response) {
       if (response == "success") {
         btn.parentElement.remove();
-        return true;
       } else if (response == "fail"){
         alert("error deleting please try again");
-        return false;
       }
     });
   }

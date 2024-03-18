@@ -7,10 +7,6 @@ import { PantryAPI } from "../utility/ajax.js";
 
 let selectedSortBy = [];
 
-// find what page we are on
-let locationArr = window.location.href.split("/");
-const pageName = locationArr[locationArr.length - 2];
-
 // ------------------------------
 // INIT
 // ------------------------------
