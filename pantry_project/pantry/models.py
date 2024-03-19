@@ -48,13 +48,6 @@ class Recipe(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        # every time an instance of the model is saved to the DB we recalculate the avg star rating
-        if self.star_submissions != 0:
-            # Calculate average star rating
-            self.rating = round(self.star_count / self.star_submissions, 2)
-        else:
-            self.rating = 0
-
         super().save(*args, **kwargs)
 
     def __str__(self):
