@@ -299,8 +299,6 @@ class TestRecipe(TestCase):
                 "prep": "0:15",
                 "cook": "0:10",
                 "difficulty": "intermediate",
-                "star_count": 25,
-                "star_submissions": 6,
             }
         )
         response = self.client.get(
@@ -411,8 +409,6 @@ class TestCreateARecipe(TestCase):
                 "prep": "0:20",
                 "cook": "0:20",
                 "difficulty": "intermediate",
-                "star_count": 32,
-                "star_submissions": 9,
             },
         )
 
@@ -550,8 +546,6 @@ class TestIndex(TestCase):
                 "prep": "0:15",
                 "cook": "0:10",
                 "difficulty": "intermediate",
-                "star_count": 25,
-                "star_submissions": 6,
             }
         )
         response = self.client.get(reverse("pantry:index"))
