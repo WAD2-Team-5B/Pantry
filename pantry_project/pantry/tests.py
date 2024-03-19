@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.files.images import ImageFile
+from django.db.models import Avg
 from pantry.forms import UserForm
 from pantry.models import UserProfile, Recipe, Cuisine, Category, Review, SavedRecipes
 from pantry.views import SPACER
@@ -551,6 +552,46 @@ class TestIndex(TestCase):
         response = self.client.get(reverse("pantry:index"))
         self.assertContains(response, f'"/pantry/recipes/{recipe.user.id}/{recipe.id}"')
         self.assertContains(response, recipe.title)
+
+    # tests that the number of highest rated recipes is correct
+    def test_highest_rated_recipes_count(self):
+        response = self.client.get(reverse("pantry:index"))
+        expected = min(Recipe.objects.count(), 10)
+        self.assertContains(response, f"{expected} Highest Rated Recipes")
+
+    # tests that the number of newest recipes is correct
+    def test_newest_recipes_count(self):
+        response = self.client.get(reverse("pantry:index"))
+        expected = min(Recipe.objects.count(), 10)
+        self.assertContains(response, f"{expected} Newest Recipes")
+
+    # tests that the highest rated recipes displayed are actually the highest rated recipes
+    def test_highest_rated_recipes(self):
+        response = self.client.get(reverse("pantry:index"))
+
+        recipes = Recipe.objects.annotate(rating=Avg("ratings__value"))
+        highest_rated_recipes = recipes.order_by("-rating", "-pub_date")[:10]
+
+        for recipe in highest_rated_recipes:
+            self.assertContains(response, recipe.title)
+
+    # tests that the newest recipes displayed are actually the newest recipes
+    def test_newest_recipes(self):
+        response = self.client.get(reverse("pantry:index"))
+        newest_recipes = Recipe.objects.all().order_by("-pub_date")[:10]
+
+        for recipe in newest_recipes:
+            self.assertContains(response, recipe.title)
+
+    # tests that the search on the index page redirects to the search page correctly
+    def test_index_search_redirect(self):
+        search_query = "this is the search query"
+        response = self.client.post(
+            reverse("pantry:index"), data={"search_query": search_query}
+        )
+        self.assertRedirects(
+            response, reverse("pantry:recipes") + f"?search_query={search_query}"
+        )
 
 
 class TestAbout(TestCase):
