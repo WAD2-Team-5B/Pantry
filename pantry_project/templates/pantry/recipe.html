@@ -10,6 +10,8 @@
 <script type="text/javascript">
   const csrfToken = "{{ csrf_token }}";
   const recipeId = {{ recipe.id }};
+  const allRatings = JSON.parse("{{ all_ratings|safe }}");
+  var userRating = parseInt("{{user_rating}}")
 </script>
 
 <script type="module" src="{% static 'js/pages/recipe.js' %}"></script>
@@ -63,8 +65,8 @@
   <div class="info">
     <ul>
       <li>
+        <div id="rating-text"></div>
         <img src="{% static 'images/star.svg' %}" />
-        {{ recipe.rating }}
       </li>
       {% if saves == 1 %}
       <li id = "saves" data-save = {{saves}}>{{ saves }} save</li>

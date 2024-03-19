@@ -45,9 +45,6 @@ class Recipe(models.Model):
     prep = models.CharField(max_length=4)
     cook = models.CharField(max_length=4)
     difficulty = models.CharField(max_length=1)
-    rating = models.FloatField(default=0)
-    star_count = models.IntegerField(default=0)
-    star_submissions = models.IntegerField(default=0)
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -112,5 +109,5 @@ class LikedReviews(models.Model):
 
 class StarredRecipes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    value = models.IntegerField()
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="ratings")
+    value = models.IntegerField() 

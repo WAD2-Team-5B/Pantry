@@ -5,8 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
-from django.db.models import Q, Count
-from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q, Count, Avg
 from pantry.models import *
 from pantry.forms import *
 from pantry.helpers import *
@@ -18,14 +17,13 @@ SPACER = "<SPACER>"
 
 def index(request):
     # user is using search bar
-    print("index page")
-    print("make this happen")
     if request.method == "POST":
         search_query = request.POST.get("search_query")
         # send in url parameters with get request
         return redirect(reverse("pantry:recipes") + "?search_query=" + search_query)
 
-    highest_rated_recipes = Recipe.objects.order_by("-rating", "-pub_date")[:10]
+    recipes = Recipe.objects.annotate(rating=Avg("ratings__value"))
+    highest_rated_recipes = recipes.order_by("-rating", "-pub_date")[:10]
     newest_recipes = Recipe.objects.order_by("-pub_date")[:10]
 
     context_dict = {
@@ -83,7 +81,8 @@ def recipes(request):
         )
 
         recipes = recipes.annotate(num_saves=Count("saves"))
-
+        recipes = recipes.annotate(rating=Avg("ratings__value"))
+        
         if sort == "rating":
             recipes = recipes.order_by("-rating")
         elif sort == "reviews":
@@ -123,6 +122,7 @@ def recipes(request):
         search_query_query = Q(title__startswith=search_query)
         recipes = Recipe.objects.filter(search_query_query)
         recipes = recipes.annotate(num_saves=Count("saves"))
+        recipes = recipes.annotate(rating=Avg("ratings__value"))
         context_dict["recipes"] = recipes
         context_dict["search_query"] = search_query
 
@@ -201,7 +201,7 @@ def logout(request):
 def recipe(request, user_id, recipe_id):
 
     recipe = Recipe.objects.get(id=recipe_id)
-    context_dict = {"recipe": recipe}
+    user = request.user
 
     # user is posting a review
     if request.method == "POST":
@@ -211,29 +211,45 @@ def recipe(request, user_id, recipe_id):
             bookmarked = request.POST.get("data[bookmarked]")
 
             if bookmarked == "true":
-                SavedRecipes.objects.get(user=request.user, recipe=recipe).delete()
-                return return_bookmark_success(request, recipe, "success", "fail")
+                SavedRecipes.objects.get(user=user,recipe=recipe).delete()
+                return return_ajax_success(user, recipe, SavedRecipes, "success", "fail")
 
             elif bookmarked == "false":
-                SavedRecipes.objects.create(user=request.user, recipe=recipe).save()
-                return return_bookmark_success(request, recipe, "fail", "success")
+                SavedRecipes.objects.create(user=user,recipe=recipe).save()
+                return return_ajax_success(user, recipe, SavedRecipes, "fail", "success")
+            
+        if "data[rating]" in request.POST:
+            new_rating = request.POST.get("data[rating]")
+            
+            prev_rating = StarredRecipes.objects.filter(user=user,recipe=recipe)
+            
+            # delete if previously rated
+            if prev_rating.exists():
+                prev_rating.delete()
+            
+            # add new rating
+            StarredRecipes.objects.create(user=user,recipe=recipe,value=new_rating)
+            
+            return return_ajax_success(user, recipe, StarredRecipes, "fail", "success")
+            
 
         elif request.POST.get("reason") == "review":
 
             request_review = request.POST.get("review")
 
             review = Review.objects.create(
-                user=request.user, recipe=recipe, review=request_review
+                user=user, recipe=recipe, review=request_review
             )
 
             review.save()
 
+    context_dict = {"recipe": recipe}
+    
     reviews = Review.objects.filter(recipe=recipe)
 
     # ingredients stored as single string with 'SPACER' delimiter
     ingredients = recipe.ingredients.split(SPACER)
 
-    user = request.user
     other_user = User.objects.get(id=user_id)
 
     has_reviewed = has_reviewed_helper(request.user, recipe)
@@ -248,7 +264,14 @@ def recipe(request, user_id, recipe_id):
         liked_reviews = LikedReviews.objects.filter(user=user, review__recipe=recipe)
         liked_review_ids = list(liked_reviews.values_list("review__id", flat=True))
         context_dict["liked_reviews"] = liked_review_ids
-
+    # want to do this even if user is not logged in to get 0 value
+    try:
+        user_rating = StarredRecipes.objects.get(user=user, recipe=recipe)
+        context_dict["user_rating"] = user_rating.value
+    except StarredRecipes.DoesNotExist:
+        context_dict["user_rating"] = 0 
+    # make sure not to double count by excluding users rating
+    context_dict["all_ratings"] = list(recipe.ratings.all().exclude(user=user).values_list("value", flat=True))
     context_dict["reviews"] = reviews
     context_dict["ingredients"] = ingredients
     context_dict["steps"] = recipe.steps.split(SPACER)
@@ -473,3 +496,4 @@ def like_review(request):
         review.likes -= 1
     review.save()
     return HttpResponse("success")
+
