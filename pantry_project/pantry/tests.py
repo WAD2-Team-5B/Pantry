@@ -418,20 +418,20 @@ class TestSavedRecipes(TestCase):
         create_users_and_profiles()
         create_cuisines_and_categories()
         create_recipes()
-        create_reviews()
 
         self.user = User.objects.create_user("dave", password="123456")
         self.alt_user = User.objects.get(username="jeval")
 
         self.recipe = Recipe.objects.get(id=1)
 
+    # tests that the saved recipes page is empty when there are no saved reviews
     def test_no_saved_recipes_view(self):
         self.client.force_login(self.user)
 
         response = self.client.get(reverse("pantry:saved-recipes", args=[self.user.id]))
+        self.assertNotContains(response, '<a class="data-card" href="/pantry/recipes/')
 
-        self.assertNotContains(response, 'class="recipe"')
-
+    # tests that the saved recipes page is correct when a user saves a recipe
     def test_save_recipe_view_same_user(self):
         self.client.force_login(self.user)
 
@@ -442,8 +442,13 @@ class TestSavedRecipes(TestCase):
 
         response = self.client.get(reverse("pantry:saved-recipes", args=[self.user.id]))
 
+        self.assertContains(
+            response,
+            f'<a class="data-card" href="/pantry/recipes/{self.recipe.user.id}/{self.recipe.id}',
+        )
         self.assertContains(response, self.recipe.title)
 
+    # tests that the saved recipes page is correct from the perspective of another user
     def test_save_recipe_view_different_user(self):
         self.client.force_login(self.user)
         self.client.post(
@@ -458,6 +463,62 @@ class TestSavedRecipes(TestCase):
         response = self.client.get(reverse("pantry:saved-recipes", args=[self.user.id]))
 
         self.assertContains(response, self.recipe.title)
+
+
+class TestUserReviews(TestCase):
+    def setUp(self):
+        create_users_and_profiles()
+        create_cuisines_and_categories()
+        create_recipes()
+        create_reviews()
+
+        self.user = User.objects.create_user("dave", password="123456")
+        self.alt_user = User.objects.get(username="jeval")
+        self.recipe = Recipe.objects.get(id=1)
+
+    # tests that the user reviews page is empty when the user has no reviews
+    def test_no_user_reviews(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("pantry:user-reviews", args=[self.user.id]))
+
+        self.assertNotContains(response, '<a class="data-card" href="/pantry/recipes')
+
+    # tests that the user reivews page is correct
+    def test_user_reviews_same_user(self):
+        self.client.force_login(self.user)
+
+        review_contents = "hello"
+        review = Review.objects.create(
+            user=self.user, review=review_contents, recipe_id=self.recipe.id
+        )
+
+        response = self.client.get(reverse("pantry:user-reviews", args=[self.user.id]))
+
+        self.assertContains(
+            response,
+            f'<a class="data-card" href="/pantry/recipes/{self.recipe.user.id}/{self.recipe.id}',
+        )
+        self.assertContains(response, review_contents)
+
+    # tests that the user reviews page is correct from the perspective of another user
+    def test_user_reviews_different_user(self):
+        self.client.force_login(self.user)
+
+        review_contents = "hello"
+        Review.objects.create(
+            user=self.user, review=review_contents, recipe_id=self.recipe.id
+        )
+
+        self.client.force_login(self.alt_user)
+
+        response = self.client.get(reverse("pantry:user-reviews", args=[self.user.id]))
+
+        self.assertContains(
+            response,
+            f'<a class="data-card" href="/pantry/recipes/{self.recipe.user.id}/{self.recipe.id}',
+        )
+        self.assertContains(response, review_contents)
 
 
 class TestIndex(TestCase):
