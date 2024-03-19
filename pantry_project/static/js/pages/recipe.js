@@ -18,7 +18,7 @@ function calculateAverageRating() {
       sum += allRatings[i];
   }
 
-  num_ratings = allRatings.length
+  let num_ratings = allRatings.length
   // Calculate the average rating
   if (userRating > 0){
     sum += userRating;
@@ -30,7 +30,9 @@ function calculateAverageRating() {
     averageRating = sum/num_ratings
   }
 
-  return averageRating;
+  const roundedRating = averageRating.toFixed(2);
+
+  return roundedRating;
 }
 
 function setAvgRating(){
@@ -41,6 +43,8 @@ function setAvgRating(){
 function updateStars(index) {
   let stars = document.getElementsByClassName("star");
   userRating = index // userRating already declared
+  const data = {"rating": userRating};
+  PantryAPI.starRecipe(data,csrfToken);
 
   for (let i = 0; i < STARS_AMOUNT; i++) {
     if (i < userRating) {
@@ -117,9 +121,10 @@ function updateReviewLike(likeButtons, index, like) {
 // ------------------------------
 
 // stars
-let stars = document.getElementById("stars");
+
 // want to calculate avg at start and display
 setAvgRating();
+let stars = document.getElementById("stars");
 // if null then user not logged in
 if (stars) {
 
@@ -136,8 +141,8 @@ if (stars) {
     star.className = "star";
 
     star.onclick = () => {
-      setAvgRating();
       updateStars(i + 1);
+      setAvgRating();
     };
 
     stars.appendChild(star);

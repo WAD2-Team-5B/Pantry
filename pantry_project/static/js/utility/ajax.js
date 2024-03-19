@@ -38,5 +38,13 @@ export class PantryAPI {
 
   }
   
-  static starRecipe() {}
+  static starRecipe(data, csrfToken) {
+    $.post("", {data:data, csrfmiddlewaretoken: csrfToken}, function (response) {
+      if (response == "success") {
+        console.log("star success")
+      } else if (response == "fail"){
+        console.log("star fail")
+      }
+    });
+  }
 }
