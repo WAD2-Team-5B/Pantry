@@ -47,9 +47,6 @@ class Recipe(models.Model):
     difficulty = models.CharField(max_length=1)
     pub_date = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return self.title
 
@@ -87,8 +84,10 @@ class Review(models.Model):
 
 
 class SavedRecipes(models.Model):
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="saves")
+
     pub_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -96,11 +95,14 @@ class SavedRecipes(models.Model):
 
 
 class LikedReviews(models.Model):
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
 
 
 class StarredRecipes(models.Model):
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="ratings")
-    value = models.IntegerField() 
+
+    value = models.IntegerField()

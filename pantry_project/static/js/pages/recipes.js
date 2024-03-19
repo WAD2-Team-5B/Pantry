@@ -11,7 +11,7 @@ let selectedCategories = [];
 // arrays for passing by reference
 let selectedDifficulty = [];
 let selectedSortBy = [];
-let searchQuery = "";
+let searchQuery = search_query;
 
 // ------------------------------
 // INIT
@@ -36,8 +36,20 @@ function jquery() {
 }
 
 initButtons(cuisineBtns, selectedCuisines, "btn-cuisine-active", true, jquery);
-initButtons(categoryBtns, selectedCategories, "btn-category-active", true, jquery);
-initButtons(difficultyBtns, selectedDifficulty, "btn-difficulty-active", false, jquery);
+initButtons(
+  categoryBtns,
+  selectedCategories,
+  "btn-category-active",
+  true,
+  jquery
+);
+initButtons(
+  difficultyBtns,
+  selectedDifficulty,
+  "btn-difficulty-active",
+  false,
+  jquery
+);
 initButtons(sortByBtns, selectedSortBy, "btn-sort-by-active", false, jquery);
 
 let searchBar = document.getElementById("search");
