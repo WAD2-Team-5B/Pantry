@@ -6,23 +6,47 @@ import { PantryAPI } from "../utility/ajax.js";
 
 const STARS_AMOUNT = 5;
 
-let rating = 0;
-
 // ------------------------------
 // HELPERS
 // ------------------------------
 
+function calculateAverageRating() {
+  let sum = 0;
+
+  // Calculate the sum of all ratings
+  for (let i = 0; i < allRatings.length; i++) {
+      sum += allRatings[i];
+  }
+
+  num_ratings = allRatings.length
+  // Calculate the average rating
+  if (userRating > 0){
+    sum += userRating;
+    num_ratings += 1;
+  }
+
+  let averageRating = 0;
+  if (num_ratings > 0){
+    averageRating = sum/num_ratings
+  }
+
+  return averageRating;
+}
+
+function setAvgRating(){
+  let avg = calculateAverageRating();
+  document.getElementById("rating-text").innerHTML = avg
+}
+
 function updateStars(index) {
   let stars = document.getElementsByClassName("star");
-
-  rating = index;
+  userRating = index // userRating already declared
 
   for (let i = 0; i < STARS_AMOUNT; i++) {
-    if (i < index) {
+    if (i < userRating) {
       stars[i].style.backgroundImage = "url(../../../static/images/star.svg)";
     } else {
-      stars[i].style.backgroundImage =
-        "url(../../../static/images/star-empty.svg)";
+      stars[i].style.backgroundImage = "url(../../../static/images/star-empty.svg)";
     }
   }
 }
@@ -94,16 +118,25 @@ function updateReviewLike(likeButtons, index, like) {
 
 // stars
 let stars = document.getElementById("stars");
+// want to calculate avg at start and display
+setAvgRating();
 // if null then user not logged in
 if (stars) {
+
   for (let i = 0; i < STARS_AMOUNT; i++) {
     let star = document.createElement("button");
-
+    
     star.id = "star-" + (i + 1);
-    star.style.backgroundImage = "url(../../../static/images/star-empty.svg)";
+    if (i < userRating){ // rating defaults to 0 so no stars then
+      star.style.backgroundImage = "url(../../../static/images/star.svg)";
+    } else{
+      star.style.backgroundImage = "url(../../../static/images/star-empty.svg)";
+    }
+    
     star.className = "star";
 
     star.onclick = () => {
+      setAvgRating();
       updateStars(i + 1);
     };
 

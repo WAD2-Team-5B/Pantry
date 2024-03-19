@@ -22,8 +22,8 @@ def index(request):
         # send in url parameters with get request
         return redirect(reverse("pantry:recipes") + "?search_query=" + search_query)
 
-    Recipe.objects.annotate(rating=Avg("ratings__value"))
-    highest_rated_recipes = Recipe.objects.order_by("-rating", "-pub_date")[:10]
+    recipes = Recipe.objects.annotate(rating=Avg("ratings__value"))
+    highest_rated_recipes = recipes.order_by("-rating", "-pub_date")[:10]
     newest_recipes = Recipe.objects.order_by("-pub_date")[:10]
 
     context_dict = {
@@ -81,9 +81,9 @@ def recipes(request):
         )
 
         recipes = recipes.annotate(num_saves=Count("saves"))
-
+        recipes = recipes.annotate(rating=Avg("ratings__value"))
+        
         if sort == "rating":
-            Recipe.objects.annotate(rating=Avg("ratings__value"))
             recipes = recipes.order_by("-rating")
         elif sort == "reviews":
             # Count() will count number of review objects
@@ -122,6 +122,7 @@ def recipes(request):
         search_query_query = Q(title__startswith=search_query)
         recipes = Recipe.objects.filter(search_query_query)
         recipes = recipes.annotate(num_saves=Count("saves"))
+        recipes = recipes.annotate(rating=Avg("ratings__value"))
         context_dict["recipes"] = recipes
         context_dict["search_query"] = search_query
 
@@ -200,7 +201,6 @@ def logout(request):
 def recipe(request, user_id, recipe_id):
 
     recipe = Recipe.objects.get(id=recipe_id)
-    context_dict = {"recipe": recipe}
     user = request.user
 
     # user is posting a review
@@ -221,7 +221,7 @@ def recipe(request, user_id, recipe_id):
         if "data[rating]" in request.POST:
             new_rating = request.POST.get("data[rating]")
             
-            prev_rating = StarredRecipes.objects.filter(user=user,recipe = recipe)
+            prev_rating = StarredRecipes.objects.filter(user=user,recipe=recipe)
             
             # delete if previously rated
             if prev_rating.exists():
@@ -243,6 +243,8 @@ def recipe(request, user_id, recipe_id):
 
             review.save()
 
+    context_dict = {"recipe": recipe}
+    
     reviews = Review.objects.filter(recipe=recipe)
 
     # ingredients stored as single string with 'SPACER' delimiter
@@ -262,7 +264,14 @@ def recipe(request, user_id, recipe_id):
         liked_reviews = LikedReviews.objects.filter(user=user, review__recipe=recipe)
         liked_review_ids = list(liked_reviews.values_list("review__id", flat=True))
         context_dict["liked_reviews"] = liked_review_ids
-
+    # want to do this even if user is not logged in to get 0 value
+    try:
+        user_rating = StarredRecipes.objects.get(user=user, recipe=recipe)
+        context_dict["user_rating"] = user_rating.value
+    except StarredRecipes.DoesNotExist:
+        context_dict["user_rating"] = 0 
+    # make sure not to double count by excluding users rating
+    context_dict["all_ratings"] = list(recipe.ratings.all().exclude(user=user).values_list("value", flat=True))
     context_dict["reviews"] = reviews
     context_dict["ingredients"] = ingredients
     context_dict["steps"] = recipe.steps.split(SPACER)
