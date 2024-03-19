@@ -377,8 +377,25 @@ class TestRecipe(TestCase):
             }
         )
 
-        self.assertNotEqual(10, StarredRecipes.objects.get(recipe=self.recipe, user=self.reviewing_user).value)
         self.assertFalse(StarredRecipes.objects.filter(recipe=self.recipe, user=self.reviewing_user).exists())
+
+    # tests that a user who already made a star rating cannot change it to a rating more than 5
+    def test_recipe_star_change_limit(self):
+        self.client.force_login(self.reviewing_user)
+        self.client.post(
+            reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id]),
+            data={
+                "data[rating]":"3"
+            }
+        )
+        self.client.post(
+            reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id]),
+            data={
+                "data[rating]":"10"
+            }
+        )
+
+        self.assertEqual(3, StarredRecipes.objects.get(recipe=self.recipe, user=self.reviewing_user).value)
 
 
 class TestRecipes(TestCase):

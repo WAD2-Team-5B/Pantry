@@ -218,8 +218,12 @@ def recipe(request, user_id, recipe_id):
 
         # user is rating
         elif "data[rating]" in request.POST:
-
             new_rating = request.POST.get("data[rating]")
+
+            if int(new_rating) > 5:
+                return HttpResponse("Invalid rating")
+
+
             prev_rating = StarredRecipes.objects.filter(
                 user=request.user, recipe=recipe
             )
