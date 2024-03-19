@@ -57,9 +57,6 @@ def add_recipe(recipe_data):
         prep=recipe_data["prep"],
         cook=recipe_data["cook"],
         difficulty=recipe_data["difficulty"],
-        # in order to calculate rating
-        star_count=recipe_data["star_count"],
-        star_submissions=recipe_data["star_submissions"],
     )
     recipe.categories.set(recipe_data["categories"])
     # save first so generate a recipe id
@@ -213,8 +210,6 @@ def create_recipes():
             "prep": "0:20",
             "cook": "0:20",
             "difficulty": "intermediate",
-            "star_count": 32,
-            "star_submissions": 9,
         },
         {
             "user": User.objects.get(username="andrewM"),
@@ -237,8 +232,6 @@ def create_recipes():
             "prep": "0:30",
             "cook": "0:30",
             "difficulty": "expert",
-            "star_count": 57,
-            "star_submissions": 12,
         },
         {
             "user": User.objects.get(username="andrewH"),
@@ -263,8 +256,6 @@ def create_recipes():
             "prep": "0:25",
             "cook": "0:20",
             "difficulty": "expert",
-            "star_count": 12,
-            "star_submissions": 3,
         },
         {
             "user": User.objects.get(username="nicole"),
@@ -282,8 +273,6 @@ def create_recipes():
             "prep": "0:15",
             "cook": "0:10",
             "difficulty": "intermediate",
-            "star_count": 25,
-            "star_submissions": 6,
         },
         {
             "user": User.objects.get(username="jeval"),
@@ -305,8 +294,6 @@ def create_recipes():
             "prep": "0:40",
             "cook": "0:00",
             "difficulty": "expert",
-            "star_count": 23,
-            "star_submissions": 5,
         },
         {
             "user": User.objects.get(username="layla"),
@@ -328,8 +315,6 @@ def create_recipes():
             "prep": "0:30",
             "cook": "0:20",
             "difficulty": "expert",
-            "star_count": 42,
-            "star_submissions": 9,
         },
     ]
 
