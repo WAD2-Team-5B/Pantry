@@ -781,7 +781,6 @@ class TestProfile(TestCase):
     # tests that the user is redirected after their account is deleted
     def test_edit_profile_delete_account_redirect(self):
         self.client.force_login(self.user)
-        self.client.force_login(self.user)
         response = self.client.post(
             reverse(
                 "pantry:edit-profile",
