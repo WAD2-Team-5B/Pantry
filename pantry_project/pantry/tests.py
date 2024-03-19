@@ -4,7 +4,15 @@ from django.urls import reverse
 from django.core.files.images import ImageFile
 from django.db.models import Avg
 from pantry.forms import UserForm
-from pantry.models import UserProfile, Recipe, Cuisine, Category, Review, SavedRecipes
+from pantry.models import (
+    UserProfile,
+    Recipe,
+    Cuisine,
+    Category,
+    Review,
+    SavedRecipes,
+    StarredRecipes,
+)
 from pantry.views import SPACER
 from population_script import (
     create_cuisines_and_categories,
@@ -308,7 +316,7 @@ class TestRecipe(TestCase):
         self.assertEqual(200, response.status_code)
 
     # tests that a recipe being saved appears on the page
-    def test_save_recipe(self):
+    def test_save_recipe_view(self):
         self.client.force_login(self.reviewing_user)
         self.client.post(
             reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id]),
@@ -328,6 +336,49 @@ class TestRecipe(TestCase):
         )
         saved_recipe = SavedRecipes.objects.filter(user=self.reviewing_user)[0]
         self.assertEqual(saved_recipe.recipe, self.recipe)
+
+    # tests starring a recipe is stored in the database correctly
+    def test_recipe_star(self):
+        self.client.force_login(self.reviewing_user)
+        self.client.post(
+            reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id]),
+            data={
+                "data[rating]":"3"
+            }
+        )
+
+        self.assertEqual(3, StarredRecipes.objects.get(recipe=self.recipe, user=self.reviewing_user).value)
+
+    # tests that a user can change their rating
+    def test_recipe_star_change(self):
+        self.client.force_login(self.reviewing_user)
+        self.client.post(
+            reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id]),
+            data={
+                "data[rating]":"3"
+            }
+        )
+        self.client.post(
+            reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id]),
+            data={
+                "data[rating]":"5"
+            }
+        )
+
+        self.assertEqual(5, StarredRecipes.objects.get(recipe=self.recipe, user=self.reviewing_user).value)
+
+    # tests that a user can only star with a rating up to 5
+    def test_recipe_star_limit(self):
+        self.client.force_login(self.reviewing_user)
+        self.client.post(
+            reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id]),
+            data={
+                "data[rating]":"10"
+            }
+        )
+
+        self.assertNotEqual(10, StarredRecipes.objects.get(recipe=self.recipe, user=self.reviewing_user).value)
+        self.assertFalse(StarredRecipes.objects.exists(recipe=self.recipe, user=self.reviewing_user))
 
 
 class TestRecipes(TestCase):
