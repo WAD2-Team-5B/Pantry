@@ -244,7 +244,7 @@ def recipe(request, user_id, recipe_id):
             context_dict["solid_stars"] = range(1, star_value + 1)
             context_dict["empty_stars"] = range(star_value + 1, 6)
         else:
-            context_dict["empty_stars"] = range(1, 5)
+            context_dict["empty_stars"] = range(1, 6)
 
         liked_reviews = LikedReviews.objects.filter(
             user=request.user, review__recipe=recipe
@@ -260,7 +260,7 @@ def recipe(request, user_id, recipe_id):
     other_user = User.objects.get(id=user_id)
     has_reviewed = has_reviewed_helper(request.user, recipe)
 
-    # needed so to annotate at the end
+    # only annotate at the end
     recipes = Recipe.objects.annotate(
         rating=Avg("ratings__value"), num_saves=Count("saves")
     )
