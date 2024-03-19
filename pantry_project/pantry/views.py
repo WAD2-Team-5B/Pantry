@@ -5,8 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
-from django.db.models import Q, Count
-from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q, Count, Avg
 from pantry.models import *
 from pantry.forms import *
 from pantry.helpers import *
@@ -23,7 +22,7 @@ def index(request):
         # send in url parameters with get request
         return redirect(reverse("pantry:recipes") + "?search_query=" + search_query)
 
-    recipes = Recipe.objects.annotate(rating=Avg("ratings__value"))
+    Recipe.objects.annotate(rating=Avg("ratings__value"))
     highest_rated_recipes = Recipe.objects.order_by("-rating", "-pub_date")[:10]
     newest_recipes = Recipe.objects.order_by("-pub_date")[:10]
 
@@ -84,6 +83,7 @@ def recipes(request):
         recipes = recipes.annotate(num_saves=Count("saves"))
 
         if sort == "rating":
+            Recipe.objects.annotate(rating=Avg("ratings__value"))
             recipes = recipes.order_by("-rating")
         elif sort == "reviews":
             # Count() will count number of review objects
