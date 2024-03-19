@@ -266,7 +266,7 @@ class TestRecipe(TestCase):
         self.assertEqual(before_review.likes, after_review.likes)
 
     # tests that reviews cannot be liked twice
-    """def test_like_review_twice(self):
+    def test_like_review_twice(self):
         self.client.force_login(self.reviewing_user)
 
         before_review = Review.objects.get(id=2)
@@ -283,7 +283,7 @@ class TestRecipe(TestCase):
         after_review = Review.objects.get(id=before_review.id)
 
         # the like count should have only changed by one despite the request being sent twice
-        self.assertEqual(before_review.likes + 1, after_review.likes)"""
+        self.assertEqual(before_review.likes + 1, after_review.likes)
 
     # tests that a newly created recipe is accessible
     def test_new_recipe_view(self):
