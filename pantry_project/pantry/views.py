@@ -23,6 +23,7 @@ def index(request):
         # send in url parameters with get request
         return redirect(reverse("pantry:recipes") + "?search_query=" + search_query)
 
+    recipes = Recipe.objects.annotate(rating=Avg("ratings__value"))
     highest_rated_recipes = Recipe.objects.order_by("-rating", "-pub_date")[:10]
     newest_recipes = Recipe.objects.order_by("-pub_date")[:10]
 
