@@ -63,8 +63,6 @@ def has_reviewed_helper(user, recipe):
 
 def delete_user_data(request, model):
     data_id = request.POST.get('data[dataId]')
-    print(request.POST.get("csrfmiddlewaretoken"))
-    
     stored_data = model.objects.get(id=data_id)
     stored_data.delete()
 
@@ -76,10 +74,10 @@ def delete_user_data(request, model):
 
     return HttpResponse("fail")
 
-def return_bookmark_success(request, recipe, dne_str, no_exception_str):
+def return_ajax_success(user, recipe, model, dne_str, no_exception_str):
     try:
-        SavedRecipes.objects.get(user=request.user, recipe=recipe)
-    except SavedRecipes.DoesNotExist:
+        model.objects.get(user=user, recipe=recipe)
+    except model.DoesNotExist:
         return HttpResponse(dne_str)
 
     return HttpResponse(no_exception_str)
