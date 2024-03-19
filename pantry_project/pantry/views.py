@@ -226,6 +226,7 @@ def recipe(request, user_id, recipe_id):
             # delete if previously rated
             if prev_rating.exists():
                 prev_rating.delete()
+            
             # add new rating
             StarredRecipes.objects.create(
                 user=request.user, recipe=recipe, value=new_rating
@@ -486,7 +487,7 @@ def like_review(request):
     like = request.POST.get("data[like]")
 
     if like == "true":
-        if len(LikedReviews.objects.filter(review=review, user=user))==0: # make sure user has not already liked review
+        if not LikedReviews.objects.filter(review=review, user=user).exists(): # make sure user has not already liked review
             LikedReviews.objects.create(user=user, review=review)
             print("created")
             review.likes += 1

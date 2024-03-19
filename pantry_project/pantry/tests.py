@@ -378,7 +378,7 @@ class TestRecipe(TestCase):
         )
 
         self.assertNotEqual(10, StarredRecipes.objects.get(recipe=self.recipe, user=self.reviewing_user).value)
-        self.assertFalse(StarredRecipes.objects.exists(recipe=self.recipe, user=self.reviewing_user))
+        self.assertFalse(StarredRecipes.objects.filter(recipe=self.recipe, user=self.reviewing_user).exists())
 
 
 class TestRecipes(TestCase):
@@ -776,7 +776,7 @@ class TestProfile(TestCase):
             data={"delete-request": "true"},
         )
 
-        self.assertEqual(0, len(User.objects.filter(id=self.user.id)))
+        self.assertFalse(User.objects.filter(id=self.user.id).exists())
 
     # tests that the user is redirected after their account is deleted
     def test_edit_profile_delete_account_redirect(self):
