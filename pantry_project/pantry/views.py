@@ -265,13 +265,17 @@ def recipe(request, user_id, recipe_id):
         liked_review_ids = list(liked_reviews.values_list("review__id", flat=True))
         context_dict["liked_reviews"] = liked_review_ids
     # want to do this even if user is not logged in to get 0 value
-    try:
-        user_rating = StarredRecipes.objects.get(user=user, recipe=recipe)
-        context_dict["user_rating"] = user_rating.value
-    except StarredRecipes.DoesNotExist:
+        try:
+            user_rating = StarredRecipes.objects.get(user=user, recipe=recipe)
+            context_dict["user_rating"] = user_rating.value
+        except StarredRecipes.DoesNotExist: 
+            context_dict["user_rating"] = 0 
+        # make sure not to double count by excluding users rating
+        context_dict["all_ratings"] = list(recipe.ratings.all().exclude(user=user).values_list("value", flat=True))
+    else:
+        context_dict["all_ratings"] = list(recipe.ratings.all().values_list("value", flat=True))
         context_dict["user_rating"] = 0 
-    # make sure not to double count by excluding users rating
-    context_dict["all_ratings"] = list(recipe.ratings.all().exclude(user=user).values_list("value", flat=True))
+    
     context_dict["reviews"] = reviews
     context_dict["ingredients"] = ingredients
     context_dict["steps"] = recipe.steps.split(SPACER)
