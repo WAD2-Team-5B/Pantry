@@ -174,6 +174,13 @@ class TestRecipe(TestCase):
         # am additional test user must be created, as the population script has users who have already posted reviews
         self.reviewing_user = User.objects.create(username="david", password="123456")
 
+    # tests that recipes can be accessed when users are not logged in
+    def test_recipe_view_anonymous(self):
+        response = self.client.get(
+            reverse(f"pantry:recipe", args=[self.user.id, self.recipe.id])
+        )
+        self.assertTrue(200, response.status_code)
+
     # tests that review form is not present when a user views their own recipe
     def test_review_form_present_own_recipe(self):
         self.client.force_login(self.user)
