@@ -14,7 +14,6 @@ def is_own_profile(user, other_user):
 
 
 def get_page_name(user, other_user, page_string):
-
     own_profile = is_own_profile(user, other_user)
 
     if own_profile:
@@ -26,7 +25,6 @@ def get_page_name(user, other_user, page_string):
 
 
 def get_user_data_context_dict(request, user_id, page_string, model):
-
     user = request.user
     other_user = User.objects.get(id=user_id)
 
@@ -50,7 +48,6 @@ def get_user_data_context_dict(request, user_id, page_string, model):
 
 
 def has_reviewed_helper(user, recipe):
-
     if not user.is_authenticated:
         return False
 
@@ -61,8 +58,9 @@ def has_reviewed_helper(user, recipe):
 
     return False
 
+
 def delete_user_data(request, model):
-    data_id = request.POST.get('data[dataId]')
+    data_id = request.POST.get("data[dataId]")
     stored_data = model.objects.get(id=data_id)
     stored_data.delete()
 
@@ -73,6 +71,7 @@ def delete_user_data(request, model):
         return HttpResponse("success")
 
     return HttpResponse("fail")
+
 
 def return_ajax_success(user, recipe, model, dne_str, no_exception_str):
     try:
