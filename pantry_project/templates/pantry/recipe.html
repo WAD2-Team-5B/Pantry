@@ -7,7 +7,14 @@
 
 <!-- JS -->
 {% block js_block %}
-<script src="{% static 'js/pages/recipe.js' %}"></script>
+<script type="text/javascript">
+  const csrfToken = "{{ csrf_token }}";
+  const recipeId = {{ recipe.id }};
+  const allRatings = JSON.parse("{{ all_ratings|safe }}");
+  var userRating = parseInt("{{user_rating}}")
+</script>
+
+<script type="module" src="{% static 'js/pages/recipe.js' %}"></script>
 {% endblock %}
 
 <!-- TITLE -->
@@ -17,43 +24,66 @@
 {% block main_block %}
 <!-- RECIPE HEADER -->
 <header class="recipe-header">
+  <!-- USERNAME / PUBLISHED DATE -->
   <div class="left-aside">
-    <a class="user" href="">{{ username }}</a>
-    <p>{{ date_pub }}</p>
+    <a class="user" href="{% url 'pantry:user-profile' recipe.user.id %}">
+      {{ recipe.user.username }}
+    </a>
+    <p>{{ recipe.pub_date }}</p>
   </div>
-  <h3>{{ name }}</h3>
+
+  <!-- RECIPE TITLE -->
+  <h3>{{ recipe.title }}</h3>
+
+  <!-- STARS / BOOKMARK -->
   <div class="right-aside">
-    {% if user.is_authenticated %}
+    {% if not my_profile and user.is_authenticated %}
+
     <div id="stars"></div>
-    <button id="bookmark"></button>
+
+    <!-- BOOKMARK -->
+    {% if bookmarked == True %}
+    <button id="bookmark" name="bookmarked" value="true"></button>
+    {% else %}
+    <button id="bookmark" name="bookmarked" value="false"></button>
+    {% endif %}
+    
+
     {% endif %}
   </div>
 </header>
 
 <!-- RECIPE INFO -->
 <div class="recipe-info">
+  <!-- IMAGE / DESCRIPTION -->
   <div class="description">
-    <img src="{{ image }}" />
-    <p>{{ description }}</p>
+    <img src="{{ MEDIA_URL }}{{ recipe.image }}" />
+    <p>{{ recipe.desc }}</p>
   </div>
 
+  <!-- SUB INFO -->
   <div class="info">
     <ul>
       <li>
+        <div id="rating-text"></div>
         <img src="{% static 'images/star.svg' %}" />
-        {{ rating }}
       </li>
-      <li>{{ saves }} saves</li>
-      <li>{{ difficulty }}</li>
-      <li>{{ cuisine }}</li>
-      <li>Prep - {{ prep }}h</li>
-      <li>Cook - {{ cook }}h</li>
+      {% if saves == 1 %}
+      <li id = "saves" data-save = {{saves}}>{{ saves }} save</li>
+      {% else %}
+      <li id = "saves" data-save = {{saves}}>{{ saves }} saves</li>
+      {% endif %}
+      <li id="recipe-difficulty">{{ recipe.difficulty }}</li>
+      <li>{{ recipe.cuisine }}</li>
+      <li>Prep - {{ recipe.prep }}h</li>
+      <li>Cook - {{ recipe.cook }}h</li>
     </ul>
   </div>
 </div>
 
 <!-- RECIPE FACTS -->
 <div class="recipe-facts">
+  <!-- STEPS -->
   <div class="steps">
     <h5>Steps</h5>
     <ul>
@@ -63,6 +93,7 @@
     </ul>
   </div>
 
+  <!-- INGREDIENTS -->
   <div class="ingredients">
     <h5>Ingredients</h5>
     <ul>
@@ -72,11 +103,12 @@
     </ul>
   </div>
 
+  <!-- CATEGORIES -->
   <div class="categories">
     <h5>Categories</h5>
     <ul>
-      {% for category in categories %}
-      <li>{{ category }}</li>
+      {% for category in recipe.categories.all %}
+      <li>{{ category.type }}</li>
       {% endfor %}
     </ul>
   </div>
@@ -85,26 +117,49 @@
 <!-- REVIEWS -->
 <h3 id="review-header">Reviews</h3>
 
-{% if user.is_authenticated %}
-<div class="user-review">
-  <textarea id="review" placeholder="I love this recipe..."></textarea>
+<!-- POST REVIEW -->
+{% if user.is_authenticated and not my_profile and not has_reviewed %}
+<form
+  role="form"
+  id="post-review-form"
+  method="post"
+  enctype="multipart/form-data"
+  action="{% url 'pantry:recipe' recipe.user.id recipe.id %}"
+>
+  {% csrf_token %}
+  <input type="hidden" name="reason" value="review" />
+  <textarea
+    id="review"
+    placeholder="I love this recipe..."
+    name="review"
+  ></textarea>
   <div class="user-review-submit-container">
-    <button id="user-review-submit">post</button>
+    <input type="submit" id="user-review-submit" value="post" />
   </div>
-</div>
-{% endif %} 
+</form>
+{% endif %}
 
+<!-- REVIEW LIST -->
+<div id="review-url" data-url="{% url 'pantry:like-review' %}"></div>
 {% for review in reviews %}
 <div class="review">
   <div class="review-aside">
+    <!-- USERNAME / PUBLISHED DATE -->
     <div>
-      <a class="user" href="">{{ review.username }}</a>
-      <p>{{ review.date_pub }}</p>
+      <a class="user" href="{% url 'pantry:user-profile' review.user.id %}">
+        {{ review.user.username }}
+      </a>
+      <p>{{ review.pub_date }}</p>
     </div>
 
+    <!-- RATING -->
     <div class="review-rating">
       {% if user.is_authenticated %}
-      <button class="review-heart"></button>
+        {% if review.id in liked_reviews %}
+          <button class="review-heart" value="{{ review.id }}" data-liked="true"></button>
+        {% else %}
+          <button class="review-heart" value="{{ review.id }}" data-liked="false"></button>
+        {% endif %}
       {% else %}
       <img
         class="review-heart-image"
@@ -114,6 +169,12 @@
       <p class="review-likes">{{ review.likes }}</p>
     </div>
   </div>
+
+  <!-- REVIEW TEXT -->
   <p class="review-text">{{ review.review }}</p>
 </div>
-{% endfor %} {% endblock %}
+{% endfor %} 
+
+{% endblock %}
+
+

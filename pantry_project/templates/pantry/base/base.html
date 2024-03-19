@@ -4,6 +4,8 @@
 
 <html lang="en">
   <head>
+
+    <!-- META -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
@@ -15,6 +17,9 @@
       content="Andrew Holligan, Nicole Sung, Jeval Halton, Andrew McGill, Andrew Shaw, Layla Clark"
     />
 
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+
+    <!-- TAB -->
     <title>Pantry - {% block title_block %}{% endblock %}</title>
 
     <!-- CSS -->
@@ -22,52 +27,68 @@
     <link rel="stylesheet" href="{% static 'css/base/header.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base/nav.css' %}" />
     {% block css_block %}{% endblock %}
+
   </head>
 
   <body>
     <!-- HEADER -->
     <header class="header-logo">
+
+      <!-- LOGO / HEADING -->
       <div class="logo">
         <img src="{% static 'images/pantry-logo.png' %}" alt="Pantry Logo" />
         <div class="spacer"></div>
         <h1>Pantry</h1>
       </div>
+
+      <!-- SLOGAN -->
       <div class="slogan">
         <em>"designed by food lovers, for food lovers"</em>
       </div>
+
     </header>
 
     <!-- NAVBAR -->
     <nav class="navbar">
+
+      <!-- GENERAL LINKS -->
       <div class="general">
+
+        <!-- HOME PAGE -->
         <a href="{% url 'pantry:index' %}">
           <img src="{% static 'images/navbar-home.svg' %}" />
           Home
         </a>
 
+        <!-- ABOUT PAGE -->
         <a href="{% url 'pantry:about' %}">
           <img src="{% static 'images/navbar-about.svg' %}" />
           About
         </a>
 
+        <!-- RECIPES PAGE -->
         <a href="{% url 'pantry:recipes' %}">
           <img src="{% static 'images/navbar-recipes.svg' %}" />
           Recipes
         </a>
+
       </div>
 
       <div class="vertical-spacer"></div>
 
+      <!-- USER LINKS -->
       <div class="user">
         {% if user.is_authenticated %}
-        <a href="{% url 'pantry:user-profile' %}">
+
+        <!-- MY PROFILE PAGE -->
+        <a href="{% url 'pantry:user-profile' user.id %}">
           <img src="{% static 'images/navbar-profile.svg' %}" />
           {{ user.username }}
-          <!--Profile-->
         </a>
 
         <div class="spacer"></div>
 
+        <!-- LOGOUT PAGE -->
         <a href="{% url 'pantry:logout' %}">
           <img src="{% static 'images/navbar-logout.svg' %}" />
           Logout
@@ -75,6 +96,7 @@
 
         {% else %}
 
+        <!-- SIGNUP PAGE -->
         <a href="{% url 'pantry:signup' %}">
           <img src="{% static 'images/navbar-signup.svg' %}" />
           Sign Up
@@ -82,17 +104,23 @@
 
         <div class="spacer"></div>
 
+        <!-- LOGIN PAGE -->
         <a href="{% url 'pantry:login' %}">
           <img src="{% static 'images/navbar-login.svg' %}" />
           Login
         </a>
+
         {% endif %}
       </div>
     </nav>
 
+    <!-- MAIN -->
     {% block main_block %}{% endblock %}
 
     <!-- JS -->
-    {% block js_block %}{% endblock %}
+    <!-- IMPORT JQUERY -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    {% block js_block %}
+    {% endblock %}
   </body>
 </html>

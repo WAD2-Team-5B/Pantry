@@ -15,6 +15,7 @@
 
 <!-- CONTENT -->
 {% block main_block %}
+<!-- HEADER -->
 <h3>Create A Recipe</h3>
 
 <form
@@ -24,9 +25,12 @@
   enctype="multipart/form-data"
   action="{% url 'pantry:create-a-recipe' %}"
 >
+
   {% csrf_token %}
+
   <!-- LEFT COLUMN -->
   <div class="left-container">
+
     <!-- DIFFICULTY -->
     <div class="container-difficulty">
       <button id="btn-beginner" class="btn-difficulty" value="beginner">
@@ -46,7 +50,6 @@
         <input type="text" id="ingredient" placeholder="ingredient" />
         <button id="btn-add-ingredient">add</button>
       </div>
-
       <div id="ingredients-list"></div>
     </div>
 
@@ -65,27 +68,32 @@
       </button>
       {% endfor %}
     </div>
+
   </div>
 
   <!-- RIGHT COLUMN -->
   <div class="right-container">
+
     <!-- INFO -->
     <div class="container-info">
+      <!-- TITLE -->
       <input
         type="text"
         id="recipe-name"
         name="name"
         placeholder="recipe name"
       />
+      <!-- PREP / COOK -->
       <input type="text" id="recipe-prep" name="prep" placeholder="prep" />
       <input type="text" id="recipe-cook" name="cook" placeholder="cook" />
     </div>
 
+    <!-- IMAGE UPLOAD -->
     <div class="container-upload-image">
-      <input type="file" id="recipe-image" name="image" />
+      <input type="file" id="recipe-image" name="image" accept="image/*"/>
     </div>
 
-    <!-- DESCRIPTION -->
+    <!-- DESCRIPTION / IMAGE PREVIEW -->
     <div class="container-description">
       <img id="recipe-image-preview" src="" />
       <textarea
@@ -102,15 +110,18 @@
     <div class="container-submit">
       <input type="submit" id="submit" value="create" />
     </div>
+
   </div>
 
   <!-- HIDDEN SUBMISSIONS -->
   <input type="hidden" id="ingredients" name="ingredients" />
   <input type="hidden" id="difficulty" name="difficulty" />
   <input type="hidden" id="steps" name="steps" />
-  <input type="hidden" id="cuisines" name="cuisine" />
+  <input type="hidden" id="cuisine" name="cuisine" />
   <input type="hidden" id="categories" name="categories" />
+
 </form>
 
+<!-- ERROR MESSAGE -->
 <h5 id="error-message"></h5>
 {% endblock %}

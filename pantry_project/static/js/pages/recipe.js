@@ -2,64 +2,118 @@
 // GLOBALS
 // ------------------------------
 
-const STARS_AMOUNT = 5;
+import { PantryAPI } from "../utility/ajax.js";
 
-let rating = 0;
-let bookmarked = false;
-let likedReviews = [];
+const STARS_AMOUNT = 5;
 
 // ------------------------------
 // HELPERS
 // ------------------------------
 
+function calculateAverageRating() {
+  let sum = 0;
+
+  // Calculate the sum of all ratings
+  for (let i = 0; i < allRatings.length; i++) {
+      sum += allRatings[i];
+  }
+
+  let num_ratings = allRatings.length
+  // Calculate the average rating
+  if (userRating > 0){
+    sum += userRating;
+    num_ratings += 1;
+  }
+
+  let averageRating = 0;
+  if (num_ratings > 0){
+    averageRating = sum/num_ratings
+  }
+
+  const roundedRating = averageRating.toFixed(2);
+
+  return roundedRating;
+}
+
+function setAvgRating(){
+  let avg = calculateAverageRating();
+  document.getElementById("rating-text").innerHTML = avg
+}
+
 function updateStars(index) {
   let stars = document.getElementsByClassName("star");
-
-  rating = index;
+  userRating = index // userRating already declared
+  const data = {"rating": userRating};
+  PantryAPI.starRecipe(data,csrfToken);
 
   for (let i = 0; i < STARS_AMOUNT; i++) {
-    if (i < index) {
-      stars[i].style.backgroundImage = "url(../../static/images/star.svg)";
+    if (i < userRating) {
+      stars[i].style.backgroundImage = "url(../../../static/images/star.svg)";
     } else {
-      stars[i].style.backgroundImage =
-        "url(../../static/images/star-empty.svg)";
+      stars[i].style.backgroundImage = "url(../../../static/images/star-empty.svg)";
     }
   }
 }
 
 function updateBookmark() {
   let bookmark = document.getElementById("bookmark");
-
+  let bookmarked = bookmark.value;
+  const data = {"bookmarked": bookmarked};
+  PantryAPI.bookmark(data,csrfToken);
   // user deselecting bookmark
-  if (bookmarked) {
-    bookmarked = false;
-    bookmark.style.backgroundImage =
-      "url(../../static/images/bookmark-empty.svg)";
-    return;
-  }
-
+  if (bookmarked === "true") {
+    bookmark.setAttribute("value", "false");
+    bookmark.style.backgroundImage = "url(../../../static/images/bookmark-empty.svg)"; 
+    updateSaves(false);
+  } else if (bookmarked === "false") {
   // user selecting bookmark
-  bookmarked = true;
-  bookmark.style.backgroundImage = "url(../../static/images/bookmark.svg)";
+    bookmark.setAttribute("value", "true");
+    bookmark.style.backgroundImage = "url(../../../static/images/bookmark.svg)";
+    updateSaves(true);
+  }
 }
 
-function updateReviewLike(likeButtons, index) {
-  let likeTexts = document.getElementsByClassName("review-likes");
+function updateSaves(increment) {
+  let saves = document.getElementById("saves");
+  let value = parseInt(saves.getAttribute("data-save"));
 
-  // user deselecting like
-  if (likedReviews.includes(index)) {
-    likeButtons[index].style.backgroundImage =
-      "url(../../static/images/heart-empty.svg)";
-    likeTexts[index].innerText = parseInt(likeTexts[index].innerText) - 1;
-    likedReviews.splice(likedReviews.indexOf(index), 1);
-    return;
+  if (increment) {
+    value += 1;
+  } else {
+    value -= 1;
   }
 
-  // user is selecting like
-  likeButtons[index].style.backgroundImage =
-    "url(../../static/images/heart.svg)";
-  likeTexts[index].innerText = parseInt(likeTexts[index].innerText) + 1;
-  likedReviews.push(index);
+  saves.setAttribute("data-save", value);
+
+  let ending = (value === 1) ? "" : "s";
+  saves.innerHTML = value + " save" + ending;
+}
+
+function updateReviewLike(likeButtons, index, like) {
+  let likeTexts = document.getElementsByClassName("review-likes");
+  let url = document.getElementById("review-url").getAttribute("data-url");
+  let prevLikeStatus = likeButtons[index].getAttribute("data-liked");
+  let reviewId = likeButtons[index].value;
+  const data = {
+    reviewId: reviewId
+  }
+  // user deselecting like
+  if (prevLikeStatus === "true") {
+    likeButtons[index].style.backgroundImage = "url(../../../static/images/heart-empty.svg)";
+    likeButtons[index].setAttribute("data-liked","false")
+    data["like"] = false
+    likeTexts[index].innerText = parseInt(likeTexts[index].innerText) - 1;
+  } else if (prevLikeStatus === "false"){
+    // user is selecting like
+    likeButtons[index].style.backgroundImage = "url(../../../static/images/heart.svg)";
+    likeButtons[index].setAttribute("data-liked","true")
+    data["like"] = true
+    likeTexts[index].innerText = parseInt(likeTexts[index].innerText) + 1;
+  } 
+
+  PantryAPI.likeReview(data, url, csrfToken);
+
+ 
 }
 
 // ------------------------------
@@ -67,18 +121,28 @@ function updateReviewLike(likeButtons, index) {
 // ------------------------------
 
 // stars
+
+// want to calculate avg at start and display
+setAvgRating();
 let stars = document.getElementById("stars");
 // if null then user not logged in
 if (stars) {
+
   for (let i = 0; i < STARS_AMOUNT; i++) {
     let star = document.createElement("button");
-
+    
     star.id = "star-" + (i + 1);
-    star.style.backgroundImage = "url(../../static/images/star-empty.svg)";
+    if (i < userRating){ // rating defaults to 0 so no stars then
+      star.style.backgroundImage = "url(../../../static/images/star.svg)";
+    } else{
+      star.style.backgroundImage = "url(../../../static/images/star-empty.svg)";
+    }
+    
     star.className = "star";
 
     star.onclick = () => {
       updateStars(i + 1);
+      setAvgRating();
     };
 
     stars.appendChild(star);
@@ -89,8 +153,13 @@ if (stars) {
 let bookmark = document.getElementById("bookmark");
 // if null then user not logged in
 if (bookmark) {
-  bookmark.style.backgroundImage =
-    "url(../../static/images/bookmark-empty.svg)";
+  let bookmarked = bookmark.value
+  // set up background image
+  if (bookmarked === "true"){
+    bookmark.style.backgroundImage = "url(../../../static/images/bookmark.svg)";
+  } else if (bookmarked === "false") {
+    bookmark.style.backgroundImage = "url(../../../static/images/bookmark-empty.svg)";
+  }
   bookmark.onclick = () => {
     updateBookmark();
   };
@@ -99,9 +168,14 @@ if (bookmark) {
 // review likes
 let likeButtons = document.getElementsByClassName("review-heart");
 for (let i = 0; i < likeButtons.length; i++) {
-  likeButtons[i].style.backgroundImage =
-    "url(../../static/images/heart-empty.svg)";
+  let liked = likeButtons[i].getAttribute("data-liked");
 
+  if (liked === "true"){
+    likeButtons[i].style.backgroundImage = "url(../../../static/images/heart.svg)";
+  } else if (liked === "false"){
+    likeButtons[i].style.backgroundImage ="url(../../../static/images/heart-empty.svg)";
+  } 
+ 
   likeButtons[i].onclick = () => {
     updateReviewLike(likeButtons, i);
   };

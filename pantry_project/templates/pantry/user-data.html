@@ -6,16 +6,22 @@
 {% endblock %}
 
 <!-- JS -->
-{% block js_block %} {% endblock %}
+{% block js_block %}
+<script type="text/javascript">
+  const csrfToken = "{{ csrf_token }}";
+</script>
+<script type="module" src="{% static 'js/pages/user-data.js' %}"></script>
+{% endblock %}
 
 <!-- TITLE -->
 {% block title_block %} {{ page_name }} {% endblock %}
 
 <!-- CONTENT -->
 {% block main_block %}
+<!-- HEADER -->
 <h3>{{ page_name }}</h3>
 
-{% if own_profile %}
+<!-- SORT BUTTONS -->
 <div class="container">
   <div class="container-sort-by">
     <h5>Sort By</h5>
@@ -25,26 +31,47 @@
     </div>
   </div>
 </div>
-{% endif %}
+
 
 <!-- MY RECIPES / MY SAVED RECIPES / MY REVIEWS -->
 <ul id="data-list">
+
   {% for data in user_data %}
-  <li>
-    <a class="recipe-card" href="{{ data.link }}">
-      <h5>{{ data.name }}</h5>
-      {% if is_reviews_page %}
+  {% comment %} gets date ISO 8601 format so js can cast to date obj {% endcomment %}
+  <li data-date = "{{data.pub_date|date:"c"}}">
+    {% if is_reviews_page %}
+
+    <a class="data-card" href="{% url 'pantry:recipe' data.user.id data.recipe.id %}">
+      <!-- reviews page 'data' will be given as Review Model -->
+      <h5>{{ data.recipe.title }}</h5>
       <p>{{ data.review }}</p>
-      {% else %}
-      <img src="{{ data.image }}" />
-      {% endif %}
     </a>
 
-    {% if own_profile %}
-    <button class="btn-remove">remove</button>
+    {% elif is_saved_recipes_page %}
+
+    <a class="data-card" href="{% url 'pantry:recipe' data.recipe.user.id data.recipe.id %}">
+      <!-- saved recipes page 'data' will be given as SavedRecipes model -->
+      <h5>{{ data.recipe.title }}</h5>
+      <img src="{{ MEDIA_URL }}{{ data.recipe.image }}" />
+    </a>
+
+    {% else %}
+
+    <a class="data-card" href="{% url 'pantry:recipe' data.user.id data.id %}">
+      <!-- user recipes page 'data' will be given as Recipe Model -->
+      <h5>{{ data.title }}</h5>
+      <img src="{{ MEDIA_URL }}{{ data.image }}" />
+    </a>
+
     {% endif %}
+
+    <!-- REMOVE BUTTON -->
+    {% if own_profile %}
+    <button class="btn-remove" value="{{ data.id }}">remove</button>
+    {% endif %}
+    
   </li>
   {% endfor %}
-</ul>
 
+</ul>
 {% endblock %}
