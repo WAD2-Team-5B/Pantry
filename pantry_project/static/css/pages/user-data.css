@@ -74,11 +74,12 @@ h5 {
 #data-list {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   flex-wrap: wrap;
 
   width: 75%;
-  gap: 1rem;
+  /* (total width - 3 data cards widths [number of columns]) / number of spaces */
+  column-gap: calc((100% - 633.6px) / 2);
+  row-gap: 2rem;
 
   margin-bottom: 2rem;
 }
@@ -123,11 +124,9 @@ h5 {
 /* if review */
 
 .data-card p {
-  max-height: 8rem;
-  width: 15rem;
+  height: 7.5rem;
+  width: 13.2rem;
 
-  margin-inline: 1rem;
-  margin-bottom: 1rem;
   padding: 0.5rem;
 
   border-radius: 1rem;
@@ -160,6 +159,12 @@ h5 {
 
 /* WINDOW WIDTH CHANGE */
 
+@media (max-width: 56rem) {
+  #data-list {
+    column-gap: calc(100% - 422.4px);
+  }
+}
+
 @media (max-width: 50rem) {
   .container {
     align-items: center;
@@ -174,14 +179,10 @@ h5 {
     width: 20rem;
   }
 
-  .data-card img {
+  .data-card img,
+  .data-card p {
     /* scaled (roughly) */
     height: 11.35rem;
     width: 20rem;
-  }
-
-  .data-card p {
-    width: 18rem;
-    max-height: 9rem;
   }
 }

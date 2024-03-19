@@ -65,13 +65,13 @@
   <div class="info">
     <ul>
       <li>
-        <div id="rating-text"></div>
         <img src="{% static 'images/star.svg' %}" />
+        <div id="rating-text"></div>
       </li>
       {% if saves == 1 %}
-      <li id = "saves" data-save = {{saves}}>{{ saves }} save</li>
+      <li id="saves" data-save={{saves}}>{{ saves }} save</li>
       {% else %}
-      <li id = "saves" data-save = {{saves}}>{{ saves }} saves</li>
+      <li id="saves" data-save={{saves}}>{{ saves }} saves</li>
       {% endif %}
       <li id="recipe-difficulty">{{ recipe.difficulty }}</li>
       <li>{{ recipe.cuisine }}</li>
