@@ -78,6 +78,7 @@ h5 {
   flex-wrap: wrap;
 
   width: 75%;
+  /* (total width - 3 data cards widths [number of columns]) / number of spaces */
   column-gap: calc((100% - 633.6px) / 2);
   row-gap: 1rem;
   /* gap: 1rem; */
