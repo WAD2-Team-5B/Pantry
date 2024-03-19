@@ -18,8 +18,6 @@ SPACER = "<SPACER>"
 
 def index(request):
     # user is using search bar
-    print("index page")
-    print("make this happen")
     if request.method == "POST":
         search_query = request.POST.get("search_query")
         # send in url parameters with get request
