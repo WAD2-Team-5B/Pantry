@@ -82,9 +82,10 @@ def recipes(request):
             search_query_query & difficulty_query & cuisine_query & category_query
         ).annotate(num_saves=Count("saves", distinct=True))
 
+        recipes = recipes.annotate(rating=Avg("ratings__value"))
+
         # apply sort
         if sort == "rating":
-            recipes = recipes.annotate(rating=Avg("ratings__value"))
             recipes = recipes.order_by("-rating")
         elif sort == "reviews":
             recipes = recipes.annotate(num_reviews=Count("reviews", distinct=True))
@@ -111,6 +112,7 @@ def recipes(request):
         recipes = Recipe.objects.filter(search_query_query).annotate(
             num_saves=Count("saves", distinct=True)
         )
+        recipes = recipes.annotate(rating=Avg("ratings__value"))
         context_dict["recipes"] = recipes
         context_dict["search_query"] = search_query
 
