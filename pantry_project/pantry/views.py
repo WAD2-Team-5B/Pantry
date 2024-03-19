@@ -486,17 +486,14 @@ def like_review(request):
     like = request.POST.get("data[like]")
 
     if like == "true":
-        LikedReviews.objects.create(user=user, review=review)
-        print("created")
+        if len(LikedReviews.objects.filter(review=review, user=user))==0: # make sure user has not already liked review
+            LikedReviews.objects.create(user=user, review=review)
+            print("created")
+            review.likes += 1
     else:
         liked_review = LikedReviews.objects.get(review=review, user=user)
         liked_review.delete()
         print("deleted")
-
-    # check if like or unlike
-    if like == "true":
-        review.likes += 1
-    else:
         review.likes -= 1
 
     review.save()
