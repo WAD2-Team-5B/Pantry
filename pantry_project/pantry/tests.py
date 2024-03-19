@@ -413,6 +413,53 @@ class TestCreateARecipe(TestCase):
         self.assertEqual(created_recipe.user, self.user)
 
 
+class TestSavedRecipes(TestCase):
+    def setUp(self):
+        create_users_and_profiles()
+        create_cuisines_and_categories()
+        create_recipes()
+        create_reviews()
+
+        self.user = User.objects.create_user("dave", password="123456")
+        self.alt_user = User.objects.get(username="jeval")
+
+        self.recipe = Recipe.objects.get(id=1)
+
+    def test_no_saved_recipes_view(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("pantry:saved-recipes", args=[self.user.id]))
+
+        self.assertNotContains(response, 'class="recipe"')
+
+    def test_save_recipe_view_same_user(self):
+        self.client.force_login(self.user)
+
+        self.client.post(
+            reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id]),
+            data={"data[bookmarked]": "false"},
+        )
+
+        response = self.client.get(reverse("pantry:saved-recipes", args=[self.user.id]))
+
+        self.assertContains(response, self.recipe.title)
+
+    def test_save_recipe_view_different_user(self):
+        self.client.force_login(self.user)
+        self.client.post(
+            reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id]),
+            data={"data[bookmarked]": "false"},
+        )
+
+        self.client.force_login(
+            self.alt_user
+        )  # log in as a different user to the one who saved the recipe
+
+        response = self.client.get(reverse("pantry:saved-recipes", args=[self.user.id]))
+
+        self.assertContains(response, self.recipe.title)
+
+
 class TestIndex(TestCase):
     def setUp(self):
         create_users_and_profiles()
