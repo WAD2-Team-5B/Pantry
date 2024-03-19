@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.files.images import ImageFile
 from pantry.forms import UserForm
-from pantry.models import UserProfile, Recipe, Cuisine, Category, Review
+from pantry.models import UserProfile, Recipe, Cuisine, Category, Review, SavedRecipes
 from pantry.views import SPACER
 from population_script import (
     create_cuisines_and_categories,
@@ -222,6 +222,61 @@ class TestRecipe(TestCase):
 
         self.assertContains(response, contents)
 
+    # tests that the like count is updated in the database when a review is liked
+    def test_like_review(self):
+        self.client.force_login(self.reviewing_user)
+
+        before_review = Review.objects.get(id=2)
+
+        self.client.post(
+            reverse("pantry:like-review"),
+            data={"data[reviewId]": before_review.id, "data[like]": "true"},
+        )
+
+        after_review = Review.objects.get(id=before_review.id)
+
+        self.assertEqual(before_review.likes + 1, after_review.likes)
+
+    # tests that a like can be taken back
+    def test_unlike_review(self):
+        self.client.force_login(self.reviewing_user)
+
+        before_review = Review.objects.get(id=2)
+
+        self.client.post(
+            reverse("pantry:like-review"),
+            data={"data[reviewId]": before_review.id, "data[like]": "true"},
+        )
+
+        self.client.post(
+            reverse("pantry:like-review"),
+            data={"data[reviewId]": before_review.id, "data[like]": "false"},
+        )
+
+        after_review = Review.objects.get(id=before_review.id)
+
+        self.assertEqual(before_review.likes, after_review.likes)
+
+    # tests that reviews cannot be liked twice
+    """def test_like_review_twice(self):
+        self.client.force_login(self.reviewing_user)
+
+        before_review = Review.objects.get(id=2)
+
+        self.client.post(
+            reverse("pantry:like-review"),
+            data={"data[reviewId]": before_review.id, "data[like]": "true"},
+        )
+        self.client.post(
+            reverse("pantry:like-review"),
+            data={"data[reviewId]": before_review.id, "data[like]": "true"},
+        )
+
+        after_review = Review.objects.get(id=before_review.id)
+
+        # the like count should have only changed by one despite the request being sent twice
+        self.assertEqual(before_review.likes + 1, after_review.likes)"""
+
     # tests that a newly created recipe is accessible
     def test_new_recipe_view(self):
         recipe = add_recipe(
@@ -242,9 +297,31 @@ class TestRecipe(TestCase):
             }
         )
         response = self.client.get(
-            reverse(f"pantry:recipe", args=[self.recipe.user.id, self.recipe.id])
+            reverse("pantry:recipe", args=[recipe.user.id, recipe.id])
         )
         self.assertEqual(200, response.status_code)
+
+    # tests that a recipe being saved appears on the page
+    def test_save_recipe(self):
+        self.client.force_login(self.reviewing_user)
+        self.client.post(
+            reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id]),
+            data={"data[bookmarked]": "false"},
+        )
+        response = self.client.get(
+            reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id])
+        )
+        self.assertContains(response, "1 save")
+
+    # tests that saved recipes are stored in the database correctly
+    def test_saved_recipe_model(self):
+        self.client.force_login(self.reviewing_user)
+        self.client.post(
+            reverse("pantry:recipe", args=[self.recipe.user.id, self.recipe.id]),
+            data={"data[bookmarked]": "false"},
+        )
+        saved_recipe = SavedRecipes.objects.filter(user=self.reviewing_user)[0]
+        self.assertEqual(saved_recipe.recipe, self.recipe)
 
 
 class TestRecipes(TestCase):
