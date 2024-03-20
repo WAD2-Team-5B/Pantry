@@ -4,24 +4,35 @@ import { PantryAPI } from "../utility/ajax.js";
 // ------------------------------
 // GLOBALS
 // ------------------------------
-
-let selectedSortBy = [];
+let dataList = document.getElementById("data-list");
+let sortNewest = document.getElementById("btn-newest");
+let sortOldest = document.getElementById("btn-oldest");
+let currentSelected = sortNewest;
 
 // ------------------------------
 // INIT
 // ------------------------------
 
-// sorting
-let dataList = document.getElementById("data-list");
-let sortNewest = document.getElementById("btn-newest");
-let sortOldest = document.getElementById("btn-oldest")
+function changeSortBtn(clickedBtn){
+  currentSelected.classList.remove('btn-sort-by-active');
+  currentSelected = clickedBtn;
+  currentSelected.classList.add('btn-sort-by-active');
+}
 
-sortNewest.onclick = () => {
-  sortDataList('newest');
-};
+function sortClick (clickedBtn, sortBy){
+  if (currentSelected !== clickedBtn) {
+    sortDataList(sortBy);
+    changeSortBtn(clickedBtn);
+  }
 
-sortOldest.onclick = () => {
-  sortDataList('oldest');
+}
+
+sortNewest.onclick = function(){
+  sortClick(this, "newest");
+}
+
+sortOldest.onclick = function() {
+  sortClick(this, "oldest");
 };
 
 function sortDataList(order) {
@@ -40,25 +51,6 @@ function sortDataList(order) {
   // Append sorted items back to the list
   items.forEach(item => dataList.appendChild(item));
 }
-
-initButtons(
-  [sortNewest, sortOldest],
-  selectedSortBy, // Initially no button selected
-  "btn-sort-by-active", 
-  false, // Allow only single selection
-  () => { // Callback function to handle sorting
-    // Sort only when a button is selected, not deselected
-    if (selectedSortBy.length > 0) {
-      if (selectedSortBy[0] === "newest") {
-        sortDataList('newest');
-      } else if (selectedSortBy[0] === "oldest") {
-        sortDataList('oldest');
-      }
-    }
-  }
-);
-
-
 // delete data
 let btnsRemove = document.getElementsByClassName("btn-remove");
 for (let i = 0; i < btnsRemove.length; i++) {

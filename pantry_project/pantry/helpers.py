@@ -30,7 +30,8 @@ def get_user_data_context_dict(request, user_id, page_string, model):
 
     page_name, own_profile = get_page_name(user, other_user, page_string)
 
-    user_data = model.objects.filter(user=other_user)
+    # pass data in newest first order
+    user_data = model.objects.filter(user=other_user).order_by("-pub_date")
 
     context_dict = {
         "page_name": page_name,
