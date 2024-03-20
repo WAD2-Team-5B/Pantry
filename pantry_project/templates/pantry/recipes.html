@@ -1,4 +1,5 @@
 {% extends 'pantry/base/base.html' %} {% load staticfiles %}
+{% load custom_filters %}
 
 <!-- CSS -->
 {% block css_block %}
@@ -88,7 +89,7 @@
           <li>
             <img src="{% static 'images/star.svg' %}" />
             {% if recipe.rating %}
-            {{ recipe.rating }}
+            {{ recipe.rating|round_num }}
             {% else %}
             0.00
             {% endif %}

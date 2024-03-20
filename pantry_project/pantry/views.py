@@ -5,17 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
-from django.db.models import Q, Count, Avg, DecimalField, IntegerField, Func
-from django.db.models.functions import Cast
+from django.db.models import Q, Count, Avg
 from pantry.models import *
 from pantry.forms import *
 from pantry.helpers import *
 
 SPACER = "<SPACER>"
-
-class Round(Func):
-    function = 'ROUND'
-    template = "%(function)s(%(expressions)s, 2)"
 
 def index(request):
 
@@ -83,7 +78,7 @@ def recipes(request):
             search_query_query & difficulty_query & cuisine_query & category_query
         ).annotate(num_saves=Count("saves", distinct=True))
 
-        recipes = recipes.annotate(rating=Round(Avg("ratings__value")))
+        recipes = recipes.annotate(rating=Avg("ratings__value"))
         
         # apply sort
         if sort == "rating":
@@ -113,7 +108,7 @@ def recipes(request):
         recipes = Recipe.objects.filter(search_query_query).annotate(
             num_saves=Count("saves", distinct=True)
         )
-        recipes = recipes.annotate(rating=Round(Avg("ratings__value")))
+        recipes = recipes.annotate(rating=Avg("ratings__value"))
         context_dict["recipes"] = recipes
         context_dict["search_query"] = search_query
 

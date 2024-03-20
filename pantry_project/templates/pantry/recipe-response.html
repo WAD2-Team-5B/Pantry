@@ -1,5 +1,7 @@
 {% load staticfiles %}
 
+{% load custom_filters %}
+
 {% for recipe in recipes %}
       <a class="recipe" href="{% url 'pantry:recipe' recipe.user.id recipe.id %}">
         <img class="recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" />
@@ -8,7 +10,7 @@
           <li>
             <img src="{% static 'images/star.svg' %}" />
             {% if recipe.rating %}
-            {{ recipe.rating }} 
+            {{ recipe.rating|round_num }} 
             {% else %}
             0.00
             {% endif %}
