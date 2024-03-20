@@ -64,8 +64,8 @@ h3 {
 }
 
 a.recipes {
-  text-decoration: none; /* Removes underline */
-  color: inherit; /* Inherits color from parent */
+  text-decoration: none; 
+  color: inherit; 
 }
 
 .container .text p:not(:first-child),
