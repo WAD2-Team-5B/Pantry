@@ -84,8 +84,12 @@
         placeholder="recipe name"
       />
       <!-- PREP / COOK -->
-      <input type="text" id="recipe-prep" name="prep" placeholder="prep" />
-      <input type="text" id="recipe-cook" name="cook" placeholder="cook" />
+      <div class="container-info-prep-cook">
+        <label class="aside-label" for="recipe-prep">prep</label>
+        <input type="time" id="recipe-prep" name="prep" />
+        <label class="aside-label" for="recipe-prep">cook</label>
+        <input type="time" id="recipe-cook" name="cook" />
+      </div>
     </div>
 
     <!-- IMAGE UPLOAD -->

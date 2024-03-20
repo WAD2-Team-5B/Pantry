@@ -106,9 +106,7 @@ textarea {
 }
 
 #ingredient,
-#recipe-name,
-#recipe-prep,
-#recipe-cook {
+#recipe-name {
   width: calc(100% - 3.5rem);
 
   padding: 0.25rem;
@@ -281,9 +279,28 @@ textarea {
   width: calc(100% - 9rem);
 }
 
+.container-info-prep-cook {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  min-width: 20rem;
+  height: 100%;
+}
+
+.aside-label {
+  color: var(--color-1);
+}
+
 #recipe-prep,
 #recipe-cook {
-  width: 4rem;
+  min-width: 5rem;
+  height: 100%;
+
+  padding-inline: 0.25rem;
+
+  border: 0.1rem solid var(--color-1);
+  border-radius: 0.5rem;
 
   background-color: transparent;
 
@@ -425,6 +442,20 @@ textarea {
 }
 
 /* WINDOW WIDTH CHANGE */
+@media (max-width: 68rem) {
+  #recipe-name {
+    width: 100%;
+  }
+
+  .container-info {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .container-info-prep-cook {
+    margin-top: 0.25rem;
+  }
+}
 
 @media (max-width: 56rem) {
   #create-a-recipe-form {
@@ -434,7 +465,8 @@ textarea {
   }
 
   .left-container > *,
-  .right-container > * {
+  .right-container > *,
+  .container-info-prep-cook {
     margin-top: 1rem;
   }
 

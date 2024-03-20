@@ -130,7 +130,6 @@ def create_users_and_profiles():
         userprofile_object = add_userprofile(
             user_object, user_data["image"], user_data["bio"]
         )
-        print(f"Created User: {user_object.username}\tCreated UserProfile")
 
 
 def create_cuisines_and_categories():
@@ -321,7 +320,6 @@ def create_recipes():
 
     for recipe_data in recipes_data:
         recipe = add_recipe(recipe_data)
-        print(f"{recipe.title} has been created")
 
 
 def create_reviews():
@@ -361,7 +359,6 @@ def create_reviews():
     for review_data in reviews_data:
         add_review(review_data)
         username = review_data["user"]
-        print(f"created reviews by user: {username}")
 
 
 if __name__ == "__main__":
@@ -370,3 +367,4 @@ if __name__ == "__main__":
     create_cuisines_and_categories()
     create_recipes()
     create_reviews()
+    print("finished")

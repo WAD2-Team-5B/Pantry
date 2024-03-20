@@ -41,7 +41,7 @@
   <li data-date = "{{data.pub_date|date:"c"}}">
     {% if is_reviews_page %}
 
-    <a class="data-card" href="{% url 'pantry:recipe' data.user.id data.recipe.id %}">
+    <a class="data-card" href="{% url 'pantry:recipe' data.recipe.user.id data.recipe.id %}">
       <!-- reviews page 'data' will be given as Review Model -->
       <h5>{{ data.recipe.title }}</h5>
       <p>{{ data.review }}</p>

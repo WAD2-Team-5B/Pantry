@@ -218,14 +218,19 @@ def recipe(request, user_id, recipe_id):
 
         # user is rating
         elif "data[rating]" in request.POST:
-
             new_rating = request.POST.get("data[rating]")
+
+            if int(new_rating) > 5:
+                return HttpResponse("Invalid rating")
+
+
             prev_rating = StarredRecipes.objects.filter(
                 user=request.user, recipe=recipe
             )
             # delete if previously rated
             if prev_rating.exists():
                 prev_rating.delete()
+            
             # add new rating
             StarredRecipes.objects.create(
                 user=request.user, recipe=recipe, value=new_rating
@@ -486,17 +491,14 @@ def like_review(request):
     like = request.POST.get("data[like]")
 
     if like == "true":
-        LikedReviews.objects.create(user=user, review=review)
-        print("created")
+        if not LikedReviews.objects.filter(review=review, user=user).exists(): # make sure user has not already liked review
+            LikedReviews.objects.create(user=user, review=review)
+            print("created")
+            review.likes += 1
     else:
         liked_review = LikedReviews.objects.get(review=review, user=user)
         liked_review.delete()
         print("deleted")
-
-    # check if like or unlike
-    if like == "true":
-        review.likes += 1
-    else:
         review.likes -= 1
 
     review.save()
