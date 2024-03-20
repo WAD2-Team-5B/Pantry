@@ -34,11 +34,14 @@ h3 {
 }
 
 .bio img {
-  /* scaled according to 8.8x5 */
   height: 10rem;
-  width: 17.6rem;
+  width: 10rem;
 
-  border-radius: 1rem;
+  /* dont stretch image */
+  object-fit: cover;
+  overflow: hidden;
+
+  border-radius: 50%;
 
   background-color: var(--color-1);
 }

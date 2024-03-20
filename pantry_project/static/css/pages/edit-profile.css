@@ -79,12 +79,16 @@ h4:first-of-type {
 
 #profile-image-preview {
   height: 7.5rem;
-  width: 13.2rem;
+  width: 7.5rem;
+
+  /* dont stretch image */
+  object-fit: cover;
+  overflow: hidden;
 
   margin-top: 0.5rem;
   margin-bottom: 1rem;
 
-  border-radius: 1rem;
+  border-radius: 50%;
 
   background-color: var(--color-1);
 }
