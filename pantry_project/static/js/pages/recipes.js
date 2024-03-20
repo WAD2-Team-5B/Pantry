@@ -11,7 +11,6 @@ let selectedCategories = [];
 // arrays for passing by reference
 let selectedDifficulty = [];
 let selectedSortBy = [];
-let searchQuery = search_query;
 
 // ------------------------------
 // INIT

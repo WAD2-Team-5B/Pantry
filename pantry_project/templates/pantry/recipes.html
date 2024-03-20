@@ -8,7 +8,7 @@
 <!-- JS -->
 {% block js_block %}
 <script type="text/javascript">
-  const search_query = "{{ search_query }}";
+  var searchQuery = "{{ search_query }}";
 </script>
 <script type="module" src="{% static 'js/pages/recipes.js' %}"></script>
 {% endblock %}
