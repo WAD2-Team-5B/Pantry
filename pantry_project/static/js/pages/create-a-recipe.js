@@ -103,7 +103,7 @@ initButtons(categoryBtns, categories, "btn-category-active", true);
 let addIngredientBtn = document.getElementById("btn-add-ingredient");
 addIngredientBtn.onclick = () => {
   let ingredientInput = document.getElementById("ingredient");
-  let ingredient = ingredientInput.value;
+  let ingredient = ingredientInput.value.trim();
   ingredientInput.value = "";
 
   // empty or already exists
@@ -128,15 +128,6 @@ createStep();
 // FORM
 // ------------------------------
 
-function validateIngredients() {
-  for (let i = 0; i < ingredients.length; i++) {
-    if (!ingredients[i].trim()) {
-      return true;
-    }
-  }
-  return false;
-}
-
 let form = document.getElementById("create-a-recipe-form");
 form.addEventListener("submit", (e) => {
   // validation
@@ -144,10 +135,6 @@ form.addEventListener("submit", (e) => {
     {
       condition: ingredients.length === 0,
       message: "Please have atleast one ingredient!",
-    },
-    {
-      condition: validateIngredients(),
-      message: "You have an empty ingredient!",
     },
     { condition: cuisine.length === 0, message: "Please select a cuisine!" },
     {

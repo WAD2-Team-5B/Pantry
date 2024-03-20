@@ -5,13 +5,14 @@
  * @param {Array.<string>} selected - array to store the selected values
  * @param {string} cssActiveClass - the class to add to the button when it is active
  * @param {boolean} multiSelect - if true, multiple buttons can be active at once
+ * @param {function name()} additionalFunc - additional code to add inside the onclick event
  */
 export function initButtons(
   btns,
   selected,
   cssActiveClass,
   multiSelect,
-  jqueryFunction = null
+  additionalFunc = null
 ) {
   for (let i = 0; i < btns.length; i++) {
     let btn = btns[i];
@@ -22,8 +23,8 @@ export function initButtons(
       if (selected.includes(value)) {
         btn.classList.remove(cssActiveClass);
         selected.splice(selected.indexOf(value), 1);
-        if (jqueryFunction) {
-          jqueryFunction();
+        if (additionalFunc) {
+          additionalFunc();
         }
         return false;
       }
@@ -38,8 +39,8 @@ export function initButtons(
       }
       btn.classList.add(cssActiveClass);
       selected.push(value);
-      if (jqueryFunction) {
-        jqueryFunction();
+      if (additionalFunc) {
+        additionalFunc();
       }
       return false;
     };
