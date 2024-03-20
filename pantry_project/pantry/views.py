@@ -5,15 +5,17 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponse
-from django.db.models import Q, Count, Avg
+from django.db.models import Q, Count, Avg, DecimalField, IntegerField, Func
+from django.db.models.functions import Cast
 from pantry.models import *
 from pantry.forms import *
 from pantry.helpers import *
 
 SPACER = "<SPACER>"
 
-# TEMPLATE VIEWS
-
+class Round(Func):
+    function = 'ROUND'
+    template = "%(function)s(%(expressions)s, 2)"
 
 def index(request):
 
@@ -22,7 +24,6 @@ def index(request):
         search_query = request.POST.get("search_query")
         # send in url parameters with get request
         return redirect(reverse("pantry:recipes") + "?search_query=" + search_query)
-
     rated_recipes = Recipe.objects.annotate(rating=Avg("ratings__value"))
     highest_rated_recipes = rated_recipes.order_by("-rating", "-pub_date")[:10]
     newest_recipes = Recipe.objects.order_by("-pub_date")[:10]
@@ -82,8 +83,8 @@ def recipes(request):
             search_query_query & difficulty_query & cuisine_query & category_query
         ).annotate(num_saves=Count("saves", distinct=True))
 
-        recipes = recipes.annotate(rating=Avg("ratings__value"))
-
+        recipes = recipes.annotate(rating=Round(Avg("ratings__value")))
+        
         # apply sort
         if sort == "rating":
             recipes = recipes.order_by("-rating")
@@ -112,7 +113,7 @@ def recipes(request):
         recipes = Recipe.objects.filter(search_query_query).annotate(
             num_saves=Count("saves", distinct=True)
         )
-        recipes = recipes.annotate(rating=Avg("ratings__value"))
+        recipes = recipes.annotate(rating=Round(Avg("ratings__value")))
         context_dict["recipes"] = recipes
         context_dict["search_query"] = search_query
 

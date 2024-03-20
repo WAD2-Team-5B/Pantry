@@ -90,7 +90,7 @@
             {% if recipe.rating %}
             {{ recipe.rating }}
             {% else %}
-            no rating
+            0.00
             {% endif %}
           </li>
           {% if recipe.num_saves == 1 %}
@@ -98,7 +98,7 @@
           {% else %}
           <li>{{ recipe.num_saves }} saves</li>
           {% endif %}
-          <li>{{ recipe.difficulty }}</li>
+          <li id="recipe-difficulty">{{ recipe.difficulty }}</li>
           <li>{{ recipe.cuisine }}</li>
           <li>Prep - {{ recipe.prep }}h</li>
           <li>Cook - {{ recipe.cook }}h</li>
