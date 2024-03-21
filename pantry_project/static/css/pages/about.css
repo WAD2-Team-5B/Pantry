@@ -8,11 +8,10 @@ h3 {
 .container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-between; 
   align-items: center;
 
-  width: 75%;
-  height: 24rem;
+  height: 24rem; 
 
   padding: 0.5rem;
 }
@@ -21,18 +20,18 @@ h3 {
 
 .container .logo {
   display: flex;
-
-  flex-grow: 1;
   height: 100%;
-
+  
   overflow: hidden;
 }
 
 .container img {
   height: 100%;
-
+  width: 20rem;
+  min-width: 20rem;
   border-radius: 1rem;
 }
+
 
 /* TEXT / TEAM */
 
@@ -76,9 +75,6 @@ a.recipes {
 /* WINDOW WIDTH CHANGE */
 
 @media (max-width: 58rem) {
-  .container .logo {
-    display: none;
-  }
 
   .container {
     flex-direction: column;
@@ -89,7 +85,7 @@ a.recipes {
 
   .container .text,
   .container .team {
+    margin-top: 2rem;
     margin-right: 0;
-    margin-bottom: 2rem;
   }
 }
