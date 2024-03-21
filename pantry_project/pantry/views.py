@@ -403,7 +403,7 @@ def user_reviews(request, user_id):
             request,
             "pantry/user-data.html",
             context=get_user_data_context_dict(
-                request, user_id, "Reviewed Recipe", Review
+                request, user_id, "Review", Review
             ),
         )
 
